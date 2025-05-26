@@ -1,0 +1,6 @@
+@Dentizone.Presentaion_HostAddress = http://localhost:5028
+
+GET {{Dentizone.Presentaion_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
