@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dentizone.Infrastructure.Database
+namespace Dentizone.Infrastructure
 {
     internal class DbContext
     {
