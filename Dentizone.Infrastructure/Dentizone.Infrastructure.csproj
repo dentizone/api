@@ -16,4 +16,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Dentizone.Domain\Dentizone.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
