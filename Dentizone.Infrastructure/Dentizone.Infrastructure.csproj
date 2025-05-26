@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Persistence\NewFolder\" />
+    <Compile Remove="Persistence\NewFolder\**" />
+    <EmbeddedResource Remove="Persistence\NewFolder\**" />
+    <None Remove="Persistence\NewFolder\**" />
   </ItemGroup>
 
 </Project>
