@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Dentizone.Infrastructure.Models;
 
@@ -6,6 +6,10 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 {
     class AssetConfiguration : IEntityTypeConfiguration<Asset>
     {
+        /// <summary>
+        /// Configures the Entity Framework Core mapping for the <see cref="Asset"/> entity, including property constraints, value conversions, default values, and relationships.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the <see cref="Asset"/> entity type.</param>
         public void Configure(EntityTypeBuilder<Asset> builder)
         {
             builder.HasKey(a => a.Id);

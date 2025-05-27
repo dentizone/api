@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Models;
+using Dentizone.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -6,6 +6,10 @@ namespace Dentizone.Infrastructure.Persistence.Configurations;
 
 internal class UserAssetConfiguration : IEntityTypeConfiguration<UserAsset>
 {
+    /// <summary>
+    /// Configures the Entity Framework Core model for the <see cref="UserAsset"/> entity, including property requirements, default values, and relationships to <see cref="User"/> and <see cref="Asset"/>.
+    /// </summary>
+    /// <param name="builder">The builder used to configure the <see cref="UserAsset"/> entity type.</param>
     public void Configure(EntityTypeBuilder<UserAsset> builder)
     {
         builder.HasKey(ua => ua.Id);

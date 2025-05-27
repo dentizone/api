@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +11,10 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 {
     internal class UniversityConfiguration : IEntityTypeConfiguration<University>
     {
+        /// <summary>
+        /// Configures the Entity Framework Core model for the <see cref="University"/> entity, including property constraints, default values, and relationships.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the <see cref="University"/> entity type.</param>
         public void Configure(EntityTypeBuilder<University> builder)
         {
             builder.HasKey(u => u.Id);

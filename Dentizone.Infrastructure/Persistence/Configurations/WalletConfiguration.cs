@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Models;
+using Dentizone.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -6,6 +6,10 @@ namespace Dentizone.Infrastructure.Persistence.Configurations;
 
 internal class WalletConfiguration : IEntityTypeConfiguration<Wallet>
 {
+    /// <summary>
+    /// Configures the entity schema for the <see cref="Wallet"/> model, including property requirements, data types, default values, and the one-to-one relationship with <see cref="User"/>.
+    /// </summary>
+    /// <param name="builder">The builder used to configure the <see cref="Wallet"/> entity.</param>
     public void Configure(EntityTypeBuilder<Wallet> builder)
     {
         builder.HasKey(w => w.Id);

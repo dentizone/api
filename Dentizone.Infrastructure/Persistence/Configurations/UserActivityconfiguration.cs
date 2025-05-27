@@ -1,10 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Dentizone.Infrastructure.Models
 {
     internal class UserActivityConfiguration : IEntityTypeConfiguration<UserActivity>
     {
+        /// <summary>
+        /// Configures the entity model for <see cref="UserActivity"/> in Entity Framework Core, defining property constraints, default values, and relationships.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the <see cref="UserActivity"/> entity.</param>
         public void Configure(EntityTypeBuilder<UserActivity> builder)
         {
             builder.HasKey(ua => ua.Id);

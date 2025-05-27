@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +14,18 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
 
 
+        /// <summary>
+        /// Configures the entity schema for the <see cref="Category"/> model in Entity Framework Core.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the <see cref="Category"/> entity type.</param>
+        /// <remarks>
+        /// Sets up property constraints, default values, and relationships:
+        /// - Primary key on <c>Id</c>.
+        /// - <c>Name</c> is required with a maximum length of 255.
+        /// - <c>CreatedAt</c> is required, generated on add, with a default value of the current UTC date/time.
+        /// - <c>UpdatedAt</c> and <c>IsDeleted</c> are required.
+        /// - Configures one-to-many relationships to <c>SubCategories</c> and <c>Items</c> with restricted delete behavior.
+        /// </remarks>
         public void Configure(EntityTypeBuilder<Category> builder)
         {
 

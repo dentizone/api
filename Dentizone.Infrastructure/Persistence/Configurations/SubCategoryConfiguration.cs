@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Dentizone.Infrastructure.Models;
 
@@ -6,6 +6,10 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 {
     class SubCategoryConfiguration : IEntityTypeConfiguration<SubCategory>
     {
+        /// <summary>
+        /// Configures the entity schema for the <see cref="SubCategory"/> model, including property constraints and relationships.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the <see cref="SubCategory"/> entity type.</param>
         public void Configure(EntityTypeBuilder<SubCategory> builder)
         {
 

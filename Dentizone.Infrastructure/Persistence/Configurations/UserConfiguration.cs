@@ -1,4 +1,4 @@
-﻿using Dentizone.Domain;
+using Dentizone.Domain;
 using Dentizone.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -7,6 +7,10 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 {
     internal class UserConfiguration : IEntityTypeConfiguration<AppUser>
     {
+        /// <summary>
+        /// Configures the entity mapping for the <see cref="AppUser"/> model, including property constraints, value conversions, default values, and relationships with related entities.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the <see cref="AppUser"/> entity type.</param>
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.Property(u => u.FullName)
