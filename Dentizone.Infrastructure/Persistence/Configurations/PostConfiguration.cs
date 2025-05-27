@@ -29,9 +29,13 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .HasColumnType("decimal(18,2)");
             builder.Property(p => p.expire_date)
                 .IsRequired(false);
+
+
             builder.Property(p => p.condition)
-                .HasMaxLength(50)
-                .IsRequired();
+                .IsRequired()
+                .HasConversion<string>();
+
+
             builder.Property(p => p.status)
                 .IsRequired();
             builder.Property(p => p.seller_id)
@@ -42,9 +46,10 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .HasMaxLength(255)
                 .IsRequired();
             builder.Property(p => p.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd()
-                .IsRequired();
+                .HasDefaultValueSql(SQLCommon.Date)
+                .ValueGeneratedOnAdd();
+
+
             builder.Property(p => p.UpdatedAt)
                 .IsRequired();
             builder.Property(p => p.IsDeleted)
