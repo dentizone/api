@@ -26,6 +26,13 @@ internal class WalletConfiguration : IEntityTypeConfiguration<Wallet>
                .HasDefaultValueSql(SQLCommon.Date)
                .ValueGeneratedOnAdd();
 
+        builder.Property(w => w.UpdatedAt)
+               .IsRequired();
+
+        builder.Property(w => w.IsDeleted)
+               .IsRequired()
+               .HasDefaultValue(false);
+
         builder.Property(w => w.UpdatedAt).IsRequired();
 
 

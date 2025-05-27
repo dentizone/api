@@ -36,9 +36,5 @@ internal class UserAssetConfiguration : IEntityTypeConfiguration<UserAsset>
         builder.HasOne(ua => ua.User)
                .WithMany(u => u.UserAssets)
                .HasForeignKey(ua => ua.UserId);
-        // // Many-to-One: UserAsset to Asset
-        builder.HasOne(ua => ua.Asset)
-                     .WithMany(a => a.UserAssets)
-             .HasForeignKey(ua => ua.AssetId);
     }
 }

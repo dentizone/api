@@ -48,10 +48,10 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                    .HasForeignKey(sc => sc.CategoryId) 
                    .OnDelete(DeleteBehavior.Restrict); 
             // One-to-Many: Category to Items
-            builder.HasMany(c => c.Items)
-                   .WithOne(i => i.Category) 
-                   .HasForeignKey(i => i.CategoryId) 
-                   .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasMany(c => c.Items)
+            //       .WithOne(i => i.Category) 
+            //       .HasForeignKey(i => i.CategoryId) 
+            //       .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

@@ -14,8 +14,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                    .HasMaxLength(255);
 
             builder.Property(u => u.AcademicYear)
-                   .IsRequired()
-                   .HasMaxLength(1);
+                   .IsRequired();
 
             builder.Property(u => u.UniversityId)
                    .IsRequired();
