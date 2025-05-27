@@ -1,4 +1,5 @@
 ﻿using Dentizone.Domain;
+using Dentizone.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,21 +13,13 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                             .IsRequired()
                             .HasMaxLength(255);
 
-                     builder.Property(u => u.Email)
-                            .IsRequired()
-                            .HasMaxLength(255);
-
-
                      builder.Property(u => u.AcademicYear)
                             .IsRequired()
-                            .HasMaxLength(50);
+                            .HasMaxLength(1);
 
                      builder.Property(u => u.UniversityId)
                             .IsRequired();
 
-                     builder.Property(u => u.PhoneNumber)
-                            .IsRequired()
-                            .HasMaxLength(20);
 
                      builder.Property(u => u.NationalId);
 
@@ -39,15 +32,25 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                             .HasConversion<string>();
 
                      builder.Property(u => u.CreatedAt)
-                   .IsRequired()
-                            .HasDefaultValueSql("GETDATE()");
+                            .IsRequired()
+                            .HasDefaultValueSql(SQLCommon.Date);
 
 
                      builder.Property(u => u.UpdatedAt)
                             .IsRequired()
-                            .HasDefaultValueSql("GETDATE()")
+                            .HasDefaultValueSql(SQLCommon.Date)
                             .ValueGeneratedOnAddOrUpdate();
 
+                     // Relationships
+                     // One-to-One: User to Wallet
+                     builder.HasOne(u => u.Wallet)
+                            .WithOne(w => w.User)
+                            .HasForeignKey<Wallet>(w => w.UserId);
+
+                     // One-to-Many: User to UserAssets
+                     builder.HasMany(u => u.UserAssets)
+                            .WithOne(ua => ua.User)
+                            .HasForeignKey(ua => ua.UserId);
 
 
               }
