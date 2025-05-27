@@ -26,6 +26,12 @@ namespace Dentizone.Domain
         public ICollection<UserActivity> UserActivities { get; set; } = new List<UserActivity>();
         public ICollection<Post> Posts { get; set; }
         public bool IsDeleted { get; set; }
+
+        public ICollection<Question> questions { get; set; }
+
+        public ICollection<ShipInfo> ShippingAddresses {  get; set; }
+
+        public ICollection<Order> Orders { get; set; }
     }
 }
 
