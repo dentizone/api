@@ -17,7 +17,6 @@ namespace Dentizone.Infrastructure.Models
         public string reference_id { get; set; }
         public string description { get; set; }
 
-        public Wallet wallet { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

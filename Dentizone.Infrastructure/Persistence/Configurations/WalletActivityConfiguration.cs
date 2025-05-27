@@ -19,7 +19,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.Property(i=>i.reference_type).IsRequired();
             builder.Property(i=>i.activity_type).IsRequired();
             builder.Property(i=>i.CreatedAt).IsRequired();
-            builder.HasOne(c => c.wallet)
+            builder.HasOne(c => c.Wallet)
                 .WithMany(c => c.WalletActivities)
                 .HasForeignKey(c => c.wallet_id);
             

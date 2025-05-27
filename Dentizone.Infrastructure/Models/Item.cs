@@ -15,10 +15,8 @@ namespace Dentizone.Infrastructure.Models
         public string sub_category_id { set; get; }
 
 
-        //public ICollection<Category> Categories { get; set; }
-        //public ICollection<SubCategory> SubCategories { get; set; }
-        public Category Category { get; set; }
-        public SubCategory SubCategory { get; set; }
+        public virtual Category Category { get; set; }
+        public virtual SubCategory SubCategory { get; set; }
         public DateTime CreatedAt { get; set ; }
         public DateTime UpdatedAt { get; set ; }
         public bool IsDeleted { get; set; }

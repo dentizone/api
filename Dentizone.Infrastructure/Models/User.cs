@@ -24,7 +24,7 @@ namespace Dentizone.Domain
 
         public ICollection<UserAsset> UserAssets { get; set; } = new List<UserAsset>();
         public ICollection<UserActivity> UserActivities { get; set; } = new List<UserActivity>();
-        public ICollection<Post> posts { get; set; }
+        public ICollection<Post> Posts { get; set; }
         public bool IsDeleted { get; set; }
     }
 }
