@@ -36,6 +36,12 @@ internal class BaseEntityInterceptor : SaveChangesInterceptor
                 case EntityState.Modified:
                     entry.Entity.UpdatedAt = now;
                     break;
+                case EntityState.Deleted:
+                    entry.State = EntityState.Modified;
+                    entry.Entity.IsDeleted = true;
+                    entry.Entity.UpdatedAt = now;
+                    break;
+
             }
         }
 
