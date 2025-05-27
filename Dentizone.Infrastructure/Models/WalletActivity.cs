@@ -7,17 +7,20 @@ using Dentizone.Application.Interfaces;
 
 namespace Dentizone.Infrastructure.Models
 {
-    internal class Category : IBaseEntity
+    internal class WalletActivity : IBaseEntity
     {
         public string Id { get; set; }
-        public string Name { get; set; }
+        public string wallet_id { get; set; }
+        public string activity_type { get; set; }
+        public decimal amount { get; set; }
+        public string reference_type { get; set; }
+        public string reference_id { get; set; }
+        public string description { get; set; }
+
+
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
-
-        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
-
-        public virtual ICollection<SubCategory> SubCategories { get; set; } = new List<SubCategory>();
-
+        public Wallet Wallet { get; set; }
     }
 }

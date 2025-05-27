@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Dentizone.Domain.Enums
 {
-    public enum AssetType
+    public enum PostItemCondition
     {
-        Image = 0,
-        Video = 1
-
+        New = 1,
+        Used = 2,
+        
     }
 }
-

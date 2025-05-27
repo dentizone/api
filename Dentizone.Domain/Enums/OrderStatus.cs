@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Dentizone.Domain.Enums
 {
-    public enum AssetType
+    public enum OrderStatus
     {
-        Image = 0,
-        Video = 1
+        Pending = 1,
+        Arrived = 2,
+        Cancelled=3
 
     }
 }
-
