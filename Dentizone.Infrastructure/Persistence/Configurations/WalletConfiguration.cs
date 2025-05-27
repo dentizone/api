@@ -45,5 +45,10 @@ internal class WalletConfiguration : IEntityTypeConfiguration<Wallet>
                .HasForeignKey<Wallet>(w => w.UserId)
                .OnDelete(DeleteBehavior.NoAction);
 
+        // One-to-Many: Wallet to WalletActivities
+        builder.HasMany(w => w.WalletActivities)
+               .WithOne(wa => wa.Wallet)
+               .HasForeignKey(wa => wa.wallet_id);
+
     }
 }

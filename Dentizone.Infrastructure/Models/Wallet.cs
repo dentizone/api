@@ -19,5 +19,8 @@ namespace Dentizone.Infrastructure.Models
         public virtual AppUser User { get; set; }
         public string UserId { get; set; }
         public bool IsDeleted { get; set; }
+
+        public ICollection<WalletActivity> WalletActivities { get; set; } = new List<WalletActivity>();
+      
     }
 }

@@ -22,7 +22,7 @@ namespace Dentizone.Infrastructure.Models
         public string CategoryId { get; set; } // Foreign Key for Category
 
         // Relationship: One SubCategory to Many Items
-        //public virtual ICollection<Item> Items { get; set; } = new List<Item>();
+        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
 
 
     }
