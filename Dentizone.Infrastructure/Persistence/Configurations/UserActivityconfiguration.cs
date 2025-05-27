@@ -38,7 +38,7 @@ namespace Dentizone.Infrastructure.Models
 
             builder.Property(ua => ua.ActivityType)
           .IsRequired()
-          .HasMaxLength(48);
+          .HasConversion<string>();
 
             builder.Property(ua => ua.IpAddress)
                    .HasMaxLength(45);
