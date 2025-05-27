@@ -4,20 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dentizone.Application.Interfaces;
-using Dentizone.Domain;
 
 namespace Dentizone.Infrastructure.Models
 {
-    internal class University : IBaseEntity
+    internal class SubCategory: IBaseEntity
     {
         public string Id { get; set; }
+
         public string Name { get; set; }
-        public bool IsSupported { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public string Domain { get; set; }
-
-        public virtual ICollection<AppUser> Users { get; set; } = new List<AppUser>();
         public bool IsDeleted { get; set; }
+
+        
+        // Relationship: Many SubCategories to One Category
+        public virtual Category Category { get; set; }
+        public string CategoryId { get; set; } // Foreign Key for Category
+
+        // Relationship: One SubCategory to Many Items
+        //public virtual ICollection<Item> Items { get; set; } = new List<Item>();
+
+
     }
+
 }

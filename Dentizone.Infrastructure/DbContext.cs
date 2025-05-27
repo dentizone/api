@@ -9,6 +9,13 @@ namespace Dentizone.Infrastructure
         public DbContext(DbContextOptions<DbContext> options)
             : base(options)
         {
+
+          
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
         }
     }
 }
