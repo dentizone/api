@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Dentizone.Domain.Enums
 {
-    internal class QuestionStatus
+    public enum QuestionStatus
     {
+        Answered=1,
+        Unanswered=2
+
     }
 }

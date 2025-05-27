@@ -27,8 +27,10 @@ namespace Dentizone.Infrastructure.Models
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-       // public PickupInfo pickupinfo {get; set;}
+        public PickupInfo pickupinfo {get; set;}
        public AppUser user { get; set; }
+
+        public ICollection<Question> questions { get; set; }
 
 
     }
