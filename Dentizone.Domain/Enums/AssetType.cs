@@ -8,9 +8,9 @@ namespace Dentizone.Domain.Enums
 {
     public enum AssetType
     {
-        image=0,
-        video=1
-       
+        Image = 0,
+        Video = 1
+
     }
 }
 

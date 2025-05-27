@@ -6,33 +6,39 @@ namespace Dentizone.Infrastructure.Persistence.Configurations;
 
 internal class UserAssetConfiguration : IEntityTypeConfiguration<UserAsset>
 {
-       public void Configure(EntityTypeBuilder<UserAsset> builder)
-       {
-              builder.HasKey(ua => ua.Id);
+    public void Configure(EntityTypeBuilder<UserAsset> builder)
+    {
+        builder.HasKey(ua => ua.Id);
 
-              builder.Property(ua => ua.UserId)
-                     .IsRequired();
+        builder.Property(ua => ua.UserId)
+               .IsRequired();
 
-              builder.Property(ua => ua.AssetId)
-                     .IsRequired();
+        builder.Property(ua => ua.AssetId)
+               .IsRequired();
 
-              builder.Property(ua => ua.Type)
-                     .IsRequired()
-                     .HasConversion<string>();
+        builder.Property(ua => ua.Type)
+               .IsRequired()
+               .HasConversion<string>();
 
-              builder.Property(ua => ua.CreatedAt)
-                     .HasDefaultValueSql(SQLCommon.Date)
-                     .ValueGeneratedOnAdd();
+        builder.Property(ua => ua.CreatedAt)
+               .HasDefaultValueSql(SQLCommon.Date)
+               .ValueGeneratedOnAdd();
 
-              // --- Relationships ---
+        builder.Property(ua => ua.UpdatedAt)
+                .IsRequired();
+        builder.Property(ua => ua.IsDeleted)
+                .IsRequired()
+                .HasDefaultValue(false);
 
-              // Many-to-One: UserAsset to User
-              builder.HasOne(ua => ua.User)
-                     .WithMany(u => u.UserAssets)
-                     .HasForeignKey(ua => ua.UserId);
+        // --- Relationships ---
 
-              builder.HasOne(ua => ua.Asset) // Waiting for Maraim
+        // Many-to-One: UserAsset to User
+        builder.HasOne(ua => ua.User)
+               .WithMany(u => u.UserAssets)
+               .HasForeignKey(ua => ua.UserId);
+        // // Many-to-One: UserAsset to Asset
+        builder.HasOne(ua => ua.Asset)
                      .WithMany(a => a.UserAssets)
-                     .HasForeignKey(ua => ua.AssetId);
-       }
+             .HasForeignKey(ua => ua.AssetId);
+    }
 }

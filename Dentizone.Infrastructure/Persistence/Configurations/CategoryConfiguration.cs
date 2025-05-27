@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Dentizone.Infrastructure.Persistence.Configurations
 {
-    internal class CategoryConfiguration: IEntityTypeConfiguration<Category>
-    { 
+    internal class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    {
 
-   
+
 
         public void Configure(EntityTypeBuilder<Category> builder)
         {
@@ -25,10 +25,13 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
 
             builder.Property(c => c.Name)
+                .HasMaxLength(255)
                    .IsRequired();
 
 
             builder.Property(c => c.CreatedAt)
+                     .HasDefaultValueSql("GETUTCDATE()")
+                     .ValueGeneratedOnAdd()
                    .IsRequired();
 
 
@@ -37,7 +40,18 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             builder.Property(c => c.IsDeleted)
                    .IsRequired();
-                  
+
+
+            // One-to-Many: Category to SubCategories
+            builder.HasMany(c => c.SubCategories)
+                   .WithOne(sc => sc.Category) 
+                   .HasForeignKey(sc => sc.CategoryId) 
+                   .OnDelete(DeleteBehavior.Restrict); 
+            // One-to-Many: Category to Items
+            builder.HasMany(c => c.Items)
+                   .WithOne(i => i.Category) 
+                   .HasForeignKey(i => i.CategoryId) 
+                   .OnDelete(DeleteBehavior.Restrict);
 
         }
     }
