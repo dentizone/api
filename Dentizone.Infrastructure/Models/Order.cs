@@ -6,19 +6,18 @@ namespace Dentizone.Infrastructure.Models
 {
     internal class Order : IBaseEntity
     {
-        public string buyer_id { get; set; }
-        public AppUser user { get; set; }
-        public OrderStatus status { get; set; }
-        public DateTime placed_at { get; set; }
+        public string BuyerId { get; set; }
+        public AppUser User { get; set; }
+        public OrderStatus Status { get; set; }
+        public DateTime PlacedAt { get; set; }
 
-        public decimal commission_amount { get; set; }
-        public decimal total_amount { get; set; }
-        public DateTime completed_at { get; set; }
-        public DateTime updated_at { get; set; }
-        public ShipInfo ShipInfo { get; set; }
+        public decimal CommissionAmount { get; set; }
+        public decimal TotalAmount { get; set; }
+        public DateTime CompletedAt { get; set; }
+        public virtual ShipInfo ShipInfo { get; set; }
 
 
-        public ICollection<OrderPickup> OrderPickups { get; set; } = new List<OrderPickup>();
+        public virtual ICollection<OrderPickup> OrderPickups { get; set; } = new List<OrderPickup>();
 
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }

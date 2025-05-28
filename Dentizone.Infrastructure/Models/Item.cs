@@ -11,8 +11,8 @@ namespace Dentizone.Infrastructure.Models
     {
 
         public string Id { get; set; }
-        public string category_id { set; get; }
-        public string sub_category_id { set; get; }
+        public string CategoryId { set; get; }
+        public string SubCategoryId { set; get; }
 
 
         public virtual Category Category { get; set; }

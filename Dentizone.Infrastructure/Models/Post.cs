@@ -8,24 +8,24 @@ namespace Dentizone.Infrastructure.Models
     internal class Post : IBaseEntity
     {
         public string Id { get; set; }
-        public string title { get; set; }
-        public string description { get; set; }
-        public decimal price { get; set; }
-        public DateTime? expire_date { get; set; }
-        public PostItemCondition condition { get; set; }
-        public PostStatus status { get; set; }
-        public string item_id { get; set; }
-        public string slug { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public DateTime? ExpireDate { get; set; }
+        public PostItemCondition Condition { get; set; }
+        public PostStatus Status { get; set; }
+        public string ItemId { get; set; }
+        public string Slug { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-        public virtual PickupInfo pickupinfo {get; set;}
+        public virtual PickupInfo Pickupinfo { get; set; }
 
         public virtual AppUser Seller { get; set; }
-       public string SellerId { get; set; }
+        public string SellerId { get; set; }
 
-        public ICollection<Question> questions { get; set; }
+        public ICollection<Question> Questions { get; set; }
 
 
     }

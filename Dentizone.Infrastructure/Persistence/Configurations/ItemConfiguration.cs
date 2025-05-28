@@ -15,16 +15,16 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("Items")
                 .HasKey(i => i.Id);
-            builder.Property(i => i.category_id)
+            builder.Property(i => i.CategoryId)
                 .IsRequired();
-            builder.Property(i => i.sub_category_id)
+            builder.Property(i => i.SubCategoryId)
                 .IsRequired();
             builder.HasOne(i => i.Category)
                 .WithMany(c => c.Items)
-                .HasForeignKey(i => i.category_id);
+                .HasForeignKey(i => i.CategoryId);
             builder.HasOne(i => i.SubCategory)
                 .WithMany(sc => sc.Items)
-                .HasForeignKey(i => i.sub_category_id);
+                .HasForeignKey(i => i.SubCategoryId);
 
 
 

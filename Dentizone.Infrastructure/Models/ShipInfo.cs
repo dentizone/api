@@ -5,12 +5,12 @@ namespace Dentizone.Infrastructure.Models
 {
     internal class ShipInfo : IBaseEntity
     {
-        public string street { get; set; }
-        public string city { get; set; }
-        public string order_id { get; set; }
-        public Order order { get; set; }
-        public string user_id { get; set; }
-        public AppUser user { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string OrderId { get; set; }
+        public Order Order { get; set; }
+        public string UserId { get; set; }
+        public AppUser User { get; set; }
 
 
         public string Id { get; set; }

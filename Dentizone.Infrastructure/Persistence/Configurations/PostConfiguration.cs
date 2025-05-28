@@ -12,35 +12,35 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Id)
                 .IsRequired();
-            builder.Property(p => p.title)
+            builder.Property(p => p.Title)
                 .HasMaxLength(255)
                 .IsRequired();
-            builder.Property(p => p.description)
+            builder.Property(p => p.Description)
                 .HasMaxLength(-1)
                 .IsRequired();
-            builder.Property(p => p.price)
+            builder.Property(p => p.Price)
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");
-            builder.Property(p => p.expire_date)
+            builder.Property(p => p.ExpireDate)
                 .IsRequired(false);
 
 
-            builder.Property(p => p.condition)
+            builder.Property(p => p.Condition)
                 .IsRequired()
                 .HasConversion<string>();
 
 
-            builder.Property(p => p.status)
+            builder.Property(p => p.Status)
                 .IsRequired();
             builder.Property(p => p.SellerId)
                 .IsRequired();
-            builder.Property(p => p.item_id)
+            builder.Property(p => p.ItemId)
                 .IsRequired();
-            builder.Property(p => p.slug)
+            builder.Property(p => p.Slug)
                 .HasMaxLength(255)
                 .IsRequired();
             builder.Property(p => p.CreatedAt)
-                .HasDefaultValueSql(SQLCommon.Date)
+                .HasDefaultValueSql(SqlCommon.Date)
                 .ValueGeneratedOnAdd();
 
 
@@ -52,7 +52,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             // Every post must have a pickup info, only one
 
-            builder.HasOne(p => p.pickupinfo)
+            builder.HasOne(p => p.Pickupinfo)
                    .WithOne(pi => pi.Post)
                      .HasForeignKey<PickupInfo>(pi => pi.PostId);
             // Every post must have a seller, only one

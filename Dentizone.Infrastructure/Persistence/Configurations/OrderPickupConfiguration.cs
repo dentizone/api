@@ -10,23 +10,23 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(op => op.Id);
 
-            builder.Property(op => op.order_id).IsRequired();
-            builder.Property(op => op.pickup_id).IsRequired();
+            builder.Property(op => op.OrderId).IsRequired();
+            builder.Property(op => op.PickupId).IsRequired();
             builder.Property(op => op.CreatedAt).IsRequired();
             builder.Property(op => op.UpdatedAt).IsRequired();
 
 
-            builder.HasOne(op => op.order)
+            builder.HasOne(op => op.Order)
                 .WithMany(o => o.OrderPickups)
-                .HasForeignKey(op => op.order_id);
+                .HasForeignKey(op => op.OrderId);
 
 
 
 
 
-            builder.HasOne(op => op.pickup)
+            builder.HasOne(op => op.Pickup)
                 .WithMany(p => p.OrderPickups)
-                .HasForeignKey(op => op.pickup_id);
+                .HasForeignKey(op => op.PickupId);
 
         }
     }

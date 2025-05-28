@@ -29,7 +29,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .HasDefaultValue(false);
 
             builder.Property(u => u.CreatedAt)
-                .HasDefaultValueSql(SQLCommon.Date)
+                .HasDefaultValueSql(SqlCommon.Date)
                 .ValueGeneratedOnAdd()
                 .IsRequired();
 

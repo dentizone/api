@@ -31,7 +31,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                    .HasConversion<string>();
 
             builder.Property(u => u.CreatedAt)
-                   .HasDefaultValueSql(SQLCommon.Date)
+                   .HasDefaultValueSql(SqlCommon.Date)
                    .ValueGeneratedOnAdd();
 
 
@@ -69,19 +69,19 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                    .WithOne(p => p.Seller)
                    .HasForeignKey(p => p.SellerId);
             // One-to-Many: User to Questions
-            builder.HasMany(u => u.questions)
-                   .WithOne(q => q.user)
-                   .HasForeignKey(q => q.asker_id);
+            builder.HasMany(u => u.Questions)
+                   .WithOne(q => q.User)
+                   .HasForeignKey(q => q.AskerId);
 
             // One-to-Many: User to ShippingAddresses
             builder.HasMany(u => u.ShippingAddresses)
-                   .WithOne(sa => sa.user)
-                   .HasForeignKey(sa => sa.user_id);
+                   .WithOne(sa => sa.User)
+                   .HasForeignKey(sa => sa.UserId);
 
             // One-to-Many: User to Orders
             builder.HasMany(u => u.Orders)
-                   .WithOne(o => o.user)
-                   .HasForeignKey(o => o.buyer_id);
+                   .WithOne(o => o.User)
+                   .HasForeignKey(o => o.BuyerId);
 
 
 

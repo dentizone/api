@@ -23,7 +23,7 @@ internal class WalletConfiguration : IEntityTypeConfiguration<Wallet>
                .HasConversion<string>();
 
         builder.Property(w => w.CreatedAt)
-               .HasDefaultValueSql(SQLCommon.Date)
+               .HasDefaultValueSql(SqlCommon.Date)
                .ValueGeneratedOnAdd();
 
         builder.Property(w => w.UpdatedAt)
@@ -48,7 +48,7 @@ internal class WalletConfiguration : IEntityTypeConfiguration<Wallet>
         // One-to-Many: Wallet to WalletActivities
         builder.HasMany(w => w.WalletActivities)
                .WithOne(wa => wa.Wallet)
-               .HasForeignKey(wa => wa.wallet_id);
+               .HasForeignKey(wa => wa.WalletId);
 
     }
 }

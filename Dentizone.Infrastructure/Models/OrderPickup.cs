@@ -4,10 +4,10 @@ namespace Dentizone.Infrastructure.Models
 {
     internal class OrderPickup : IBaseEntity
     {
-        public string order_id { get; set; }
-        public Order order { get; set; }
-        public string pickup_id { get; set; }
-        public PickupInfo pickup { get; set; }
+        public string OrderId { get; set; }
+        public Order Order { get; set; }
+        public string PickupId { get; set; }
+        public PickupInfo Pickup { get; set; }
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

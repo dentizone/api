@@ -24,7 +24,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.Property(a => a.CreatedAt)
                 .ValueGeneratedOnAdd()
                 .IsRequired()
-                .HasDefaultValueSql(SQLCommon.Date);
+                .HasDefaultValueSql(SqlCommon.Date);
 
             builder.Property(a => a.UpdatedAt)
           .IsRequired();

@@ -9,8 +9,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<PickupInfo> builder)
         {
             builder.Property(i => i.Id).IsRequired();
-            builder.Property(i => i.street).IsRequired();
-            builder.Property(i => i.city).IsRequired();
+            builder.Property(i => i.Street).IsRequired();
+            builder.Property(i => i.City).IsRequired();
 
 
             builder.HasKey(i => i.Id);
@@ -20,7 +20,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .HasForeignKey(o => o.SellerId);
 
             builder.HasOne(p => p.Post)
-                .WithOne(pi => pi.pickupinfo)
+                .WithOne(pi => pi.Pickupinfo)
                 .HasForeignKey<PickupInfo>(pi => pi.PostId);
 
 
