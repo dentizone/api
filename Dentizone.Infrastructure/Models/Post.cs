@@ -31,6 +31,7 @@ namespace Dentizone.Infrastructure.Models
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
 
+
     }
 }
 

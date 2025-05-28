@@ -16,12 +16,10 @@ namespace Dentizone.Domain
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-
-
-        public virtual Wallet Wallet { get; set; }
-
         public string UniversityId { get; set; }
         public virtual University University { get; set; }
+        public virtual Wallet Wallet { get; set; }
+
         public virtual ICollection<Favourite> Favourites { get; set; }
 
         public virtual ICollection<UserAsset> UserAssets { get; set; } = new List<UserAsset>();
