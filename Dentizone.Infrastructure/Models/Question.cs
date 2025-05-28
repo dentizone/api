@@ -9,7 +9,7 @@ namespace Dentizone.Infrastructure.Models
         public string PostId { get; set; }
         public Post Post { get; set; }
         public string AskerId { get; set; }
-        public AppUser User { get; set; }
+        public virtual AppUser User { get; set; }
         public string Text { get; set; }
         public QuestionStatus Status { get; set; }
 
@@ -18,7 +18,7 @@ namespace Dentizone.Infrastructure.Models
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-        public Answer Answer { get; set; }
+        public virtual  Answer Answer { get; set; }
 
     }
 }

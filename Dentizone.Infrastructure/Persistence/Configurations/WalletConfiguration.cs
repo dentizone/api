@@ -50,5 +50,16 @@ internal class WalletConfiguration : IEntityTypeConfiguration<Wallet>
                .WithOne(wa => wa.Wallet)
                .HasForeignKey(wa => wa.WalletId);
 
+
+        builder.HasMany(w => w.SalesTransactions)
+               .WithOne(st => st.Wallet)
+               .HasForeignKey(st => st.WalletId);
+
+        // One-to-Many: Wallet to WithdrawalRequests
+        builder.HasMany(w => w.WithdrawalRequests)
+               .WithOne(wr => wr.Wallet)
+               .HasForeignKey(wr => wr.WalletId);
+
+
     }
 }

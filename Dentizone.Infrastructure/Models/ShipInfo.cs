@@ -8,9 +8,9 @@ namespace Dentizone.Infrastructure.Models
         public string Street { get; set; }
         public string City { get; set; }
         public string OrderId { get; set; }
-        public Order Order { get; set; }
+        public virtual Order Order { get; set; }
         public string UserId { get; set; }
-        public AppUser User { get; set; }
+        public virtual AppUser User { get; set; }
 
 
         public string Id { get; set; }

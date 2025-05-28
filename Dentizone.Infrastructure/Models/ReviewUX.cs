@@ -12,9 +12,9 @@ namespace Dentizone.Infrastructure.Models
 
 
         public string UserId { get; set; }
-        public AppUser User { get; set; }
+        public virtual AppUser User { get; set; }
 
-        public Order Order { get; set; }
+        public virtual  Order Order { get; set; }
         public string OrderId { get; set; }
 
         public string? Text { get; set; }
