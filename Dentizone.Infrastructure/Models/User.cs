@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Enums;
 using Dentizone.Infrastructure.Models;
@@ -24,14 +23,15 @@ namespace Dentizone.Domain
 
         public ICollection<UserAsset> UserAssets { get; set; } = new List<UserAsset>();
         public ICollection<UserActivity> UserActivities { get; set; } = new List<UserActivity>();
-        public ICollection<Post> Posts { get; set; }
+        public ICollection<Post> Posts { get; set; } = new List<Post>();
         public bool IsDeleted { get; set; }
 
-        public ICollection<Question> questions { get; set; }
+        public ICollection<Question> Questions { get; set; } = new List<Question>();
 
-        public ICollection<ShipInfo> ShippingAddresses {  get; set; }
+        public ICollection<ShipInfo> ShippingAddresses { get; set; } = new List<ShipInfo>();
+        public ICollection<PickupInfo> PickupInfos { get; set; } = new List<PickupInfo>();
 
-        public ICollection<Order> Orders { get; set; }
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }
 

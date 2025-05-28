@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,21 +8,24 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<PickupInfo> builder)
         {
-            builder.Property(i => i.id).IsRequired();
-            builder.Property(i => i.street).IsRequired();
-            builder.Property(i => i.city).IsRequired();
-            builder.Property(i => i.post_id).IsRequired();
-            builder.Property(i => i.created_at).IsRequired();
+            builder.Property(i => i.Id).IsRequired();
+            builder.Property(i => i.Street).IsRequired();
+            builder.Property(i => i.City).IsRequired();
 
-            builder.HasKey(i => i.id);
 
-            builder.HasOne(i => i.Post)
-                   .WithOne(p => p.pickupinfo)
-                   .HasForeignKey<PickupInfo>(i => i.post_id);
+            builder.HasKey(i => i.Id);
 
-            builder.HasOne(p => p.Order)
-                    .WithMany(o => o.PickupInfos)
-                    .HasForeignKey(p => p.order_id);
+            builder.HasOne(o => o.Seller)
+                .WithMany(o => o.PickupInfos)
+                .HasForeignKey(o => o.SellerId);
+
+            builder.HasOne(p => p.Post)
+                .WithOne(pi => pi.Pickupinfo)
+                .HasForeignKey<PickupInfo>(pi => pi.PostId);
+
+            builder.Property(i => i.SellerId).IsRequired();
+
+
 
 
         }

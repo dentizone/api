@@ -21,7 +21,7 @@ internal class UserAssetConfiguration : IEntityTypeConfiguration<UserAsset>
                .HasConversion<string>();
 
         builder.Property(ua => ua.CreatedAt)
-               .HasDefaultValueSql(SQLCommon.Date)
+               .HasDefaultValueSql(SqlCommon.Date)
                .ValueGeneratedOnAdd();
 
         builder.Property(ua => ua.UpdatedAt)

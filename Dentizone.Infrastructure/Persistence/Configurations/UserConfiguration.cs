@@ -31,7 +31,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                    .HasConversion<string>();
 
             builder.Property(u => u.CreatedAt)
-                   .HasDefaultValueSql(SQLCommon.Date)
+                   .HasDefaultValueSql(SqlCommon.Date)
                    .ValueGeneratedOnAdd();
 
 
@@ -54,15 +54,35 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                    .WithOne(ua => ua.User)
                    .HasForeignKey(ua => ua.UserId);
 
-            // One-to-Many: User to UserAssets
-            builder.HasMany(u => u.UserAssets)
-                   .WithOne(ua => ua.User)
-                   .HasForeignKey(ua => ua.UserId);
 
             // One-to-One: User to University
             builder.HasOne(u => u.University)
                    .WithMany(un => un.Users)
                    .HasForeignKey(u => u.UniversityId);
+
+            // One-to-Many: User to UserActivities
+            builder.HasMany(u => u.UserActivities)
+                   .WithOne(ua => ua.User)
+                   .HasForeignKey(ua => ua.UserId);
+            // One-to-Many: User to Posts
+            builder.HasMany(u => u.Posts)
+                   .WithOne(p => p.Seller)
+                   .HasForeignKey(p => p.SellerId);
+            // One-to-Many: User to Questions
+            builder.HasMany(u => u.Questions)
+                   .WithOne(q => q.User)
+                   .HasForeignKey(q => q.AskerId);
+
+            // One-to-Many: User to ShippingAddresses
+            builder.HasMany(u => u.ShippingAddresses)
+                   .WithOne(sa => sa.User)
+                   .HasForeignKey(sa => sa.UserId);
+
+            // One-to-Many: User to Orders
+            builder.HasMany(u => u.Orders)
+                   .WithOne(o => o.User)
+                   .HasForeignKey(o => o.BuyerId);
+
 
 
 

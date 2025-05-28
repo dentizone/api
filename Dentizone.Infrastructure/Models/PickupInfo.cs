@@ -1,23 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Dentizone.Application.Interfaces;
+using Dentizone.Domain;
 
 namespace Dentizone.Infrastructure.Models
 {
-    internal class PickupInfo
+    internal class PickupInfo : IBaseEntity
     {
-        public string id {  get; set; }
-        public string street { get; set; }
-        public string city { get; set; }
-        public string post_id { get; set; }
-        public Post Post { get; set; }
-        public DateTime created_at { get; set; }
-        public string order_id { get; set; }
-        public Order Order { get; set; }
 
-        public ICollection<OrderPickup> OrderPickups { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
 
+        public string SellerId { get; set; }
+        public AppUser Seller { get; set; }
+
+
+        public virtual Post Post { get; set; }
+        public string PostId { get; set; }
+
+        public string Id { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
