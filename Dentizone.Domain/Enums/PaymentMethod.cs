@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Dentizone.Domain.Enums
+﻿namespace Dentizone.Domain.Enums
 {
     public enum PaymentMethod
     {
         Card = 0,
-        Credit = 1,
+        COD = 1,
     }
 }
