@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Infrastructure.Persistence.Configurations
@@ -15,16 +10,23 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.ToTable(nameof(WalletActivity));
             builder.HasKey(wa => wa.Id);
             builder.Property(i => i.WalletId).IsRequired();
-            builder.Property(i=>i.ReferenceId).IsRequired();
-            builder.Property(i=>i.ReferenceType).IsRequired();
-            builder.Property(i=>i.ActivityType).IsRequired();
-            builder.Property(i=>i.CreatedAt).IsRequired();
+            builder.Property(wa => wa.ActivityType)
+                   .IsRequired(true);
+            builder.Property(wa => wa.Amount)
+                   .IsRequired()
+                   .HasColumnType("decimal(18, 4)");
+
+            builder.Property(i => i.Description).HasColumnType("text").IsRequired(false);
+            builder.Property(i => i.ReferenceId).IsRequired();
+            builder.Property(i => i.ReferenceType).IsRequired();
+            builder.Property(i => i.ActivityType).IsRequired();
+            builder.Property(i => i.CreatedAt).IsRequired();
             builder.HasOne(c => c.Wallet)
                 .WithMany(c => c.WalletActivities)
                 .HasForeignKey(c => c.WalletId);
-            
 
-                
+
+
         }
     }
 }
