@@ -54,15 +54,35 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                    .WithOne(ua => ua.User)
                    .HasForeignKey(ua => ua.UserId);
 
-            // One-to-Many: User to UserAssets
-            builder.HasMany(u => u.UserAssets)
-                   .WithOne(ua => ua.User)
-                   .HasForeignKey(ua => ua.UserId);
 
             // One-to-One: User to University
             builder.HasOne(u => u.University)
                    .WithMany(un => un.Users)
                    .HasForeignKey(u => u.UniversityId);
+
+            // One-to-Many: User to UserActivities
+            builder.HasMany(u => u.UserActivities)
+                   .WithOne(ua => ua.User)
+                   .HasForeignKey(ua => ua.UserId);
+            // One-to-Many: User to Posts
+            builder.HasMany(u => u.Posts)
+                   .WithOne(p => p.Seller)
+                   .HasForeignKey(p => p.SellerId);
+            // One-to-Many: User to Questions
+            builder.HasMany(u => u.questions)
+                   .WithOne(q => q.user)
+                   .HasForeignKey(q => q.asker_id);
+
+            // One-to-Many: User to ShippingAddresses
+            builder.HasMany(u => u.ShippingAddresses)
+                   .WithOne(sa => sa.user)
+                   .HasForeignKey(sa => sa.user_id);
+
+            // One-to-Many: User to Orders
+            builder.HasMany(u => u.Orders)
+                   .WithOne(o => o.user)
+                   .HasForeignKey(o => o.buyer_id);
+
 
 
 

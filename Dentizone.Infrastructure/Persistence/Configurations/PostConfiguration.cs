@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Dentizone.Infrastructure.Persistence.Configurations
 {
@@ -38,7 +32,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             builder.Property(p => p.status)
                 .IsRequired();
-            builder.Property(p => p.seller_id)
+            builder.Property(p => p.SellerId)
                 .IsRequired();
             builder.Property(p => p.item_id)
                 .IsRequired();
@@ -55,7 +49,18 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.Property(p => p.IsDeleted)
                 .IsRequired();
 
-    
+
+            // Every post must have a pickup info, only one
+
+            builder.HasOne(p => p.pickupinfo)
+                   .WithOne(pi => pi.Post)
+                     .HasForeignKey<PickupInfo>(pi => pi.PostId);
+            // Every post must have a seller, only one
+            builder.HasOne(p => p.Seller)
+                   .WithMany(u => u.Posts)
+                   .HasForeignKey(p => p.SellerId);
+
+
 
         }
     }

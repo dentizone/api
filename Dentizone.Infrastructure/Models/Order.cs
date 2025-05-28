@@ -18,7 +18,6 @@ namespace Dentizone.Infrastructure.Models
         public ShipInfo ShipInfo { get; set; }
 
 
-        // @Nouran: Every order has Many Order Pickups
         public ICollection<OrderPickup> OrderPickups { get; set; } = new List<OrderPickup>();
 
         public string Id { get; set; }
