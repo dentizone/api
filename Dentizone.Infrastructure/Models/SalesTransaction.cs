@@ -1,4 +1,5 @@
 ﻿using Dentizone.Application.Interfaces;
+using Dentizone.Domain.Enums;
 
 namespace Dentizone.Infrastructure.Models
 {

@@ -20,8 +20,11 @@ namespace Dentizone.Infrastructure.Models
         public string UserId { get; set; }
         public bool IsDeleted { get; set; }
 
-        public ICollection<WalletActivity> WalletActivities { get; set; } = new List<WalletActivity>();
-        public ICollection<SalesTransaction> SalesTransactions { get; set; } = new List<SalesTransaction>();
+        public virtual ICollection<WalletActivity> WalletActivities { get; set; } = new List<WalletActivity>();
+        public virtual ICollection<SalesTransaction> SalesTransactions { get; set; } = new List<SalesTransaction>();
+
+        public virtual ICollection<WithdrawalRequest> WithdrawalRequests { get; set; } = new List<WithdrawalRequest>();
+
 
     }
 }
