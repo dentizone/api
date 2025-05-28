@@ -1,13 +1,12 @@
 ﻿using Dentizone.Application.Interfaces;
 using Dentizone.Domain;
-using Dentizone.Domain.Enums;
 
 namespace Dentizone.Infrastructure.Models
 {
     internal class Order : IBaseEntity
     {
         public string BuyerId { get; set; }
-        public AppUser User { get; set; }
+        public AppUser Buyer { get; set; }
         public OrderStatus Status { get; set; }
         public DateTime PlacedAt { get; set; }
 
@@ -18,6 +17,8 @@ namespace Dentizone.Infrastructure.Models
 
 
         public virtual ICollection<OrderPickup> OrderPickups { get; set; } = new List<OrderPickup>();
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public virtual ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
 
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
