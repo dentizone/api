@@ -24,7 +24,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .HasConversion<string>();
 
 
-            builder.HasOne(sale => sale.PaymentId);
+            builder.HasOne(sale => sale.Payment)
+                   .WithMany(payment => payment.SalesTransactions);
 
 
             builder

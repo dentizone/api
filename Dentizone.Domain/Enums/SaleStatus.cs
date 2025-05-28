@@ -1,4 +1,5 @@
-﻿namespace Dentizone.Infrastructure.Models;
+﻿namespace Dentizone.Domain.Enums;
+
 
 public enum SaleStatus
 {

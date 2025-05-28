@@ -20,11 +20,9 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
 
             builder.Property(r => r.Text)
-                   .IsRequired()
                    .HasMaxLength(100);
 
             builder.Property(r => r.Stars)
-                   .IsRequired()
                    .HasDefaultValue(5);
 
 
