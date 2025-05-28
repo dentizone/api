@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Dentizone.Application.Interfaces;
 
 namespace Dentizone.Infrastructure.Models
 {
-    internal class PickupInfo
+    internal class PickupInfo : IBaseEntity
     {
-        public string id {  get; set; }
+
         public string street { get; set; }
         public string city { get; set; }
         public string post_id { get; set; }
@@ -17,7 +13,10 @@ namespace Dentizone.Infrastructure.Models
         public string order_id { get; set; }
         public Order Order { get; set; }
 
-        public ICollection<OrderPickup> OrderPickups { get; set; }
-
+        public ICollection<OrderPickup> OrderPickups { get; set; } = new List<OrderPickup>();
+        public string Id { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

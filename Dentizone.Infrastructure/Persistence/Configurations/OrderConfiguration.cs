@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,7 +8,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.HasKey(o => o.id);
+            builder.HasKey(o => o.Id);
 
             builder.Property(o => o.buyer_id).IsRequired();
             builder.Property(o => o.status).IsRequired();
@@ -22,9 +17,17 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.Property(o => o.total_amount).IsRequired();
             builder.Property(o => o.updated_at).IsRequired();
 
+            builder.Property(o => o.completed_at).IsRequired(false);
+            builder.Property(o => o.CreatedAt).IsRequired();
+
+
             builder.HasOne(o => o.user)
                 .WithMany(u => u.Orders)
                 .HasForeignKey(o => o.buyer_id);
+
+            builder.HasMany(o => o.OrderPickups)
+                   .WithOne(op => op.order)
+                   .HasForeignKey(op => op.order_id);
         }
     }
 }
