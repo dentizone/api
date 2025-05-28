@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Dentizone.Infrastructure.Persistence.Configurations
 {
-    internal class Reviewconfiguration : IEntityTypeConfiguration<Review>
+    internal class ReviewConfiguration : IEntityTypeConfiguration<Review>
     {
         public void Configure(EntityTypeBuilder<Review> builder)
         {
@@ -28,15 +23,14 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(r => r.Text)
-                .HasColumnType("text");
+                   .HasColumnType("text");
 
-            builder.Property(r => r.CreatedAt)
-                .IsRequired()
-                .HasColumnType("timestamp");
+            builder.Property(r => r.IsDeleted)
+                     .HasDefaultValue(false);
 
-            builder.Property(r => r.UpdatedAt)
-                .IsRequired()
-                .HasColumnType("timestamp");
+            builder.Property(r => r.CreatedAt);
+
+            builder.Property(r => r.UpdatedAt);
 
 
             builder.HasOne(r => r.User)
