@@ -24,10 +24,6 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
 
 
-            builder.HasOne(op => op.Pickup)
-                .WithMany(p => p.OrderPickups)
-                .HasForeignKey(op => op.PickupId);
-
         }
     }
 }
