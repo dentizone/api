@@ -21,5 +21,7 @@ namespace Dentizone.Infrastructure.Models
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
+        public Answer Answer { get; set; }
+
     }
 }

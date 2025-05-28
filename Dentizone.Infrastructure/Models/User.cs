@@ -20,6 +20,7 @@ namespace Dentizone.Domain
 
         public string UniversityId { get; set; }
         public virtual University University { get; set; }
+        public virtual ICollection<Favourite> Favourites { get; set; }
 
         public ICollection<UserAsset> UserAssets { get; set; } = new List<UserAsset>();
         public ICollection<UserActivity> UserActivities { get; set; } = new List<UserActivity>();
@@ -30,8 +31,9 @@ namespace Dentizone.Domain
 
         public ICollection<ShipInfo> ShippingAddresses { get; set; } = new List<ShipInfo>();
         public ICollection<PickupInfo> PickupInfos { get; set; } = new List<PickupInfo>();
-
+        public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }
 
