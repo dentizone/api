@@ -25,7 +25,7 @@ namespace Dentizone.Infrastructure.Models
         public virtual AppUser Seller { get; set; }
         public string SellerId { get; set; }
 
-        public ICollection<Question> Questions { get; set; }
+        public ICollection<Question> Questions { get; set; } = new List<Question>();
 
 
     }

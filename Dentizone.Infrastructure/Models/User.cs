@@ -26,7 +26,7 @@ namespace Dentizone.Domain
         public ICollection<Post> Posts { get; set; } = new List<Post>();
         public bool IsDeleted { get; set; }
 
-        public ICollection<Question> Questions { get; set; }
+        public ICollection<Question> Questions { get; set; } = new List<Question>();
 
         public ICollection<ShipInfo> ShippingAddresses { get; set; } = new List<ShipInfo>();
         public ICollection<PickupInfo> PickupInfos { get; set; } = new List<PickupInfo>();
