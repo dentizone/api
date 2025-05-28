@@ -11,14 +11,21 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.HasKey(o => o.Id);
 
             builder.Property(o => o.BuyerId).IsRequired();
-            builder.Property(o => o.Status).IsRequired();
-            builder.Property(o => o.PlacedAt).IsRequired();
             builder.Property(o => o.CommissionAmount).IsRequired();
             builder.Property(o => o.TotalAmount).IsRequired();
             builder.Property(o => o.UpdatedAt).IsRequired();
 
             builder.Property(o => o.CompletedAt).IsRequired(false);
             builder.Property(o => o.CreatedAt).IsRequired();
+
+            builder.Property(o => o.IsDeleted)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            builder.HasOne(o => o.ShipInfo)
+                   .WithOne(si => si.Order)
+                   .HasForeignKey<Order>(o => o.ShipInfoId);
+
 
 
             builder.HasOne(o => o.Buyer)

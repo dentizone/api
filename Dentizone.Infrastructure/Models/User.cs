@@ -22,18 +22,22 @@ namespace Dentizone.Domain
         public virtual University University { get; set; }
         public virtual ICollection<Favourite> Favourites { get; set; }
 
-        public ICollection<UserAsset> UserAssets { get; set; } = new List<UserAsset>();
-        public ICollection<UserActivity> UserActivities { get; set; } = new List<UserActivity>();
-        public ICollection<Post> Posts { get; set; } = new List<Post>();
+        public virtual ICollection<UserAsset> UserAssets { get; set; } = new List<UserAsset>();
+        public virtual ICollection<UserActivity> UserActivities { get; set; } = new List<UserActivity>();
+        public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
         public bool IsDeleted { get; set; }
 
-        public ICollection<Question> Questions { get; set; } = new List<Question>();
+        public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
 
-        public ICollection<ShipInfo> ShippingAddresses { get; set; } = new List<ShipInfo>();
-        public ICollection<PickupInfo> PickupInfos { get; set; } = new List<PickupInfo>();
+        public virtual ICollection<ShipInfo> ShippingAddresses { get; set; } = new List<ShipInfo>();
+        public virtual ICollection<PickupInfo> PickupInfos { get; set; } = new List<PickupInfo>();
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
-        public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
+        public virtual ICollection<ReviewUx> UXReviews { get; set; } = new List<ReviewUx>();
+
+
     }
 }
 
