@@ -1,6 +1,5 @@
 ﻿using Dentizone.Application.Interfaces;
 using Dentizone.Domain;
-using Dentizone.Domain.Enums;
 
 namespace Dentizone.Infrastructure.Models
 {
@@ -19,6 +18,7 @@ namespace Dentizone.Infrastructure.Models
 
         public virtual ICollection<OrderPickup> OrderPickups { get; set; } = new List<OrderPickup>();
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public virtual ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
 
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
