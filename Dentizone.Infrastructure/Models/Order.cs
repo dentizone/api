@@ -20,10 +20,7 @@ namespace Dentizone.Infrastructure.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
-
-        public virtual ReviewUx UXReview { get; set; }
-
-
-
+        public virtual Review Review { get; set; }
+        public virtual ICollection<ShipmentActivity> ShipmentActivities { get; set; }
     }
 }
