@@ -23,7 +23,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .WithOne(pi => pi.Pickupinfo)
                 .HasForeignKey<PickupInfo>(pi => pi.PostId);
 
-
+            builder.Property(i => i.SellerId).IsRequired();
 
 
 
