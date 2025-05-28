@@ -6,6 +6,8 @@ namespace Dentizone.Infrastructure.Models
 {
     internal class Wallet: IBaseEntity
     {
+        internal object withdrawalRequest;
+
         public string Id { get; set; }
 
 
@@ -21,6 +23,8 @@ namespace Dentizone.Infrastructure.Models
         public bool IsDeleted { get; set; }
 
         public ICollection<WalletActivity> WalletActivities { get; set; } = new List<WalletActivity>();
-      
+        public ICollection<WithdrawalRequest> WithdrawalRequests { get; set; } = new List<WithdrawalRequest>();
+        public virtual WithdrawalRequestStatus WithdrawalRequestStatus { get; set; }
+
     }
 }

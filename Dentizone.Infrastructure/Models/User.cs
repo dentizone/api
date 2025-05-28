@@ -16,6 +16,8 @@ namespace Dentizone.Domain
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
+       public Post post { get; set; }
+
 
         public virtual Wallet Wallet { get; set; }
 
@@ -26,6 +28,7 @@ namespace Dentizone.Domain
         public ICollection<UserActivity> UserActivities { get; set; } = new List<UserActivity>();
         public ICollection<Post> Posts { get; set; }
         public bool IsDeleted { get; set; }
+        public WithdrawalRequest withdrawalRequest { get; set; }
     }
 }
 

@@ -30,7 +30,10 @@ namespace Dentizone.Infrastructure.Models
        // public PickupInfo pickupinfo {get; set;}
        public AppUser user { get; set; }
 
-
+        // public ICollection<Questions> questions { get; set; } = new List<Questions>();
+        //public ICollection<PostAssets> postAssets { get; set; } = new List<PostAssets>();
+        public Item item { get; set; }
+        public object PostAssets { get; internal set; }
     }
 }
 

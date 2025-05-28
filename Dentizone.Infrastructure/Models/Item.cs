@@ -20,5 +20,7 @@ namespace Dentizone.Infrastructure.Models
         public DateTime CreatedAt { get; set ; }
         public DateTime UpdatedAt { get; set ; }
         public bool IsDeleted { get; set; }
+        public ICollection<Post> Posts { get; set; } = new List<Post>();
+        public Post Post { get; set; }
     }
 }
