@@ -22,6 +22,6 @@ namespace Dentizone.Infrastructure.Models
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
         public Review Review { get; set; }
-
+        public ICollection<ShipmentActivity> ShipmentActivities { get; set; }
     }
 }
