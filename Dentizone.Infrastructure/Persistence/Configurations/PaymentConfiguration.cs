@@ -41,9 +41,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasDefaultValue(false);
 
-            builder.Property(p => p.ProcessedAt)
-                .HasDefaultValueSql(SqlCommon.Date)
-                .ValueGeneratedOnAdd();
+            builder.Property(p => p.ProcessedAt);
 
             builder.HasOne(p => p.Buyer)
                 .WithMany(u => u.Payments)
