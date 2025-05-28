@@ -4,7 +4,7 @@ using Dentizone.Domain.Enums;
 
 namespace Dentizone.Infrastructure.Models
 {
-    internal class Wallet: IBaseEntity
+    internal class Wallet : IBaseEntity
     {
         public string Id { get; set; }
 
@@ -21,6 +21,7 @@ namespace Dentizone.Infrastructure.Models
         public bool IsDeleted { get; set; }
 
         public ICollection<WalletActivity> WalletActivities { get; set; } = new List<WalletActivity>();
-      
+        public ICollection<SalesTransaction> SalesTransactions { get; set; } = new List<SalesTransaction>();
+
     }
 }
