@@ -11,10 +11,7 @@ namespace Dentizone.Infrastructure.Models
         public string AskerId { get; set; }
         public AppUser User { get; set; }
         public string Text { get; set; }
-        public DateTime AddedAt { get; set; }
         public QuestionStatus Status { get; set; }
-
-        // public Answer answer { get; set; }
 
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
