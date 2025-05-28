@@ -18,6 +18,7 @@ namespace Dentizone.Infrastructure.Models
 
 
         public virtual ICollection<OrderPickup> OrderPickups { get; set; } = new List<OrderPickup>();
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
