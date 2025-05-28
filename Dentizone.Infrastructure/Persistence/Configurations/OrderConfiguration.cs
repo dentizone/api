@@ -21,7 +21,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.Property(o => o.CreatedAt).IsRequired();
 
 
-            builder.HasOne(o => o.User)
+            builder.HasOne(o => o.Buyer)
                 .WithMany(u => u.Orders)
                 .HasForeignKey(o => o.BuyerId);
 

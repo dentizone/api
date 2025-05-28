@@ -7,7 +7,7 @@ namespace Dentizone.Infrastructure.Models
     internal class Order : IBaseEntity
     {
         public string BuyerId { get; set; }
-        public AppUser User { get; set; }
+        public AppUser Buyer { get; set; }
         public OrderStatus Status { get; set; }
         public DateTime PlacedAt { get; set; }
 

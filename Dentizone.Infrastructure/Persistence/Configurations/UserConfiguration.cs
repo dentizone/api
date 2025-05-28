@@ -80,7 +80,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             // One-to-Many: User to Orders
             builder.HasMany(u => u.Orders)
-                   .WithOne(o => o.User)
+                   .WithOne(o => o.Buyer)
                    .HasForeignKey(o => o.BuyerId);
 
 
