@@ -7,6 +7,8 @@ namespace Dentizone.Domain.Interfaces
     {
         string Id { get; set; }
         string FullName { get; set; }
+
+        string Username { get; set; }
         int AcademicYear { get; set; }
         long? NationalId { get; set; }
         KycStatus KycStatus { get; set; }

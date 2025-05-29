@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Dentizone.Domain.Entity;
+using Dentizone.Infrastructure.Identity;
 
 namespace Dentizone.Infrastructure
 {
