@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\NewFolder\" />
+    <Folder Include="DTOs\Cart\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
