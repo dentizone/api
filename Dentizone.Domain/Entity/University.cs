@@ -1,5 +1,4 @@
 ﻿using Dentizone.Domain.Interfaces;
-using AppUser = Dentizone.Domain.Entity.AppUser;
 
 namespace Dentizone.Domain.Entity
 {

@@ -4,7 +4,7 @@
     {
         Task<TEntity> GetByIdAsync(int id);
         Task<IEnumerable<TEntity>> GetAllAsync(int page = 1);
-        Task<TEntity> CreateAsync<TC>(TC entity);
+        Task<TEntity> CreateAsync(TEntity entity);
         Task<TEntity> DeleteAsync(int id);
     }
 }
