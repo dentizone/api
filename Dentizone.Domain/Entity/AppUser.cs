@@ -6,6 +6,7 @@ namespace Dentizone.Domain.Entity
     public class AppUser : IAppUser
     {
         public string FullName { get; set; }
+        public string Username { get; set; }
         public int AcademicYear { get; set; }
         public long? NationalId { get; set; }
         public KycStatus KycStatus { get; set; }
