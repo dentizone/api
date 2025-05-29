@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Dentizone.Application.Constants;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Application.Constants;
 
 namespace Dentizone.Application.Abstracts
 {
@@ -8,7 +6,7 @@ namespace Dentizone.Application.Abstracts
     {
         protected readonly int DefaultPageSize = Pagination.DefaultPageSize;
 
-        public AbstractRepository(IMapper mapper)
+        public AbstractRepository()
         {
         }
 
