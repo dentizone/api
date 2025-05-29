@@ -59,7 +59,10 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.HasOne(p => p.Seller)
                    .WithMany(u => u.Posts)
                    .HasForeignKey(p => p.SellerId);
-
+            // Every post has one item, only one, and every item appears in one post, only one
+            builder.HasOne(p => p.Item)
+                   .WithOne(i => i.Post)
+                   .HasForeignKey<Item>(i => i.Id);
 
 
         }

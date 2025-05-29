@@ -27,6 +27,7 @@ namespace Dentizone.Infrastructure.Models
         public virtual ICollection<Favourite> Favourites { get; set; }
         public virtual ICollection<PostAsset> PostAssets { get; set; } = new List<PostAsset>();
         public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
+        public virtual Item Item { get; set; }
 
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 

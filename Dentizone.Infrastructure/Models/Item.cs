@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Interfaces;
+﻿using Dentizone.Application.Interfaces;
 
 namespace Dentizone.Infrastructure.Models
 {
@@ -17,6 +12,8 @@ namespace Dentizone.Infrastructure.Models
 
         public virtual Category Category { get; set; }
         public virtual SubCategory SubCategory { get; set; }
+
+        public virtual Post Post { get; set; }
         public DateTime CreatedAt { get; set ; }
         public DateTime UpdatedAt { get; set ; }
         public bool IsDeleted { get; set; }
