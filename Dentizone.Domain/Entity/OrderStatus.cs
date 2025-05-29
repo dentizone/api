@@ -10,7 +10,7 @@ namespace Dentizone.Domain.Entity
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-        public int OrderId { get; set; }
+        public string OrderId { get; set; }
         public virtual Order Order { get; set; }
         public OrderStatues Status { get; set; }
 
