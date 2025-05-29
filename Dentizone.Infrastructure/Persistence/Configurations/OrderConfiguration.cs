@@ -15,7 +15,6 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.Property(o => o.TotalAmount).IsRequired();
             builder.Property(o => o.UpdatedAt).IsRequired();
 
-            builder.Property(o => o.CompletedAt).IsRequired(false);
             builder.Property(o => o.CreatedAt).IsRequired();
 
             builder.Property(o => o.IsDeleted)
