@@ -21,7 +21,7 @@ namespace Dentizone.Domain.Entity
 
         public virtual PickupInfo Pickupinfo { get; set; }
 
-        public virtual IAppUser Seller { get; set; }
+        public virtual AppUser Seller { get; set; }
         public virtual ICollection<Favourite> Favourites { get; set; }
         public virtual ICollection<PostAsset> PostAssets { get; set; } = new List<PostAsset>();
         public virtual ICollection<Question> Questions { get; set; } = new List<Question>();

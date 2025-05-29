@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Domain.Entity;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces;
-using Microsoft.AspNetCore.Identity;
 
-namespace Dentizone.Infrastructure.Identity
+namespace Dentizone.Domain.Entity
 {
-    internal class AppDbUser : IdentityUser, IAppUser
+    public class AppUser : IAppUser
     {
         public string FullName { get; set; }
         public int AcademicYear { get; set; }
@@ -35,5 +28,6 @@ namespace Dentizone.Infrastructure.Identity
         public ICollection<Payment> Payments { get; set; }
         public ICollection<ReviewUx> UXReviews { get; set; }
         public ICollection<Review> Reviews { get; set; }
+        public string Id { get; set; }
     }
 }

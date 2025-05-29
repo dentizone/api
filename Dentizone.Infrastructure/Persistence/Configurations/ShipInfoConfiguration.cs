@@ -19,11 +19,13 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             builder.HasOne(s => s.User)
                 .WithMany(u => u.ShippingAddresses)
-                .HasForeignKey(s => s.UserId);
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(s => s.Order)
                 .WithOne(o => o.ShipInfo)
-                .HasForeignKey<ShipInfo>(s => s.OrderId);
+                .HasForeignKey<ShipInfo>(s => s.OrderId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

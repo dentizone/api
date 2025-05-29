@@ -13,7 +13,7 @@ namespace Dentizone.Domain.Entity
         public bool IsDeleted { get; set; }
 
         // Navigation properties
-        public virtual IAppUser User { get; set; }
+        public virtual AppUser User { get; set; }
         public virtual Post Post { get; set; }
     }
 }

@@ -20,11 +20,14 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             builder.HasOne(q => q.User)
                 .WithMany(u => u.Questions)
-                .HasForeignKey(q => q.AskerId);
+                .HasForeignKey(q => q.AskerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             builder.HasOne(q => q.Post)
                 .WithMany(p => p.Questions)
-                .HasForeignKey(q => q.PostId);
+                .HasForeignKey(q => q.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

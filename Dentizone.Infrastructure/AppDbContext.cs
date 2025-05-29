@@ -1,14 +1,12 @@
 ﻿using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Dentizone.Domain.Entity;
 
 namespace Dentizone.Infrastructure
 {
-    internal class AppDbContext : IdentityDbContext<AppDbUser>
+    internal class AppDbContext : DbContext
     {
-        public DbSet<AppDbUser> AppUsers { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Category> Categories { get; set; }

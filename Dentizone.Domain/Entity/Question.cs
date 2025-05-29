@@ -1,5 +1,6 @@
 ﻿using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces;
+using AppUser = Dentizone.Domain.Entity.AppUser;
 
 namespace Dentizone.Domain.Entity
 {
@@ -8,7 +9,7 @@ namespace Dentizone.Domain.Entity
         public string PostId { get; set; }
         public Post Post { get; set; }
         public string AskerId { get; set; }
-        public virtual IAppUser User { get; set; }
+        public virtual AppUser User { get; set; }
         public string Text { get; set; }
         public QuestionStatus Status { get; set; }
 

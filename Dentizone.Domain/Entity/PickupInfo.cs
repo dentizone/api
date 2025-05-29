@@ -8,7 +8,7 @@ namespace Dentizone.Domain.Entity
         public string City { get; set; }
 
         public string SellerId { get; set; }
-        public IAppUser Seller { get; set; }
+        public AppUser Seller { get; set; }
 
 
         public virtual Post Post { get; set; }

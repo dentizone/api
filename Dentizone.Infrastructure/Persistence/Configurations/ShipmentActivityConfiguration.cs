@@ -40,7 +40,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             builder.HasOne(sa => sa.Order)
                 .WithMany(o => o.ShipmentActivities)
-                .HasForeignKey(sa => sa.OrderId);
+                .HasForeignKey(sa => sa.OrderId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

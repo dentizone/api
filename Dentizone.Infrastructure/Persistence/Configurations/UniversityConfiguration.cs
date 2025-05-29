@@ -41,7 +41,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             // One-to-Many: University to Users
             builder.HasMany(u => u.Users)
                 .WithOne(usr => usr.University)
-                .HasForeignKey(usr => usr.UniversityId);
+                .HasForeignKey(usr => usr.UniversityId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

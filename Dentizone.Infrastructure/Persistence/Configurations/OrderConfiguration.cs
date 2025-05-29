@@ -15,7 +15,6 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.Property(o => o.TotalAmount).IsRequired();
             builder.Property(o => o.UpdatedAt).IsRequired();
 
-            builder.Property(o => o.CompletedAt).IsRequired(false);
             builder.Property(o => o.CreatedAt).IsRequired();
 
             builder.Property(o => o.IsDeleted)
@@ -25,6 +24,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.HasOne(o => o.ShipInfo)
                 .WithOne(si => si.Order)
                 .HasForeignKey<Order>(o => o.ShipInfoId);
+
+            builder.Property(p => p.CompletedAt).IsRequired(false);
 
 
             builder.HasOne(o => o.Buyer)

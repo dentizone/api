@@ -11,8 +11,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.HasKey(a => a.Id);
 
             builder.Property(a => a.QuestionId)
-                .IsRequired()
-                .HasMaxLength(50);
+                .IsRequired();
 
             builder.Property(a => a.Text)
                 .IsRequired()
