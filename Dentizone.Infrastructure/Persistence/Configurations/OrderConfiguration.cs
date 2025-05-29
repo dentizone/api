@@ -26,6 +26,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .WithOne(si => si.Order)
                 .HasForeignKey<Order>(o => o.ShipInfoId);
 
+            builder.Property(p => p.CompletedAt).IsRequired(false);
+
 
             builder.HasOne(o => o.Buyer)
                 .WithMany(u => u.Orders)

@@ -1,5 +1,6 @@
 ﻿using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces;
+using AppUser = Dentizone.Domain.Entity.AppUser;
 
 namespace Dentizone.Domain.Entity
 {
@@ -18,7 +19,7 @@ namespace Dentizone.Domain.Entity
         public bool IsDeleted { get; set; }
 
         // Navigation properties
-        public virtual IAppUser Buyer { get; set; }
+        public virtual AppUser Buyer { get; set; }
         public virtual Order Order { get; set; }
 
         public virtual ICollection<SalesTransaction> SalesTransactions { get; set; } = new List<SalesTransaction>();

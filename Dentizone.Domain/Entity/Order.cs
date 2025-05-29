@@ -5,10 +5,10 @@ namespace Dentizone.Domain.Entity
     public class Order : IBaseEntity
     {
         public string BuyerId { get; set; }
-        public IAppUser Buyer { get; set; }
+        public AppUser Buyer { get; set; }
         public decimal CommissionAmount { get; set; }
         public decimal TotalAmount { get; set; }
-        public DateTime CompletedAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
         public virtual ShipInfo ShipInfo { get; set; }
         public string ShipInfoId { get; set; }
         public virtual ICollection<OrderPickup> OrderPickups { get; set; } = new List<OrderPickup>();

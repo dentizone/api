@@ -53,15 +53,20 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             builder.HasOne(p => p.Pickupinfo)
                 .WithOne(pi => pi.Post)
-                .HasForeignKey<PickupInfo>(pi => pi.PostId);
+                .HasForeignKey<PickupInfo>(pi => pi.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // Every post must have a seller, only one
             builder.HasOne(p => p.Seller)
                 .WithMany(u => u.Posts)
-                .HasForeignKey(p => p.SellerId);
+                .HasForeignKey(p => p.SellerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // Every post has one item, only one, and every item appears in one post, only one
             builder.HasOne(p => p.Item)
                 .WithOne(i => i.Post)
-                .HasForeignKey<Item>(i => i.Id);
+                .HasForeignKey<Item>(i => i.Id)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

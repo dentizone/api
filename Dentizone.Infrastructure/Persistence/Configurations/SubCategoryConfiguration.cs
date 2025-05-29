@@ -33,7 +33,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             // Many-to-One: SubCategory appears in manyt Category
             builder.HasOne(sc => sc.Category)
                 .WithMany(c => c.SubCategories)
-                .HasForeignKey(sc => sc.CategoryId);
+                .HasForeignKey(sc => sc.CategoryId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

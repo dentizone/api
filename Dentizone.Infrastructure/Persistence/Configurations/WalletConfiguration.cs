@@ -47,16 +47,19 @@ internal class WalletConfiguration : IEntityTypeConfiguration<Wallet>
         // One-to-Many: Wallet to WalletActivities
         builder.HasMany(w => w.WalletActivities)
             .WithOne(wa => wa.Wallet)
-            .HasForeignKey(wa => wa.WalletId);
+            .HasForeignKey(wa => wa.WalletId)
+            .OnDelete(DeleteBehavior.NoAction);
 
 
         builder.HasMany(w => w.SalesTransactions)
             .WithOne(st => st.Wallet)
-            .HasForeignKey(st => st.WalletId);
+            .HasForeignKey(st => st.WalletId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         // One-to-Many: Wallet to WithdrawalRequests
         builder.HasMany(w => w.WithdrawalRequests)
             .WithOne(wr => wr.Wallet)
-            .HasForeignKey(wr => wr.WalletId);
+            .HasForeignKey(wr => wr.WalletId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

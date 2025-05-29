@@ -10,7 +10,7 @@ namespace Dentizone.Domain.Entity
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
-        public virtual IAppUser User { get; set; }
+        public virtual AppUser User { get; set; }
         public virtual Post Post { get; set; }
     }
 }

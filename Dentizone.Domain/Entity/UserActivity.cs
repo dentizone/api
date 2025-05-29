@@ -16,7 +16,7 @@ namespace Dentizone.Domain.Entity
         public string IpAddress { get; set; }
 
 
-        public virtual IAppUser User { get; set; }
+        public virtual AppUser User { get; set; }
         public string UserId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

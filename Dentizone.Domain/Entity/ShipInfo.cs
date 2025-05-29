@@ -9,7 +9,7 @@ namespace Dentizone.Domain.Entity
         public string OrderId { get; set; }
         public virtual Order Order { get; set; }
         public string UserId { get; set; }
-        public virtual IAppUser User { get; set; }
+        public virtual AppUser User { get; set; }
 
 
         public string Id { get; set; }

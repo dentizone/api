@@ -15,7 +15,7 @@ namespace Dentizone.Domain.Entity
 
 
         // Relationship: One Wallet to One User
-        public virtual IAppUser User { get; set; }
+        public virtual AppUser User { get; set; }
         public string UserId { get; set; }
         public bool IsDeleted { get; set; }
 

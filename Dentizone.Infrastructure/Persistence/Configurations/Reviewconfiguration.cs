@@ -35,11 +35,14 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             builder.HasOne(r => r.User)
                 .WithMany(u => u.Reviews)
-                .HasForeignKey(r => r.UserId);
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             builder.HasOne(r => r.Order)
                 .WithOne(o => o.Review)
-                .HasForeignKey<Review>(r => r.OrderId);
+                .HasForeignKey<Review>(r => r.OrderId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

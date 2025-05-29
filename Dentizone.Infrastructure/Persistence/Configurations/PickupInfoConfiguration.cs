@@ -17,11 +17,13 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             builder.HasOne(o => o.Seller)
                 .WithMany(o => o.PickupInfos)
-                .HasForeignKey(o => o.SellerId);
+                .HasForeignKey(o => o.SellerId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(p => p.Post)
                 .WithOne(pi => pi.Pickupinfo)
-                .HasForeignKey<PickupInfo>(pi => pi.PostId);
+                .HasForeignKey<PickupInfo>(pi => pi.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Property(i => i.SellerId).IsRequired();
         }
