@@ -1,4 +1,5 @@
-﻿using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Enums;
+using Dentizone.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

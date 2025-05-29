@@ -17,4 +17,8 @@
     <Folder Include="Middlewares\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Dentizone.Infrastructure\Dentizone.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

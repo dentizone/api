@@ -1,4 +1,4 @@
-
+using Dentizone.Infrastructure.DependencyInjection;
 namespace Dentizone.Presentaion
 {
     public class Program
@@ -12,6 +12,8 @@ namespace Dentizone.Presentaion
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            builder.Services.AddSQLServer(builder.Configuration);
 
             var app = builder.Build();
 

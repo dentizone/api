@@ -46,7 +46,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                    .HasForeignKey(r => r.UserId);
 
             builder.HasOne(r => r.Order)
-                   .WithOne(r => r.UXReview)
+                   .WithOne(r => r.ReviewUx)
                    .HasForeignKey<ReviewUx>(r => r.OrderId);
 
 

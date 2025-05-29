@@ -14,7 +14,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                      builder.Property(i => i.PostId).IsRequired();
                      builder.Property(i => i.AskerId).IsRequired();
                      builder.Property(i => i.Text).IsRequired();
-                     builder.Property(i => i.AddedAt).IsRequired();
+                     builder.Property(i => i.CreatedAt).IsRequired();
                      builder.Property(i => i.Status).IsRequired();
                      builder.Property(i => i.IsDeleted).IsRequired();
 
