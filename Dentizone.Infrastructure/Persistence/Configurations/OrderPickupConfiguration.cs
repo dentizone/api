@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,11 +19,6 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.HasOne(op => op.Order)
                 .WithMany(o => o.OrderPickups)
                 .HasForeignKey(op => op.OrderId);
-
-
-
-
-
         }
     }
 }

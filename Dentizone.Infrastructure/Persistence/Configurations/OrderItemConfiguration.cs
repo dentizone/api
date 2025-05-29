@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,14 +11,13 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.HasKey(oi => oi.Id);
 
 
-
             builder.Property(oi => oi.PostId).IsRequired();
             builder.Property(oi => oi.OrderId).IsRequired();
 
 
             builder.HasOne(oi => oi.Order)
-                   .WithMany(o => o.OrderItems)
-                   .HasForeignKey(oi => oi.OrderId);
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId);
         }
     }
 }

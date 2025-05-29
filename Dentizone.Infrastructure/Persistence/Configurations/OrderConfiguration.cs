@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -23,9 +23,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .HasDefaultValue(false);
 
             builder.HasOne(o => o.ShipInfo)
-                   .WithOne(si => si.Order)
-                   .HasForeignKey<Order>(o => o.ShipInfoId);
-
+                .WithOne(si => si.Order)
+                .HasForeignKey<Order>(o => o.ShipInfoId);
 
 
             builder.HasOne(o => o.Buyer)
@@ -33,8 +32,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .HasForeignKey(o => o.BuyerId);
 
             builder.HasMany(o => o.OrderPickups)
-                   .WithOne(op => op.Order)
-                   .HasForeignKey(op => op.OrderId);
+                .WithOne(op => op.Order)
+                .HasForeignKey(op => op.OrderId);
         }
     }
 }

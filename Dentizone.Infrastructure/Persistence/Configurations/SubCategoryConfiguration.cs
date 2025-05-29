@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Dentizone.Domain.Entity;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Dentizone.Infrastructure.Models;
 
 namespace Dentizone.Infrastructure.Persistence.Configurations
 {
@@ -8,8 +8,6 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<SubCategory> builder)
         {
-
-
             builder.HasKey(sc => sc.Id);
 
 
@@ -34,10 +32,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             // Many-to-One: SubCategory appears in manyt Category
             builder.HasOne(sc => sc.Category)
-                   .WithMany(c => c.SubCategories)
-                   .HasForeignKey(sc => sc.CategoryId);
-
+                .WithMany(c => c.SubCategories)
+                .HasForeignKey(sc => sc.CategoryId);
         }
     }
-
 }

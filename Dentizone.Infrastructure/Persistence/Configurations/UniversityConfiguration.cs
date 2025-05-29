@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -45,9 +40,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             // One-to-Many: University to Users
             builder.HasMany(u => u.Users)
-                   .WithOne(usr => usr.University)
-                   .HasForeignKey(usr => usr.UniversityId);
+                .WithOne(usr => usr.University)
+                .HasForeignKey(usr => usr.UniversityId);
         }
     }
-
 }

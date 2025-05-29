@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -23,10 +23,10 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(r => r.Text)
-                   .HasColumnType("text");
+                .HasColumnType("text");
 
             builder.Property(r => r.IsDeleted)
-                     .HasDefaultValue(false);
+                .HasDefaultValue(false);
 
             builder.Property(r => r.CreatedAt);
 
@@ -34,13 +34,12 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
 
             builder.HasOne(r => r.User)
-                   .WithMany(u => u.Reviews)
-                   .HasForeignKey(r => r.UserId);
+                .WithMany(u => u.Reviews)
+                .HasForeignKey(r => r.UserId);
 
             builder.HasOne(r => r.Order)
-                   .WithOne(o => o.Review)
-                   .HasForeignKey<Review>(r => r.OrderId);
+                .WithOne(o => o.Review)
+                .HasForeignKey<Review>(r => r.OrderId);
         }
-
     }
 }

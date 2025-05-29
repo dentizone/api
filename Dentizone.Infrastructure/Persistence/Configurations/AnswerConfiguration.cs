@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Dentizone.Infrastructure.Persistence.Configurations
 {
-    internal class AnswerConfiguration: IEntityTypeConfiguration<Answer>
+    internal class AnswerConfiguration : IEntityTypeConfiguration<Answer>
     {
         public void Configure(EntityTypeBuilder<Answer> builder)
         {
-
             builder.HasKey(a => a.Id);
 
             builder.Property(a => a.QuestionId)
@@ -28,19 +22,17 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(w => w.CreatedAt)
-                   .HasDefaultValueSql(SqlCommon.Date)
-                   .ValueGeneratedOnAdd();
+                .HasDefaultValueSql(SqlCommon.Date)
+                .ValueGeneratedOnAdd();
 
             builder.Property(a => a.IsDeleted)
                 .IsRequired()
-                  .HasDefaultValue(false);
+                .HasDefaultValue(false);
 
             builder.HasOne(a => a.Question)
                 .WithOne(q => q.Answer)
                 .HasForeignKey<Answer>(a => a.QuestionId)
                 .OnDelete(DeleteBehavior.NoAction);
-
         }
     }
 }
-

@@ -1,4 +1,4 @@
-using Dentizone.Application.Interfaces;
+using Dentizone.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -21,18 +21,18 @@ internal class BaseEntityInterceptor : SaveChangesInterceptor
             switch (entry.State)
             {
                 case EntityState.Added:
+                {
+                    entry.Entity.CreatedAt = now;
+                    entry.Entity.UpdatedAt = now;
+
+                    if (string.IsNullOrEmpty(entry.Entity.Id))
                     {
-                        entry.Entity.CreatedAt = now;
-                        entry.Entity.UpdatedAt = now;
-
-                        if (string.IsNullOrEmpty(entry.Entity.Id))
-                        {
-                            entry.Entity.Id = Guid.NewGuid().ToString();
-                        }
-
-                        entry.Entity.IsDeleted = false;
-                        break;
+                        entry.Entity.Id = Guid.NewGuid().ToString();
                     }
+
+                    entry.Entity.IsDeleted = false;
+                    break;
+                }
                 case EntityState.Modified:
                     entry.Entity.UpdatedAt = now;
                     break;
@@ -41,12 +41,9 @@ internal class BaseEntityInterceptor : SaveChangesInterceptor
                     entry.Entity.IsDeleted = true;
                     entry.Entity.UpdatedAt = now;
                     break;
-
             }
         }
 
         return base.SavingChanges(eventData, result);
     }
-
 }
-

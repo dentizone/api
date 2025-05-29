@@ -1,4 +1,5 @@
-﻿using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,18 +21,18 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
 
             builder.Property(r => r.Text)
-                   .HasMaxLength(100);
+                .HasMaxLength(100);
 
             builder.Property(r => r.Stars)
-                   .HasDefaultValue(5);
+                .HasDefaultValue(5);
 
 
             builder.Property(r => r.OrderId)
                 .IsRequired();
 
             builder.Property(r => r.Status)
-                   .HasDefaultValue(ReviewStatus.PENDING)
-                   .HasConversion<string>();
+                .HasDefaultValue(ReviewStatus.PENDING)
+                .HasConversion<string>();
 
 
             builder.Property(r => r.CreatedAt)
@@ -39,22 +40,15 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .ValueGeneratedOnAdd();
 
             builder.Property(r => r.UpdatedAt)
-                   .IsRequired();
+                .IsRequired();
 
             builder.HasOne(r => r.User)
-                   .WithMany(u => u.UXReviews)
-                   .HasForeignKey(r => r.UserId);
+                .WithMany(u => u.UXReviews)
+                .HasForeignKey(r => r.UserId);
 
             builder.HasOne(r => r.Order)
-                   .WithOne(r => r.ReviewUx)
-                   .HasForeignKey<ReviewUx>(r => r.OrderId);
-
-
-
-
-
-
-
+                .WithOne(r => r.ReviewUx)
+                .HasForeignKey<ReviewUx>(r => r.OrderId);
         }
     }
 }

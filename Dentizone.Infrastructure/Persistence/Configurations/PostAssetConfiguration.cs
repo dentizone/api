@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -25,8 +20,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(w => w.CreatedAt)
-                   .HasDefaultValueSql(SqlCommon.Date)
-                   .ValueGeneratedOnAdd();
+                .HasDefaultValueSql(SqlCommon.Date)
+                .ValueGeneratedOnAdd();
 
             builder.Property(pa => pa.IsDeleted)
                 .IsRequired()

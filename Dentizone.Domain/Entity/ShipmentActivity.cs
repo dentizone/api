@@ -1,8 +1,8 @@
 ﻿using Dentizone.Domain.Enums;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class ShipmentActivity
+    public class ShipmentActivity
     {
         public int Id { get; set; }
         public string OrderId { get; set; }

@@ -1,16 +1,15 @@
-﻿using Dentizone.Application.Interfaces;
-using Dentizone.Domain;
+﻿using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class ShipInfo : IBaseEntity
+    public class ShipInfo : IBaseEntity
     {
         public string Street { get; set; }
         public string City { get; set; }
         public string OrderId { get; set; }
         public virtual Order Order { get; set; }
         public string UserId { get; set; }
-        public virtual AppUser User { get; set; }
+        public virtual IAppUser User { get; set; }
 
 
         public string Id { get; set; }

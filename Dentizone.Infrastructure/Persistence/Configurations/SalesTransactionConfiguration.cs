@@ -1,5 +1,5 @@
-﻿using Dentizone.Domain.Enums;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -26,16 +26,13 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
 
             builder.HasOne(sale => sale.Payment)
-                   .WithMany(payment => payment.SalesTransactions);
+                .WithMany(payment => payment.SalesTransactions);
 
 
             builder
                 .HasOne(sale => sale.Wallet)
                 .WithMany(wallet => wallet.SalesTransactions)
                 .HasForeignKey(sale => sale.WalletId);
-
-
-
         }
     }
 }

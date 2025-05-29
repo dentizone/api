@@ -1,9 +1,9 @@
-﻿using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class WalletActivity : IBaseEntity
+    public class WalletActivity : IBaseEntity
     {
         public string Id { get; set; }
         public string WalletId { get; set; }

@@ -1,11 +1,9 @@
-﻿using Dentizone.Application.Interfaces;
-using Dentizone.Domain;
+﻿using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class Review : IBaseEntity
+    public class Review : IBaseEntity
     {
-
         public string Id { get; set; }
         public string UserId { get; set; }
         public int Stars { get; set; }
@@ -13,9 +11,8 @@ namespace Dentizone.Infrastructure.Models
         public string OrderId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public virtual AppUser User { get; set; }
+        public virtual IAppUser User { get; set; }
         public virtual Order Order { get; set; }
         public bool IsDeleted { get; set; }
     }
 }
-

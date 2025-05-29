@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,10 +24,6 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .HasForeignKey<PickupInfo>(pi => pi.PostId);
 
             builder.Property(i => i.SellerId).IsRequired();
-
-
-
-
         }
     }
 }

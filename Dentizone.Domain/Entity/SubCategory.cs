@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Interfaces;
+﻿using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class SubCategory: IBaseEntity
+    public class SubCategory : IBaseEntity
     {
         public string Id { get; set; }
 
@@ -16,15 +11,12 @@ namespace Dentizone.Infrastructure.Models
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-        
+
         // Relationship: Many SubCategories to One Category
         public virtual Category Category { get; set; }
         public string CategoryId { get; set; } // Foreign Key for Category
 
         // Relationship: One SubCategory to Many Items
         public virtual ICollection<Item> Items { get; set; } = new List<Item>();
-
-
     }
-
 }

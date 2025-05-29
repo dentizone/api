@@ -1,9 +1,9 @@
-﻿using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class OrderStatus : IBaseEntity
+    public class OrderStatus : IBaseEntity
     {
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -15,9 +15,5 @@ namespace Dentizone.Infrastructure.Models
         public OrderStatues Status { get; set; }
 
         public string? Comment { get; set; }
-
-
-
-
     }
 }

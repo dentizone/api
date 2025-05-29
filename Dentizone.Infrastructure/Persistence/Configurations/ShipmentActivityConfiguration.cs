@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,47 +8,39 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<ShipmentActivity> builder)
         {
-
-
             builder.HasKey(sa => sa.Id);
 
             builder.Property(sa => sa.Id)
-                   .IsRequired();
-
+                .IsRequired();
 
 
             builder.Property(sa => sa.OrderId)
-                   .IsRequired();
+                .IsRequired();
 
             builder.Property(sa => sa.ShippedBy)
-                   .IsRequired();
-
+                .IsRequired();
 
 
             builder.Property(sa => sa.Status)
-                   .IsRequired();
-
+                .IsRequired();
 
 
             builder.Property(sa => sa.AssignedBy)
-                   .IsRequired();
-
+                .IsRequired();
 
 
             builder.Property(sa => sa.ActivityDescription)
-                   .HasColumnType("text");
+                .HasColumnType("text");
 
             builder.Property(sa => sa.CreatedAt)
-                   .IsRequired()
-                   .HasColumnType("timestamp")
-                   .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                .IsRequired()
+                .HasColumnType("timestamp")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-            
+
             builder.HasOne(sa => sa.Order)
-                   .WithMany(o => o.ShipmentActivities)
-                   .HasForeignKey(sa => sa.OrderId);
-
+                .WithMany(o => o.ShipmentActivities)
+                .HasForeignKey(sa => sa.OrderId);
         }
-
     }
 }

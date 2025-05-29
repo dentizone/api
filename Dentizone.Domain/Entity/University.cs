@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain;
+﻿using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class University : IBaseEntity
+    public class University : IBaseEntity
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -17,7 +11,7 @@ namespace Dentizone.Infrastructure.Models
         public DateTime UpdatedAt { get; set; }
         public string Domain { get; set; }
 
-        public virtual ICollection<AppUser> Users { get; set; } = new List<AppUser>();
+        public virtual ICollection<IAppUser> Users { get; set; } = new List<IAppUser>();
         public bool IsDeleted { get; set; }
     }
 }

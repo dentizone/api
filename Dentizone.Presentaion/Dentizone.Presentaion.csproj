@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Dentizone.Domain\Dentizone.Domain.csproj" />
     <ProjectReference Include="..\Dentizone.Infrastructure\Dentizone.Infrastructure.csproj" />
   </ItemGroup>
 

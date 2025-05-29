@@ -1,10 +1,9 @@
-﻿using Dentizone.Application.Interfaces;
-using Dentizone.Domain;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class Wallet : IBaseEntity
+    public class Wallet : IBaseEntity
     {
         public string Id { get; set; }
 
@@ -16,7 +15,7 @@ namespace Dentizone.Infrastructure.Models
 
 
         // Relationship: One Wallet to One User
-        public virtual AppUser User { get; set; }
+        public virtual IAppUser User { get; set; }
         public string UserId { get; set; }
         public bool IsDeleted { get; set; }
 
@@ -24,7 +23,5 @@ namespace Dentizone.Infrastructure.Models
         public virtual ICollection<SalesTransaction> SalesTransactions { get; set; } = new List<SalesTransaction>();
 
         public virtual ICollection<WithdrawalRequest> WithdrawalRequests { get; set; } = new List<WithdrawalRequest>();
-
-
     }
 }

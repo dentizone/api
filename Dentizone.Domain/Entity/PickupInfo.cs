@@ -1,16 +1,14 @@
-﻿using Dentizone.Application.Interfaces;
-using Dentizone.Domain;
+﻿using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class PickupInfo : IBaseEntity
+    public class PickupInfo : IBaseEntity
     {
-
         public string Street { get; set; }
         public string City { get; set; }
 
         public string SellerId { get; set; }
-        public AppUser Seller { get; set; }
+        public IAppUser Seller { get; set; }
 
 
         public virtual Post Post { get; set; }

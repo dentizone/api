@@ -1,10 +1,9 @@
-﻿using Dentizone.Application.Interfaces;
-using Dentizone.Domain;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class Payment : IBaseEntity
+    public class Payment : IBaseEntity
     {
         public string Id { get; set; }
         public string OrderId { get; set; }
@@ -15,12 +14,13 @@ namespace Dentizone.Infrastructure.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime ProcessedAt { get; set; }
+
         public bool IsDeleted { get; set; }
+
         // Navigation properties
-        public virtual AppUser Buyer { get; set; }
+        public virtual IAppUser Buyer { get; set; }
         public virtual Order Order { get; set; }
 
         public virtual ICollection<SalesTransaction> SalesTransactions { get; set; } = new List<SalesTransaction>();
-
     }
 }

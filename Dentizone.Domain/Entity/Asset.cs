@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 
-
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class Asset : IBaseEntity
+    public class Asset : IBaseEntity
     {
         public string Id { get; set; }
         public string Url { get; set; }
@@ -22,5 +16,4 @@ namespace Dentizone.Infrastructure.Models
         public virtual ICollection<UserAsset> UserAssets { get; set; } = new List<UserAsset>();
         public virtual ICollection<PostAsset> PostAssets { get; set; } = new List<PostAsset>();
     }
-
 }

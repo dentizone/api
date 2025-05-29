@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class Answer : IBaseEntity
+    public class Answer : IBaseEntity
     {
         public string Id { get; set; }
         public string QuestionId { get; set; }
@@ -17,7 +12,6 @@ namespace Dentizone.Infrastructure.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
-        public virtual Question Question { get; set; }  
+        public virtual Question Question { get; set; }
     }
-
 }

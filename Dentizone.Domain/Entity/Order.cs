@@ -1,12 +1,11 @@
-﻿using Dentizone.Application.Interfaces;
-using Dentizone.Domain;
+﻿using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class Order : IBaseEntity
+    public class Order : IBaseEntity
     {
         public string BuyerId { get; set; }
-        public AppUser Buyer { get; set; }
+        public IAppUser Buyer { get; set; }
         public decimal CommissionAmount { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime CompletedAt { get; set; }

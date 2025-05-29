@@ -1,11 +1,9 @@
-﻿
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class Post : IBaseEntity
+    public class Post : IBaseEntity
     {
         public string Id { get; set; }
         public string Title { get; set; }
@@ -23,16 +21,12 @@ namespace Dentizone.Infrastructure.Models
 
         public virtual PickupInfo Pickupinfo { get; set; }
 
-        public virtual AppUser Seller { get; set; }
+        public virtual IAppUser Seller { get; set; }
         public virtual ICollection<Favourite> Favourites { get; set; }
         public virtual ICollection<PostAsset> PostAssets { get; set; } = new List<PostAsset>();
         public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
         public virtual Item Item { get; set; }
 
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
-
-
-
     }
 }
-

@@ -1,8 +1,8 @@
-﻿using Dentizone.Application.Interfaces;
+﻿using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class OrderItem : IBaseEntity
+    public class OrderItem : IBaseEntity
     {
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -12,6 +12,5 @@ namespace Dentizone.Infrastructure.Models
         public string PostId { get; set; }
         public string OrderId { get; set; }
         public virtual Order Order { get; set; }
-
     }
 }

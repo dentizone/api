@@ -1,8 +1,8 @@
-﻿using Dentizone.Application.Interfaces;
+﻿using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class OrderPickup : IBaseEntity
+    public class OrderPickup : IBaseEntity
     {
         public string OrderId { get; set; }
         public Order Order { get; set; }

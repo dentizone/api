@@ -1,9 +1,9 @@
-﻿using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class SalesTransaction : IBaseEntity
+    public class SalesTransaction : IBaseEntity
     {
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -19,7 +19,5 @@ namespace Dentizone.Infrastructure.Models
         // Navigation properties
         public virtual Wallet Wallet { get; set; }
         public virtual Payment Payment { get; set; }
-
-
     }
 }

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Interfaces;
+﻿using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class Category : IBaseEntity
+    public class Category : IBaseEntity
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -18,6 +13,5 @@ namespace Dentizone.Infrastructure.Models
         public virtual ICollection<Item> Items { get; set; } = new List<Item>();
 
         public virtual ICollection<SubCategory> SubCategories { get; set; } = new List<SubCategory>();
-
     }
 }

@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,7 +8,6 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Post> builder)
         {
-
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Id)
                 .IsRequired();
@@ -53,19 +52,16 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             // Every post must have a pickup info, only one
 
             builder.HasOne(p => p.Pickupinfo)
-                   .WithOne(pi => pi.Post)
-                     .HasForeignKey<PickupInfo>(pi => pi.PostId);
+                .WithOne(pi => pi.Post)
+                .HasForeignKey<PickupInfo>(pi => pi.PostId);
             // Every post must have a seller, only one
             builder.HasOne(p => p.Seller)
-                   .WithMany(u => u.Posts)
-                   .HasForeignKey(p => p.SellerId);
+                .WithMany(u => u.Posts)
+                .HasForeignKey(p => p.SellerId);
             // Every post has one item, only one, and every item appears in one post, only one
             builder.HasOne(p => p.Item)
-                   .WithOne(i => i.Post)
-                   .HasForeignKey<Item>(i => i.Id);
-
-
+                .WithOne(i => i.Post)
+                .HasForeignKey<Item>(i => i.Id);
         }
     }
 }
-

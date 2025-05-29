@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Dentizone.Domain.Entity;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Dentizone.Infrastructure.Models;
 
 namespace Dentizone.Infrastructure.Persistence.Configurations
 {
@@ -27,7 +27,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .HasDefaultValueSql(SqlCommon.Date);
 
             builder.Property(a => a.UpdatedAt)
-          .IsRequired();
+                .IsRequired();
 
             builder.Property(a => a.Status)
                 .IsRequired()
@@ -41,19 +41,17 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             // --- Relationships ---
 
 
-
             // One-to-Many: Asset to UserAssets
             builder.HasMany(a => a.UserAssets)
-                   .WithOne(ua => ua.Asset) 
-                   .HasForeignKey(ua => ua.AssetId)
-                   .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(ua => ua.Asset)
+                .HasForeignKey(ua => ua.AssetId)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             // One-to-Many: Asset to PostAssets
             builder.HasMany(a => a.PostAssets)
-                   .WithOne(pa => pa.Asset)
-                   .HasForeignKey(pa => pa.AssetId);
+                .WithOne(pa => pa.Asset)
+                .HasForeignKey(pa => pa.AssetId);
         }
     }
-
 }

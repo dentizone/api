@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,11 +8,9 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<OrderStatus> builder)
         {
-
             builder.HasKey(os => os.Id);
 
             builder.Property(os => os.Comment)
-
                 .HasMaxLength(250);
 
             builder.Property(os => os.CreatedAt)
@@ -30,11 +28,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             // Relationships
             builder.HasOne(os => os.Order)
-                   .WithMany(o => o.OrderStatuses)
-                   .HasForeignKey(os => os.OrderId);
-
-
-
+                .WithMany(o => o.OrderStatuses)
+                .HasForeignKey(os => os.OrderId);
         }
     }
 }

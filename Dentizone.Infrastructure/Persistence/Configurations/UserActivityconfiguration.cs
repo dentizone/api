@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dentizone.Domain.Entity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Dentizone.Infrastructure.Models
@@ -10,45 +11,43 @@ namespace Dentizone.Infrastructure.Models
             builder.HasKey(ua => ua.Id);
 
 
-
             builder.Property(ua => ua.UserId)
-                   .IsRequired();
+                .IsRequired();
 
             builder.Property(ua => ua.FingerprintToken)
-                   .IsRequired()
-                   .HasMaxLength(512);
+                .IsRequired()
+                .HasMaxLength(512);
 
             builder.Property(ua => ua.Device)
-                   .IsRequired()
-                   .HasMaxLength(255);
+                .IsRequired()
+                .HasMaxLength(255);
 
             builder.Property(ua => ua.UserAgent)
-                   .IsRequired()
-                   .HasMaxLength(1024);
+                .IsRequired()
+                .HasMaxLength(1024);
 
             builder.Property(ua => ua.CreatedAt)
-                   .ValueGeneratedOnAdd()
-                   .HasDefaultValueSql(SqlCommon.Date);
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql(SqlCommon.Date);
 
             builder.Property(ua => ua.UpdatedAt)
-                     .IsRequired();
+                .IsRequired();
 
             builder.Property(ua => ua.DetectedAt)
-                   .IsRequired();
+                .IsRequired();
 
             builder.Property(ua => ua.ActivityType)
-          .IsRequired()
-          .HasConversion<string>();
+                .IsRequired()
+                .HasConversion<string>();
 
             builder.Property(ua => ua.IpAddress)
-                   .HasMaxLength(45);
-
+                .HasMaxLength(45);
 
 
             builder.HasOne(ua => ua.User)
-                   .WithMany(u => u.UserActivities)
-                   .HasForeignKey(ua => ua.UserId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithMany(u => u.UserActivities)
+                .HasForeignKey(ua => ua.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

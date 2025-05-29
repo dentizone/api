@@ -1,10 +1,9 @@
-﻿using Dentizone.Application.Interfaces;
-using Dentizone.Domain;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class UserAsset: IBaseEntity
+    public class UserAsset : IBaseEntity
     {
         public string Id { get; set; }
 
@@ -14,13 +13,11 @@ namespace Dentizone.Infrastructure.Models
         public bool IsDeleted { get; set; }
 
         // Every UserAsset is associated with a User
-        public virtual AppUser User { get; set; }
+        public virtual IAppUser User { get; set; }
         public string UserId { get; set; }
 
         // Every UserAsset is associated with an Asset
         public virtual Asset Asset { get; set; }
         public string AssetId { get; set; }
-
-
     }
 }

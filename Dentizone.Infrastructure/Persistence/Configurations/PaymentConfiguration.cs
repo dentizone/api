@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -34,8 +29,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(p => p.CreatedAt)
-                   .HasDefaultValueSql(SqlCommon.Date)
-                   .ValueGeneratedOnAdd();
+                .HasDefaultValueSql(SqlCommon.Date)
+                .ValueGeneratedOnAdd();
 
             builder.Property(p => p.IsDeleted)
                 .IsRequired()
@@ -46,7 +41,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.HasOne(p => p.Buyer)
                 .WithMany(u => u.Payments)
                 .HasForeignKey(p => p.BuyerId)
-                .OnDelete(DeleteBehavior.NoAction); 
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(p => p.Order)
                 .WithMany(o => o.Payments)

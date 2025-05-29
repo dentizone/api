@@ -1,13 +1,14 @@
-﻿using Dentizone.Domain;
-using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Dentizone.Domain.Entity;
 
 namespace Dentizone.Infrastructure
 {
-    internal class AppDbContext : IdentityDbContext<AppUser>
+    internal class AppDbContext : IdentityDbContext<AppDbUser>
     {
-        public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<AppDbUser> AppUsers { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -34,8 +35,6 @@ namespace Dentizone.Infrastructure
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
-
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,6 +43,5 @@ namespace Dentizone.Infrastructure
 
             base.OnModelCreating(modelBuilder);
         }
-
     }
 }

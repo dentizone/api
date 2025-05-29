@@ -1,15 +1,14 @@
-﻿using Dentizone.Application.Interfaces;
-using Dentizone.Domain;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 
-namespace Dentizone.Infrastructure.Models
+namespace Dentizone.Domain.Entity
 {
-    internal class Question : IBaseEntity
+    public class Question : IBaseEntity
     {
         public string PostId { get; set; }
         public Post Post { get; set; }
         public string AskerId { get; set; }
-        public virtual AppUser User { get; set; }
+        public virtual IAppUser User { get; set; }
         public string Text { get; set; }
         public QuestionStatus Status { get; set; }
 
@@ -18,7 +17,6 @@ namespace Dentizone.Infrastructure.Models
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-        public virtual  Answer Answer { get; set; }
-
+        public virtual Answer Answer { get; set; }
     }
 }

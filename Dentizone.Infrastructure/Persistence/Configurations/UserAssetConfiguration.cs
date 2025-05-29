@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Models;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,30 +11,30 @@ internal class UserAssetConfiguration : IEntityTypeConfiguration<UserAsset>
         builder.HasKey(ua => ua.Id);
 
         builder.Property(ua => ua.UserId)
-               .IsRequired();
+            .IsRequired();
 
         builder.Property(ua => ua.AssetId)
-               .IsRequired();
+            .IsRequired();
 
         builder.Property(ua => ua.Type)
-               .IsRequired()
-               .HasConversion<string>();
+            .IsRequired()
+            .HasConversion<string>();
 
         builder.Property(ua => ua.CreatedAt)
-               .HasDefaultValueSql(SqlCommon.Date)
-               .ValueGeneratedOnAdd();
+            .HasDefaultValueSql(SqlCommon.Date)
+            .ValueGeneratedOnAdd();
 
         builder.Property(ua => ua.UpdatedAt)
-                .IsRequired();
+            .IsRequired();
         builder.Property(ua => ua.IsDeleted)
-                .IsRequired()
-                .HasDefaultValue(false);
+            .IsRequired()
+            .HasDefaultValue(false);
 
         // --- Relationships ---
 
         // Many-to-One: UserAsset to User
         builder.HasOne(ua => ua.User)
-               .WithMany(u => u.UserAssets)
-               .HasForeignKey(ua => ua.UserId);
+            .WithMany(u => u.UserAssets)
+            .HasForeignKey(ua => ua.UserId);
     }
 }
