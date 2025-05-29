@@ -5,7 +5,7 @@ using Dentizone.Domain.Entity;
 
 namespace Dentizone.Infrastructure
 {
-    internal class AppDbContext : DbContext
+    public class AppDbContext : DbContext
     {
         public DbSet<Asset> Assets { get; set; }
         public DbSet<Cart> Carts { get; set; }

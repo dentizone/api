@@ -7,17 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="AutoMapper\NewFolder\**" />
-    <EmbeddedResource Remove="AutoMapper\NewFolder\**" />
-    <None Remove="AutoMapper\NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Folder Include="AutoMapper\Profiles\" />
     <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="14.0.0" />
   </ItemGroup>
 
   <ItemGroup>

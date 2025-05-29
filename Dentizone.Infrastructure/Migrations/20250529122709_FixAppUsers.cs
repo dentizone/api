@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dentizone.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Hello : Migration
+    public partial class FixAppUsers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

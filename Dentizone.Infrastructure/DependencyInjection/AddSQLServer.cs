@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dentizone.Infrastructure.Persistence.Interceptors;
+using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,10 +10,14 @@ namespace Dentizone.Infrastructure.DependencyInjection
     {
         public static IServiceCollection AddSQLServer(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<AppDbContext>(options =>
+            services.AddScoped<BaseEntityInterceptor>();
+            services.AddDbContext<AppDbContext>((serviceProvider, options) =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("DentizoneDb"));
+                var interceptor = serviceProvider.GetRequiredService<BaseEntityInterceptor>();
+                options.UseSqlServer(configuration.GetConnectionString("DentizoneDb"))
+                    .AddInterceptors(interceptor);
             });
+
             return services;
         }
     }

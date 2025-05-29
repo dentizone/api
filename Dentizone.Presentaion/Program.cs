@@ -1,4 +1,6 @@
+using Dentizone.Application.Repositories;
 using Dentizone.Infrastructure.DependencyInjection;
+
 namespace Dentizone.Presentaion
 {
     public class Program
@@ -14,6 +16,7 @@ namespace Dentizone.Presentaion
             builder.Services.AddOpenApi();
 
             builder.Services.AddSQLServer(builder.Configuration);
+            builder.Services.AddAutoMapper(typeof(Application.AssemblyReference).Assembly);
 
             var app = builder.Build();
 
