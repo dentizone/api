@@ -109,7 +109,7 @@ namespace Dentizone.Infrastructure.Migrations
 
                     b.HasIndex("UniversityId");
 
-                    b.ToTable("AppUser");
+                    b.ToTable("AppUsers");
                 });
 
             modelBuilder.Entity("Dentizone.Domain.Entity.Asset", b =>

@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dentizone.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:Dentizone.Infrastructure/Migrations/20250529122709_FixAppUsers.Designer.cs
-    [Migration("20250529122709_FixAppUsers")]
-    partial class FixAppUsers
-========
-    [Migration("20250529112219_Phase1")]
-    partial class Phase1
->>>>>>>> f4c7b433579a54ddcaee7129c691a3933fb0e405:Dentizone.Infrastructure/Migrations/20250529112219_Phase1.Designer.cs
+    [Migration("20250529124552_ReaddAppUsers")]
+    partial class ReaddAppUsers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,7 +112,7 @@ namespace Dentizone.Infrastructure.Migrations
 
                     b.HasIndex("UniversityId");
 
-                    b.ToTable("AppUser");
+                    b.ToTable("AppUsers");
                 });
 
             modelBuilder.Entity("Dentizone.Domain.Entity.Asset", b =>

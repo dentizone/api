@@ -1,4 +1,3 @@
-using Dentizone.Application.Repositories;
 using Dentizone.Infrastructure.DependencyInjection;
 
 namespace Dentizone.Presentaion

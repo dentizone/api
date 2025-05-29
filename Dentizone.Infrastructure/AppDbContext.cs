@@ -6,8 +6,9 @@ using Dentizone.Infrastructure.Identity;
 
 namespace Dentizone.Infrastructure
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Category> Categories { get; set; }

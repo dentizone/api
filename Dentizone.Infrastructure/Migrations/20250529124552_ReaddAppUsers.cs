@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dentizone.Infrastructure.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:Dentizone.Infrastructure/Migrations/20250529122709_FixAppUsers.cs
-    public partial class FixAppUsers : Migration
-========
-    public partial class Phase1 : Migration
->>>>>>>> f4c7b433579a54ddcaee7129c691a3933fb0e405:Dentizone.Infrastructure/Migrations/20250529112219_Phase1.cs
+    public partial class ReaddAppUsers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -232,7 +228,7 @@ namespace Dentizone.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppUser",
+                name: "AppUsers",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -249,9 +245,9 @@ namespace Dentizone.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppUser", x => x.Id);
+                    table.PrimaryKey("PK_AppUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AppUser_Universities_UniversityId",
+                        name: "FK_AppUsers_Universities_UniversityId",
                         column: x => x.UniversityId,
                         principalTable: "Universities",
                         principalColumn: "Id");
@@ -275,9 +271,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_AppUser_BuyerId",
+                        name: "FK_Orders_AppUsers_BuyerId",
                         column: x => x.BuyerId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                 });
 
@@ -303,9 +299,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_AppUser_SellerId",
+                        name: "FK_Posts_AppUsers_SellerId",
                         column: x => x.SellerId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                 });
 
@@ -329,9 +325,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_UserActivities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserActivities_AppUser_UserId",
+                        name: "FK_UserActivities_AppUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                 });
 
@@ -351,9 +347,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_UserAssets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserAssets_AppUser_UserId",
+                        name: "FK_UserAssets_AppUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UserAssets_Assets_AssetId",
@@ -379,9 +375,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Wallets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Wallets_AppUser_UserId",
+                        name: "FK_Wallets_AppUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                 });
 
@@ -449,9 +445,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Payments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Payments_AppUser_BuyerId",
+                        name: "FK_Payments_AppUsers_BuyerId",
                         column: x => x.BuyerId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Payments_Orders_OrderId",
@@ -477,9 +473,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Reviews", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reviews_AppUser_UserId",
+                        name: "FK_Reviews_AppUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Reviews_Orders_OrderId",
@@ -506,9 +502,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_ReviewUxes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReviewUxes_AppUser_UserId",
+                        name: "FK_ReviewUxes_AppUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ReviewUxes_Orders_OrderId",
@@ -534,9 +530,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_ShipInfos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ShipInfos_AppUser_UserId",
+                        name: "FK_ShipInfos_AppUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ShipInfos_Orders_OrderId",
@@ -583,9 +579,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Carts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Carts_AppUser_UserId",
+                        name: "FK_Carts_AppUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Carts_Posts_PostId",
@@ -609,9 +605,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Favourites", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Favourites_AppUser_UserId",
+                        name: "FK_Favourites_AppUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Favourites_Posts_PostId",
@@ -670,9 +666,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_PickupInfos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PickupInfos_AppUser_SellerId",
+                        name: "FK_PickupInfos_AppUsers_SellerId",
                         column: x => x.SellerId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PickupInfos_Posts_PostId",
@@ -725,9 +721,9 @@ namespace Dentizone.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Questions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Questions_AppUser_AskerId",
+                        name: "FK_Questions_AppUsers_AskerId",
                         column: x => x.AskerId,
-                        principalTable: "AppUser",
+                        principalTable: "AppUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Questions_Posts_PostId",
@@ -871,8 +867,8 @@ namespace Dentizone.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppUser_UniversityId",
-                table: "AppUser",
+                name: "IX_AppUsers_UniversityId",
+                table: "AppUsers",
                 column: "UniversityId");
 
             migrationBuilder.CreateIndex(
@@ -1203,7 +1199,7 @@ namespace Dentizone.Infrastructure.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "AppUser");
+                name: "AppUsers");
 
             migrationBuilder.DropTable(
                 name: "Universities");

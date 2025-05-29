@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Dentizone.Infrastructure.Identity
 {
-    internal class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser
     {
     }
 }
