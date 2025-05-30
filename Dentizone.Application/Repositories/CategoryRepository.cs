@@ -60,7 +60,7 @@ namespace Dentizone.Application.Repositories
 
             await DbContext.SaveChangesAsync();
 
-            return entity;
+            return existingCategory;
         }
     }
 }
