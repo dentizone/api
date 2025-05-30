@@ -5,7 +5,7 @@ namespace Dentizone.Domain.Entity
 {
     public class Asset : IBaseEntity
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Url { get; set; }
         public long Size { get; set; }
         public AssetType Type { get; set; }

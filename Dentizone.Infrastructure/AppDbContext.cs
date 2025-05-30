@@ -8,6 +8,7 @@ namespace Dentizone.Infrastructure
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Answer> Answers { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<Cart> Carts { get; set; }

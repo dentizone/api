@@ -5,7 +5,7 @@ namespace Dentizone.Domain.Entity
 {
     public class Answer : IBaseEntity
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string QuestionId { get; set; }
         public string Text { get; set; }
         public AnswerStatus Status { get; set; }

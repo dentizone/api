@@ -4,16 +4,13 @@ namespace Dentizone.Domain.Entity
 {
     public class PostAsset : IBaseEntity
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string PostId { get; set; }
         public string AssetId { get; set; }
         public int DisplayOrder { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-
         public bool IsDeleted { get; set; }
-
-        // Navigation properties
         public virtual Post Post { get; set; }
         public virtual Asset Asset { get; set; }
     }
