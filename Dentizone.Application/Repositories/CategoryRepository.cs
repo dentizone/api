@@ -8,7 +8,7 @@ namespace Dentizone.Application.Repositories
 {
     internal class CategoryRepository : AbstractRepository, ICategoryRepository
     {
-        private AppDbContext DbContext { set; get; }
+        private readonly AppDbContext DbContext;
 
         public CategoryRepository(AppDbContext dbContext) : base(dbContext)
         {
@@ -22,11 +22,11 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
-        public async Task<Category> DeleteAsync(string id)
+        public async Task<Category?> DeleteAsync(string id)
         {
             var deletedCategory =
                 await DbContext.Categories.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
-
+            if (deletedCategory is null) return null;
             DbContext.Categories.Remove(deletedCategory);
             await DbContext.SaveChangesAsync();
             return deletedCategory;
@@ -41,7 +41,7 @@ namespace Dentizone.Application.Repositories
             return categories;
         }
 
-        public async Task<Category> GetByIdAsync(string id)
+        public async Task<Category?> GetByIdAsync(string id)
         {
             var category = await DbContext.Categories.Where(c => c.Id == id && !c.IsDeleted)
                                           .FirstOrDefaultAsync();

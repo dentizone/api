@@ -1,63 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Abstracts;
+﻿using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Dentizone.Application.Repositories
 {
-    internal class ItemRepositry : AbstractRepository, IItemRepository
+    internal class ItemRepository : AbstractRepository, IItemRepository
     {
-        private AppDbContext DbContext { set; get; }
+        private readonly AppDbContext DbContext;
 
-        public ItemRepositry(AppDbContext dbContext) : base(dbContext)
+        public ItemRepository(AppDbContext dbContext) : base(dbContext)
         {
             DbContext = dbContext;
         }
 
         public async Task<Item> CreateAsync(Item entity)
         {
-            entity.Id = Guid.NewGuid().ToString();
-            entity.CreatedAt = DateTime.UtcNow;
-            entity.UpdatedAt = DateTime.UtcNow;
-            entity.IsDeleted = false;
             await DbContext.Items.AddAsync(entity);
             await DbContext.SaveChangesAsync();
             return entity;
         }
 
-        public async Task<Item> DeleteAsync(int id)
+        public async Task<Item?> DeleteAsync(string id)
         {
-            var deleted_item = DbContext.Items.FirstOrDefault(x => x.Id == id.ToString() && !x.IsDeleted);
-            if (deleted_item == null)
-            {
-                throw new Exception("Item not found or already deleted.");
-            }
-
-            deleted_item.IsDeleted = true;
-            deleted_item.UpdatedAt = DateTime.UtcNow;
-            DbContext.Items.Update(deleted_item);
+            var deletedItem = DbContext.Items.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
+            if (deletedItem is null) return null;
+            DbContext.Items.Remove(deletedItem);
             await DbContext.SaveChangesAsync();
-            return deleted_item;
+            return deletedItem;
         }
 
         public async Task<IEnumerable<Item>> GetAllAsync(int page = 1)
         {
-            var items = await DbContext.Set<Item>().Where(i => !i.IsDeleted).ToListAsync();
+            var items = await DbContext.Items.Where(i => !i.IsDeleted)
+                                       .Skip(CalculatePagination(page))
+                                       .Take(DefaultPageSize)
+                                       .ToListAsync();
             return items;
         }
 
-        public async Task<Item> GetByIdAsync(int id)
+        public async Task<Item?> GetByIdAsync(string id)
         {
-            var items = await DbContext.Set<Item>().Where(i => i.Id == id.ToString() && !i.IsDeleted)
-                                       .FirstOrDefaultAsync();
-            return items;
+            var item = await DbContext.Items.Where(i => i.Id == id && !i.IsDeleted)
+                                      .FirstOrDefaultAsync();
+            return item;
         }
     }
 }
