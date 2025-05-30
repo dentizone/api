@@ -4,7 +4,7 @@ namespace Dentizone.Domain.Entity
 {
     public class Item : IBaseEntity
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string CategoryId { set; get; }
         public string SubCategoryId { set; get; }
 
