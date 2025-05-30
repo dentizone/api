@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Dentizone.Application.Abstracts;
+﻿using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
-using Dentizone.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Repositories
 {
@@ -25,7 +19,7 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
-        public async Task<Post?> DeleteAsync(int id)
+        public async Task<Post?> DeleteAsync(string id)
         {
             var post = await GetByIdAsync(id);
             if (post == null)
@@ -47,52 +41,16 @@ namespace Dentizone.Application.Repositories
                                   .ToListAsync();
         }
 
-        public async Task<Post?> GetByIdAsync(int id)
+        public async Task<Post?> GetByIdAsync(string id)
         {
             return await dbContext.Posts.FindAsync(id);
         }
 
         public async Task<Post> UpdateAsync(Post entity)
         {
-            var isExists = await dbContext.Posts.FindAsync(entity.Id);
-            if (isExists == null)
-                return null;
-
-            if (!string.IsNullOrEmpty(entity.Title))
-                isExists.Title = entity.Title;
-
-            if (!string.IsNullOrEmpty(entity.Description))
-                isExists.Description = entity.Description;
-
-            if (!string.IsNullOrEmpty(entity.ItemId))
-                isExists.ItemId = entity.ItemId;
-
-            if (!string.IsNullOrEmpty(entity.Slug))
-                isExists.Slug = entity.Slug;
-
-            if (entity.Price != 0)
-                isExists.Price = entity.Price;
-
-            if (Enum.IsDefined(typeof(PostItemCondition), entity.Condition))
-                isExists.Condition = entity.Condition;
-
-            if (Enum.IsDefined(typeof(PostStatus), entity.Status))
-            {
-                if (entity.Status != isExists.Status)
-                    isExists.Status = entity.Status;
-            }
-
-            isExists.UpdatedAt = DateTime.UtcNow;
-
-            try
-            {
-                await dbContext.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            return isExists;
+            dbContext.Posts.Update(entity);
+            await dbContext.SaveChangesAsync();
+            return entity;
         }
     }
 }

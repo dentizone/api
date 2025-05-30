@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Abstracts;
+﻿using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -24,7 +19,7 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
-        public async Task<Question?> DeleteAsync(int id)
+        public async Task<Question?> DeleteAsync(string id)
         {
             var question = await GetByIdAsync(id);
             if (question == null)
@@ -41,37 +36,22 @@ namespace Dentizone.Application.Repositories
         {
             int skippedPages = CalculatePagination(page);
             return await dbContext.Questions
-                            .Skip(skippedPages)
-                            .Take(DefaultPageSize)
-                            .ToListAsync();
+                                  .Skip(skippedPages)
+                                  .Take(DefaultPageSize)
+                                  .ToListAsync();
         }
 
-        public async Task<Question?> GetByIdAsync(int id)
+        public async Task<Question?> GetByIdAsync(string id)
         {
             return await dbContext.Questions.FindAsync(id);
         }
+
         public async Task<Question> UpdateAsync(Question entity)
         {
-            var isExists = await dbContext.Questions.FindAsync(entity.Id);
-            if (isExists == null)
-                return null;
+            dbContext.Questions.Update(entity);
+            await dbContext.SaveChangesAsync();
 
-            if (!string.IsNullOrEmpty(entity.Text))
-            {
-                isExists.Text = entity.Text;
-            }
-
-            isExists.UpdatedAt = DateTime.UtcNow;
-
-            try
-            {
-                await dbContext.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            return isExists;
+            return entity;
         }
     }
 }
