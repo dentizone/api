@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Repositories
 {
+    //MMMMMMMM
     internal class CategoryRepository : AbstractRepository, IcategoryRepository
     {
         private AppDbContext DbContext { set; get; }
