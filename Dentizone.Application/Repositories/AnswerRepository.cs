@@ -8,6 +8,7 @@ using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
+using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.Repositories
 {
@@ -49,5 +50,34 @@ namespace Dentizone.Application.Repositories
         {
             return await dbContext.Answers.FindAsync(id);
         }
+
+        public async Task<Answer> UpdateAsync(Answer entity)
+        {
+            var isExists = await dbContext.Answers.FindAsync(entity.Id);
+            if (isExists == null)
+                return null;
+
+            if (!string.IsNullOrEmpty(entity.Text))
+                isExists.Text = entity.Text;
+
+            if (Enum.IsDefined(typeof(AnswerStatus), entity.Status))
+            {
+                if (entity.Status != entity.Status)
+                    isExists.Status = entity.Status;
+            }
+
+            isExists.UpdatedAt = DateTime.UtcNow;
+
+            try
+            {
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;   
+            }
+            return isExists;
+        }
+
     }
 }

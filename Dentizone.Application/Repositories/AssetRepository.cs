@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
 using Dentizone.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ namespace Dentizone.Application.Repositories
     {
         public AssetRepository(AppDbContext dbContext) : base(dbContext)
         {
+
         }
 
         public async Task<Asset> CreateAsync(Asset entity)
@@ -48,6 +50,42 @@ namespace Dentizone.Application.Repositories
         public async Task<Asset> GetByIdAsync(int id)
         {
             return await dbContext.Assets.FindAsync(id);
+        }
+
+        public async Task<Asset> UpdateAsync(Asset entity)
+        {
+            var isExists = await dbContext.Assets.FindAsync(entity.Id);
+            if (isExists == null)
+                return null;
+
+            if (!string.IsNullOrEmpty(entity.Url))
+                isExists.Url = entity.Url;
+
+            if (entity.Size != 0)
+                isExists.Size = entity.Size;
+
+            if (Enum.IsDefined(typeof(AssetType), entity.Type))
+            {
+                if (entity.Type != entity.Type)
+                    isExists.Type = entity.Type;
+            }
+            if (Enum.IsDefined(typeof(AssetStatus), entity.Status))
+            {
+                if (entity.Status != entity.Status)
+                    isExists.Status = entity.Status;
+            }
+
+            isExists.UpdatedAt = DateTime.UtcNow;
+
+            try
+            {
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception) 
+            {
+                throw;
+            }
+            return isExists;
         }
     }
 }

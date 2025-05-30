@@ -8,6 +8,7 @@ using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
+using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.Repositories
 {
@@ -49,6 +50,49 @@ namespace Dentizone.Application.Repositories
         public async Task<Post?> GetByIdAsync(int id)
         {
             return await dbContext.Posts.FindAsync(id);
+        }
+
+        public async Task<Post> UpdateAsync(Post entity)
+        {
+            var isExists = await dbContext.Posts.FindAsync(entity.Id);
+            if (isExists == null)
+                return null;
+
+            if (!string.IsNullOrEmpty(entity.Title))
+                isExists.Title = entity.Title;
+
+            if (!string.IsNullOrEmpty(entity.Description))
+                isExists.Description = entity.Description;
+
+            if (!string.IsNullOrEmpty(entity.ItemId))
+                isExists.ItemId = entity.ItemId;
+
+            if (!string.IsNullOrEmpty(entity.Slug))
+                isExists.Slug = entity.Slug;
+
+            if (entity.Price != 0)
+                isExists.Price = entity.Price;
+
+            if (Enum.IsDefined(typeof(PostItemCondition), entity.Condition))
+                isExists.Condition = entity.Condition;
+
+            if (Enum.IsDefined(typeof(PostStatus), entity.Status))
+            {
+                if (entity.Status != isExists.Status)
+                    isExists.Status = entity.Status;
+            }
+
+            isExists.UpdatedAt = DateTime.UtcNow;
+
+            try
+            {
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return isExists;
         }
     }
 }

@@ -50,5 +50,28 @@ namespace Dentizone.Application.Repositories
         {
             return await dbContext.Questions.FindAsync(id);
         }
+        public async Task<Question> UpdateAsync(Question entity)
+        {
+            var isExists = await dbContext.Questions.FindAsync(entity.Id);
+            if (isExists == null)
+                return null;
+
+            if (!string.IsNullOrEmpty(entity.Text))
+            {
+                isExists.Text = entity.Text;
+            }
+
+            isExists.UpdatedAt = DateTime.UtcNow;
+
+            try
+            {
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return isExists;
+        }
     }
 }
