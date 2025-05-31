@@ -1,12 +1,11 @@
 ﻿using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces;
-using AppUser = Dentizone.Domain.Entity.AppUser;
 
 namespace Dentizone.Domain.Entity
 {
     public class Payment : IBaseEntity
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string OrderId { get; set; }
         public string BuyerId { get; set; }
         public decimal Amount { get; set; }
