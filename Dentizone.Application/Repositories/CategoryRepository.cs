@@ -34,20 +34,20 @@ namespace Dentizone.Application.Repositories
         public async Task<IEnumerable<Category>> GetAllAsync(int page = 1)
         {
             var categories = await DbContext.Categories.Where(c => !c.IsDeleted)
-                .Skip(CalculatePagination(page))
-                .Take(DefaultPageSize)
-                .ToListAsync();
+                                            .Skip(CalculatePagination(page))
+                                            .Take(DefaultPageSize)
+                                            .ToListAsync();
             return categories;
         }
 
         public async Task<Category?> GetByIdAsync(string id)
         {
             var category = await DbContext.Categories.Where(c => c.Id == id && !c.IsDeleted)
-                .FirstOrDefaultAsync();
+                                          .FirstOrDefaultAsync();
             return category;
         }
 
-        public async Task<Category?> UpdateAsync(Category entity)
+        public async Task<Category?> Update(Category entity)
         {
             DbContext.Categories.Update(entity);
             await DbContext.SaveChangesAsync();
