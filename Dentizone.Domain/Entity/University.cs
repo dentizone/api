@@ -4,7 +4,7 @@ namespace Dentizone.Domain.Entity
 {
     public class University : IBaseEntity
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
         public bool IsSupported { get; set; }
         public DateTime CreatedAt { get; set; }

@@ -1,8 +1,7 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure.Identity;
 
 namespace Dentizone.Infrastructure
 {
@@ -34,6 +33,8 @@ namespace Dentizone.Infrastructure
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletActivity> WalletActivities { get; set; }
         public DbSet<WithdrawalRequest> WithdrawalRequests { get; set; }
+
+        public DbSet<ShipmentActivity> ShipmentActivites { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
