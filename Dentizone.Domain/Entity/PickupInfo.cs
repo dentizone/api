@@ -14,7 +14,7 @@ namespace Dentizone.Domain.Entity
         public virtual Post Post { get; set; }
         public string PostId { get; set; }
 
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }

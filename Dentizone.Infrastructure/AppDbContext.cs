@@ -1,13 +1,13 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure.Identity;
 
 namespace Dentizone.Infrastructure
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Answer> Answers { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<Cart> Carts { get; set; }
@@ -31,7 +31,15 @@ namespace Dentizone.Infrastructure
         public DbSet<UserActivity> UserActivities { get; set; }
         public DbSet<UserAsset> UserAssets { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
-        public object SalesTransaction { get; set; }
+
+      
+           public DbSet<SalesTransaction> SalesTransactions { get; set; }
+
+        public DbSet<WalletActivity> WalletActivities { get; set; }
+        public DbSet<WithdrawalRequest> WithdrawalRequests { get; set; }
+
+        public DbSet<ShipmentActivity> ShipmentActivites { get; set; }
+
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)

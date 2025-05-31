@@ -24,9 +24,8 @@ namespace Dentizone.Application.Repositories
 
         public async Task<Category?> DeleteAsync(string id)
         {
-            var deletedCategory =
-                await DbContext.Categories.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
-            if (deletedCategory is null) return null;
+            var deletedCategory = await GetByIdAsync(id);
+
             DbContext.Categories.Remove(deletedCategory);
             await DbContext.SaveChangesAsync();
             return deletedCategory;
@@ -35,32 +34,25 @@ namespace Dentizone.Application.Repositories
         public async Task<IEnumerable<Category>> GetAllAsync(int page = 1)
         {
             var categories = await DbContext.Categories.Where(c => !c.IsDeleted)
-                                            .Skip(CalculatePagination(page))
-                                            .Take(DefaultPageSize)
-                                            .ToListAsync();
+                .Skip(CalculatePagination(page))
+                .Take(DefaultPageSize)
+                .ToListAsync();
             return categories;
         }
 
         public async Task<Category?> GetByIdAsync(string id)
         {
             var category = await DbContext.Categories.Where(c => c.Id == id && !c.IsDeleted)
-                                          .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync();
             return category;
         }
 
         public async Task<Category?> UpdateAsync(Category entity)
         {
-            var existingCategory =
-                await DbContext.Categories.FirstOrDefaultAsync(c => c.Id == entity.Id && !c.IsDeleted);
-
-            if (existingCategory is null) return null;
-
-            existingCategory.Name = entity.Name;
-            DbContext.Categories.Update(existingCategory);
-
+            DbContext.Categories.Update(entity);
             await DbContext.SaveChangesAsync();
 
-            return existingCategory;
+            return entity;
         }
     }
 }
