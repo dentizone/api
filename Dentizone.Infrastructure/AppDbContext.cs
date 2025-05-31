@@ -31,6 +31,7 @@ namespace Dentizone.Infrastructure
         public DbSet<UserActivity> UserActivities { get; set; }
         public DbSet<UserAsset> UserAssets { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
+        public object SalesTransaction { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
