@@ -22,10 +22,7 @@ namespace Dentizone.Application.Repositories
         public async Task<Post?> DeleteAsync(string id)
         {
             var post = await GetByIdAsync(id);
-            if (post == null)
-            {
-                return null;
-            }
+
 
             dbContext.Posts.Remove(post);
             await dbContext.SaveChangesAsync();
@@ -36,9 +33,9 @@ namespace Dentizone.Application.Repositories
         {
             int skippedPages = CalculatePagination(page);
             return await dbContext.Posts
-                                  .Skip(skippedPages)
-                                  .Take(DefaultPageSize)
-                                  .ToListAsync();
+                .Skip(skippedPages)
+                .Take(DefaultPageSize)
+                .ToListAsync();
         }
 
         public async Task<Post?> GetByIdAsync(string id)

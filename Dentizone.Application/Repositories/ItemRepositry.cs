@@ -24,8 +24,7 @@ namespace Dentizone.Application.Repositories
 
         public async Task<Item?> DeleteAsync(string id)
         {
-            var deletedItem = DbContext.Items.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
-            if (deletedItem is null) return null;
+            var deletedItem = await GetByIdAsync(id);
             DbContext.Items.Remove(deletedItem);
             await DbContext.SaveChangesAsync();
             return deletedItem;
@@ -34,16 +33,16 @@ namespace Dentizone.Application.Repositories
         public async Task<IEnumerable<Item>> GetAllAsync(int page = 1)
         {
             var items = await DbContext.Items.Where(i => !i.IsDeleted)
-                                       .Skip(CalculatePagination(page))
-                                       .Take(DefaultPageSize)
-                                       .ToListAsync();
+                .Skip(CalculatePagination(page))
+                .Take(DefaultPageSize)
+                .ToListAsync();
             return items;
         }
 
         public async Task<Item?> GetByIdAsync(string id)
         {
             var item = await DbContext.Items.Where(i => i.Id == id && !i.IsDeleted)
-                                      .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync();
             return item;
         }
     }

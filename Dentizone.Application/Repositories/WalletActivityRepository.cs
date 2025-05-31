@@ -26,7 +26,6 @@ namespace Dentizone.Application.Repositories
         {
             var activity = await GetByIdAsync(id);
             DbContext.WalletActivities.Remove(activity);
-
             await DbContext.SaveChangesAsync();
             return activity;
         }
@@ -34,16 +33,16 @@ namespace Dentizone.Application.Repositories
         public async Task<IEnumerable<WalletActivity>> GetAllAsync(int page = 1)
         {
             var wallets = await DbContext.WalletActivities.Where(w => !w.IsDeleted)
-                                         .Skip(CalculatePagination(page))
-                                         .Take(DefaultPageSize)
-                                         .ToListAsync();
+                .Skip(CalculatePagination(page))
+                .Take(DefaultPageSize)
+                .ToListAsync();
             return wallets;
         }
 
         public async Task<WalletActivity?> GetByIdAsync(string id)
         {
-            var wallet = await DbContext.Set<WalletActivity>().Where(w => w.Id == id && !w.IsDeleted)
-                                        .FirstOrDefaultAsync();
+            var wallet = await DbContext.WalletActivities.Where(w => w.Id == id && !w.IsDeleted)
+                .FirstOrDefaultAsync();
             return wallet;
         }
     }
