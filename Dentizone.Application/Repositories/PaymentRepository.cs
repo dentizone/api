@@ -34,8 +34,8 @@ namespace Dentizone.Application.Repositories
         public async Task<IEnumerable<Payment>> GetAllAsync(int page = 1)
         {
             var payments = await DbContext.Payments.Where(w => !w.IsDeleted)
-                                          .Take(CalculatePagination(page))
-                                          .Skip(DefaultPageSize)
+                                          .Take(DefaultPageSize)
+                                          .Skip(CalculatePagination(page))
                                           .ToListAsync();
             return payments;
         }
