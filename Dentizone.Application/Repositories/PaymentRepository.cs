@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Abstracts;
+﻿using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -14,6 +9,7 @@ namespace Dentizone.Application.Repositories
     internal class PaymentRepository : AbstractRepository, IPaymentRepository
     {
         public AppDbContext DbContext;
+
         public PaymentRepository(AppDbContext dbContext) : base(dbContext)
         {
             DbContext = dbContext;
@@ -26,50 +22,37 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
-        public async Task<Payment> DeleteAsync(int id)
+        public async Task<Payment?> DeleteAsync(string id)
         {
-            var deleted_payment = DbContext.Payments.FirstOrDefault(x => x.Id == id.ToString() && !x.IsDeleted);
-            if (deleted_payment != null)
-            {
-                deleted_payment.IsDeleted = true;
-                deleted_payment.UpdatedAt = DateTime.UtcNow;
-                DbContext.Payments.Update(deleted_payment);
-            }
-
+            var payment = await GetByIdAsync(id);
+            DbContext.Payments.Remove(payment);
 
             await DbContext.SaveChangesAsync();
-            return deleted_payment;
+            return payment;
         }
 
         public async Task<IEnumerable<Payment>> GetAllAsync(int page = 1)
         {
-            var payments = await DbContext.Set<Payment>().Where(w => !w.IsDeleted).ToListAsync();
+            var payments = await DbContext.Payments.Where(w => !w.IsDeleted)
+                                          .Take(CalculatePagination(page))
+                                          .Skip(DefaultPageSize)
+                                          .ToListAsync();
             return payments;
         }
 
-        public async Task<Payment> GetByIdAsync(int id)
+        public async Task<Payment?> GetByIdAsync(string id)
         {
-            var payment = await DbContext.Set<Payment>().Where(w => w.Id == id.ToString() && !w.IsDeleted).FirstOrDefaultAsync();
+            var payment = await DbContext.Payments.Where(w => w.Id == id && !w.IsDeleted).FirstOrDefaultAsync();
             return payment;
         }
 
         public async Task<Payment> UpdateAsync(Payment entity)
         {
-            var existingPayment = await DbContext.Payments.FirstOrDefaultAsync(w => w.Id == entity.Id && !w.IsDeleted);
-            if (existingPayment != null)
-            {
-                existingPayment.Amount = entity.Amount;
-                existingPayment.Status = entity.Status;
-                existingPayment.Method= entity.Method;
-                existingPayment.UpdatedAt = DateTime.UtcNow;
-                DbContext.Payments.Update(existingPayment);
+            DbContext.Payments.Update(entity);
 
-                
-            }
             await DbContext.SaveChangesAsync();
 
-            return existingPayment;
-
+            return entity;
         }
     }
 }

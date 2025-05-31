@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Abstracts;
+﻿using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -13,7 +8,8 @@ namespace Dentizone.Application.Repositories
 {
     internal class WalletActivityRepository : AbstractRepository, IWalletActivityRepository
     {
-        private AppDbContext DbContext;
+        private readonly AppDbContext DbContext;
+
         public WalletActivityRepository(AppDbContext dbContext) : base(dbContext)
         {
             DbContext = dbContext;
@@ -21,36 +17,33 @@ namespace Dentizone.Application.Repositories
 
         public async Task<WalletActivity> CreateAsync(WalletActivity entity)
         {
-            
             await DbContext.WalletActivities.AddAsync(entity);
             await DbContext.SaveChangesAsync();
             return entity;
         }
 
-        public async Task<WalletActivity> DeleteAsync(int id)
+        public async Task<WalletActivity?> DeleteAsync(string id)
         {
-            var deleted_wallet = DbContext.WalletActivities.FirstOrDefault(x => x.Id == id.ToString() && !x.IsDeleted);
-            if (deleted_wallet != null)
-            {
-                deleted_wallet.IsDeleted = true;
-                deleted_wallet.UpdatedAt = DateTime.UtcNow;
-                DbContext.WalletActivities.Update(deleted_wallet);
-            }
-            
-            
+            var activity = await GetByIdAsync(id);
+            DbContext.WalletActivities.Remove(activity);
+
             await DbContext.SaveChangesAsync();
-            return deleted_wallet;
+            return activity;
         }
 
         public async Task<IEnumerable<WalletActivity>> GetAllAsync(int page = 1)
         {
-            var wallets = await DbContext.Set<WalletActivity>().Where(w => !w.IsDeleted).ToListAsync();
+            var wallets = await DbContext.WalletActivities.Where(w => !w.IsDeleted)
+                                         .Skip(CalculatePagination(page))
+                                         .Take(DefaultPageSize)
+                                         .ToListAsync();
             return wallets;
         }
 
-        public async Task<WalletActivity> GetByIdAsync(int id)
+        public async Task<WalletActivity?> GetByIdAsync(string id)
         {
-            var wallet = await DbContext.Set<WalletActivity>().Where(w => w.Id == id.ToString() && !w.IsDeleted).FirstOrDefaultAsync();
+            var wallet = await DbContext.Set<WalletActivity>().Where(w => w.Id == id && !w.IsDeleted)
+                                        .FirstOrDefaultAsync();
             return wallet;
         }
     }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Abstracts;
+﻿using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -14,6 +9,7 @@ namespace Dentizone.Application.Repositories
     internal class WithdrawalRequestRepository : AbstractRepository, IWithdrawalRequestRepository
     {
         private AppDbContext DbContext;
+
         public WithdrawalRequestRepository(AppDbContext dbContext) : base(dbContext)
         {
             DbContext = dbContext;
@@ -26,15 +22,10 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
-        public async Task<WithdrawalRequest> DeleteAsync(int id)
+        public async Task<WithdrawalRequest?> DeleteAsync(string id)
         {
-            var deleted_request = DbContext.WithdrawalRequests.FirstOrDefault(x => x.Id == id.ToString() && !x.IsDeleted);
-            if (deleted_request != null)
-            {
-                deleted_request.IsDeleted = true;
-                deleted_request.UpdatedAt = DateTime.UtcNow;
-                DbContext.WithdrawalRequests.Update(deleted_request);
-            }
+            var deleted_request = await GetByIdAsync(id);
+            DbContext.WithdrawalRequests.Remove(deleted_request);
 
 
             await DbContext.SaveChangesAsync();
@@ -43,33 +34,28 @@ namespace Dentizone.Application.Repositories
 
         public async Task<IEnumerable<WithdrawalRequest>> GetAllAsync(int page = 1)
         {
-            var requests = await DbContext.Set<WithdrawalRequest>().Where(w => !w.IsDeleted).ToListAsync();
+            var requests = await DbContext.WithdrawalRequests.Where(w => !w.IsDeleted)
+                                          .Skip(CalculatePagination(page))
+                                          .Take(DefaultPageSize)
+                                          .ToListAsync();
             return requests;
         }
 
-        public async Task<WithdrawalRequest> GetByIdAsync(int id)
+        public async Task<WithdrawalRequest?> GetByIdAsync(string id)
         {
-            var request = await DbContext.Set<WithdrawalRequest>().Where(w => w.Id == id.ToString() && !w.IsDeleted).FirstOrDefaultAsync();
+            var request = await DbContext.WithdrawalRequests.Where(w => w.Id == id && !w.IsDeleted)
+                                         .FirstOrDefaultAsync();
             return request;
         }
 
         public async Task<WithdrawalRequest> UpdateAsync(WithdrawalRequest entity)
         {
-            var existingRequest = await DbContext.WithdrawalRequests.FirstOrDefaultAsync(w => w.Id == entity.Id && !w.IsDeleted);
-            if (existingRequest != null)
-            {
-                existingRequest.Amount = entity.Amount;
-                existingRequest.Status = entity.Status;
-                
-                existingRequest.UpdatedAt = DateTime.UtcNow;
-                DbContext.WithdrawalRequests.Update(existingRequest);
+            DbContext.WithdrawalRequests.Update(entity);
 
 
-            }
             await DbContext.SaveChangesAsync();
 
-            return existingRequest;
-
+            return entity;
         }
     }
 }
