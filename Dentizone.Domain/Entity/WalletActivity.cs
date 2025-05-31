@@ -5,7 +5,7 @@ namespace Dentizone.Domain.Entity
 {
     public class WalletActivity : IBaseEntity
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string WalletId { get; set; }
         public WalletActivityTypes ActivityType { get; set; }
         public decimal Amount { get; set; }
