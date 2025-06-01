@@ -3,7 +3,7 @@ using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Domain.Entity
 {
-    public class ReviewUx : IBaseEntity
+    public class ReviewUx : IBaseEntity , IDeletable, IUpdatable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public DateTime CreatedAt { get; set; }

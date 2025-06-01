@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -19,6 +20,24 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
+        public async Task<Asset?> FindBy(Expression<Func<Asset, bool>> condition,
+            Expression<Func<Asset, object>>[]? includes)
+        {
+            var query = dbContext.Assets.AsQueryable();
+            if (includes == null)
+                return await query
+                    .FirstOrDefaultAsync(condition);
+
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query
+                .FirstOrDefaultAsync(condition);
+        }
+
         public async Task<Asset?> DeleteAsync(string id)
         {
             var asset = await GetByIdAsync(id);
@@ -27,23 +46,16 @@ namespace Dentizone.Application.Repositories
             return asset;
         }
 
-        public async Task<IEnumerable<Asset>> GetAllAsync(int page = 1)
-        {
-            var skippedPages = CalculatePagination(page);
-            return await dbContext.Assets
-                                  .Skip(skippedPages)
-                                  .Take(DefaultPageSize)
-                                  .ToListAsync();
-        }
 
         public async Task<Asset?> GetByIdAsync(string id)
         {
-            return await dbContext.Assets.FindAsync(id);
+            return await dbContext.Assets
+                .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
         }
 
         public async Task<Asset> UpdateAsync(Asset entity)
         {
-            dbContext.Update(entity);
+            dbContext.Assets.Update(entity);
             await dbContext.SaveChangesAsync();
             return entity;
         }

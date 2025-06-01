@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -22,28 +23,24 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
-        public async Task<Category?> DeleteAsync(string id)
+        public async Task<Category?> FindBy(Expression<Func<Category, bool>> condition
+            , Expression<Func<Category, object>>[]? includes)
         {
-            var deletedCategory = await GetByIdAsync(id);
+            IQueryable<Category> query = DbContext.Categories;
+            if (includes == null) return await query.FirstOrDefaultAsync(condition);
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
 
-            DbContext.Categories.Remove(deletedCategory);
-            await DbContext.SaveChangesAsync();
-            return deletedCategory;
+            return await query.FirstOrDefaultAsync(condition);
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync(int page = 1)
-        {
-            var categories = await DbContext.Categories.Where(c => !c.IsDeleted)
-                                            .Skip(CalculatePagination(page))
-                                            .Take(DefaultPageSize)
-                                            .ToListAsync();
-            return categories;
-        }
 
         public async Task<Category?> GetByIdAsync(string id)
         {
             var category = await DbContext.Categories.Where(c => c.Id == id && !c.IsDeleted)
-                                          .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync();
             return category;
         }
 
@@ -53,6 +50,26 @@ namespace Dentizone.Application.Repositories
             await DbContext.SaveChangesAsync();
 
             return entity;
+        }
+
+        public async Task<Category?> Delete(string id)
+        {
+            var category = await GetByIdAsync(id);
+            if (category == null)
+            {
+                return null;
+            }
+
+            DbContext.Categories.Remove(category);
+            await DbContext.SaveChangesAsync();
+            return category;
+        }
+
+        public async Task<IEnumerable<Category>> GetAll()
+        {
+            return await DbContext.Categories
+                .Where(c => !c.IsDeleted)
+                .ToListAsync();
         }
     }
 }

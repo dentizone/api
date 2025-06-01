@@ -30,8 +30,6 @@ namespace Dentizone.Infrastructure.Models
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql(SqlCommon.Date);
 
-            builder.Property(ua => ua.UpdatedAt)
-                .IsRequired();
 
             builder.Property(ua => ua.DetectedAt)
                 .IsRequired();

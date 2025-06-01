@@ -13,7 +13,6 @@ internal class BaseEntityInterceptor : SaveChangesInterceptor
         if (context == null) return base.SavingChanges(eventData, result);
 
         var entries = context.ChangeTracker.Entries<IBaseEntity>();
-
         var now = DateTime.UtcNow;
 
         foreach (var entry in entries)
@@ -23,24 +22,38 @@ internal class BaseEntityInterceptor : SaveChangesInterceptor
                 case EntityState.Added:
                 {
                     entry.Entity.CreatedAt = now;
-                    entry.Entity.UpdatedAt = now;
+
+                    if (entry.Entity is IUpdatable updatable)
+                        updatable.UpdatedAt = now;
 
                     if (string.IsNullOrEmpty(entry.Entity.Id))
-                    {
                         entry.Entity.Id = Guid.NewGuid().ToString();
-                    }
 
-                    entry.Entity.IsDeleted = false;
+                    if (entry.Entity is IDeletable deletable)
+                        deletable.IsDeleted = false;
+
                     break;
                 }
                 case EntityState.Modified:
-                    entry.Entity.UpdatedAt = now;
+                {
+                    if (entry.Entity is IUpdatable updatable)
+                        updatable.UpdatedAt = now;
                     break;
+                }
                 case EntityState.Deleted:
-                    entry.State = EntityState.Modified;
-                    entry.Entity.IsDeleted = true;
-                    entry.Entity.UpdatedAt = now;
+                {
+                    if (entry.Entity is IDeletable deletable)
+                    {
+                        deletable.IsDeleted = true;
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        context.Entry(entry.Entity).State = EntityState.Unchanged;
+                    }
+
                     break;
+                }
             }
         }
 

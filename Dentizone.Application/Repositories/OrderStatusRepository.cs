@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -15,17 +16,9 @@ public class OrderStatusRepository : AbstractRepository, IOrderStatusRepository
     public async Task<OrderStatus?> GetByIdAsync(string id)
     {
         return await dbContext.OrderStatuses
-            .FirstOrDefaultAsync(o => o.Id == id && !o.IsDeleted);
+            .FirstOrDefaultAsync(o => o.Id == id);
     }
 
-    public async Task<IEnumerable<OrderStatus>> GetAllAsync(int page = 1)
-    {
-        return await dbContext.OrderStatuses
-            .Where(o => !o.IsDeleted)
-            .Skip(CalculatePagination(page))
-            .Take(DefaultPageSize)
-            .ToListAsync();
-    }
 
     public async Task<OrderStatus> CreateAsync(OrderStatus entity)
     {
@@ -34,16 +27,26 @@ public class OrderStatusRepository : AbstractRepository, IOrderStatusRepository
         return entity;
     }
 
-    public async Task<OrderStatus?> DeleteAsync(string id)
+    public async Task<OrderStatus?> FindBy(Expression<Func<OrderStatus, bool>> condition,
+        Expression<Func<OrderStatus, object>>[]? includes)
     {
-        var toBeDeleted = await GetByIdAsync(id);
-        if (toBeDeleted == null)
+        IQueryable<OrderStatus> query = dbContext.OrderStatuses;
+        if (includes != null)
         {
-            return null;
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
         }
 
-        dbContext.OrderStatuses.Remove(toBeDeleted);
-        await dbContext.SaveChangesAsync();
-        return toBeDeleted;
+        return await query.FirstOrDefaultAsync(condition);
+    }
+
+
+    public async Task<IEnumerable<OrderStatus>> Find(Expression<Func<OrderStatus, bool>> filter)
+    {
+        return await dbContext.OrderStatuses
+            .Where(filter)
+            .ToListAsync();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -16,16 +17,9 @@ namespace Dentizone.Application.Repositories
         public async Task<SubCategory?> GetByIdAsync(string id)
         {
             return await dbContext.SubCategories
-                                  .FirstOrDefaultAsync(sc => sc.Id == id);
+                .FirstOrDefaultAsync(sc => sc.Id == id);
         }
 
-        public async Task<IEnumerable<SubCategory>> GetAllAsync(int page = 1)
-        {
-            return await dbContext.SubCategories.Where(c => !c.IsDeleted)
-                                  .Skip(CalculatePagination(page))
-                                  .Take(DefaultPageSize)
-                                  .ToListAsync();
-        }
 
         public async Task<SubCategory> CreateAsync(SubCategory entity)
         {
@@ -34,13 +28,40 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
+        public async Task<SubCategory?> FindBy(Expression<Func<SubCategory, bool>> condition,
+            Expression<Func<SubCategory, object>>[]? includes)
+        {
+            IQueryable<SubCategory> query = dbContext.SubCategories;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
+        }
+
         public async Task<SubCategory?> DeleteAsync(string id)
         {
             var toBeDeleted = await GetByIdAsync(id);
 
+            if (toBeDeleted == null)
+            {
+                return null;
+            }
+
             dbContext.SubCategories.Remove(toBeDeleted);
 
             return toBeDeleted;
+        }
+
+        public async Task<ICollection<SubCategory>> GetAll()
+        {
+            return await dbContext.SubCategories
+                .Include(sc => sc.Category)
+                .ToListAsync();
         }
 
         public async Task<SubCategory?> Update(SubCategory entity)

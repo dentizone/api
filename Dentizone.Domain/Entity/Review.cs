@@ -2,7 +2,7 @@
 
 namespace Dentizone.Domain.Entity
 {
-    public class Review : IBaseEntity
+    public class Review : IBaseEntity , IDeletable, IUpdatable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string UserId { get; set; }

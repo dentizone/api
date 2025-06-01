@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -15,22 +16,9 @@ public class SaleTransactionRepository : AbstractRepository, ISaleTransactionRep
     public async Task<SalesTransaction?> GetByIdAsync(string id)
     {
         return await dbContext.SalesTransactions
-            .Include(st => st.Wallet)
-            .Include(st => st.Payment)
-            .FirstOrDefaultAsync(st => st.Id == id && !st.IsDeleted);
+            .FirstOrDefaultAsync(st => st.Id == id);
     }
 
-    public async Task<IEnumerable<SalesTransaction>> GetAllAsync(int page = 1)
-    {
-        int skip = CalculatePagination(page);
-        return await dbContext.SalesTransactions
-            .Include(st => st.Wallet)
-            .Include(st => st.Payment)
-            .Where(st => !st.IsDeleted)
-            .Skip(skip)
-            .Take(DefaultPageSize)
-            .ToListAsync();
-    }
 
     public async Task<SalesTransaction> CreateAsync(SalesTransaction entity)
     {
@@ -39,27 +27,24 @@ public class SaleTransactionRepository : AbstractRepository, ISaleTransactionRep
         return entity;
     }
 
-    public async Task<SalesTransaction?> DeleteAsync(string id)
+    public async Task<SalesTransaction?> FindBy(Expression<Func<SalesTransaction, bool>> condition,
+        Expression<Func<SalesTransaction, object>>[]? includes)
     {
-        var entity = await GetByIdAsync(id);
-        if (entity == null)
+        IQueryable<SalesTransaction> query = dbContext.SalesTransactions;
+        if (includes != null)
         {
-            return null;
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
         }
 
-        dbContext.SalesTransactions.Remove(entity);
-        await dbContext.SaveChangesAsync();
-        return entity;
+        return await query.FirstOrDefaultAsync(condition);
     }
 
-    public async Task<SalesTransaction?> UpdateAsync(SalesTransaction entity)
-    {
-        var existingEntity = await GetByIdAsync(entity.Id);
-        if (existingEntity == null)
-        {
-            return null;
-        }
 
+    public async Task<SalesTransaction> UpdateAsync(SalesTransaction entity)
+    {
         dbContext.SalesTransactions.Update(entity);
         await dbContext.SaveChangesAsync();
         return entity;

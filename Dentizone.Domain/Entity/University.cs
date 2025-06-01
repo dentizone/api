@@ -2,7 +2,7 @@
 
 namespace Dentizone.Domain.Entity
 {
-    public class University : IBaseEntity
+    public class University : IBaseEntity, IDeletable, IUpdatable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }

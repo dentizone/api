@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -15,17 +16,9 @@ namespace Dentizone.Application.Repositories
         public async Task<PickupInfo?> GetByIdAsync(string id)
         {
             return await dbContext.PickupInfos
-                                  .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<IEnumerable<PickupInfo>> GetAllAsync(int page = 1)
-        {
-            return await dbContext.PickupInfos
-                                  .Where(p => !p.IsDeleted)
-                                  .Skip(CalculatePagination(page))
-                                  .Take(DefaultPageSize)
-                                  .ToListAsync();
-        }
 
         public async Task<PickupInfo> CreateAsync(PickupInfo entity)
         {
@@ -34,13 +27,21 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
-        public async Task<PickupInfo?> DeleteAsync(string id)
+        public async Task<PickupInfo?> FindBy(Expression<Func<PickupInfo, bool>> condition,
+            Expression<Func<PickupInfo, object>>[]? includes)
         {
-            var toBeDeleted = await GetByIdAsync(id);
-            dbContext.PickupInfos.Remove(toBeDeleted);
-            await dbContext.SaveChangesAsync();
-            return toBeDeleted;
+            IQueryable<PickupInfo> query = dbContext.PickupInfos;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
         }
+
 
         public async Task<PickupInfo> Update(PickupInfo entity)
         {

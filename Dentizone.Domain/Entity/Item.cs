@@ -2,7 +2,7 @@
 
 namespace Dentizone.Domain.Entity
 {
-    public class Item : IBaseEntity
+    public class Item : IBaseEntity, IDeletable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string CategoryId { set; get; }
@@ -14,7 +14,6 @@ namespace Dentizone.Domain.Entity
 
         public virtual Post Post { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

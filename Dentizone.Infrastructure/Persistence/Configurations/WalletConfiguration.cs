@@ -29,9 +29,6 @@ internal class WalletConfiguration : IEntityTypeConfiguration<Wallet>
         builder.Property(w => w.UpdatedAt)
             .IsRequired();
 
-        builder.Property(w => w.IsDeleted)
-            .IsRequired()
-            .HasDefaultValue(false);
 
         builder.Property(w => w.UpdatedAt).IsRequired();
 

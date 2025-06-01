@@ -2,7 +2,7 @@
 
 namespace Dentizone.Domain.Entity
 {
-    public class OrderPickup : IBaseEntity
+    public class OrderPickup : IBaseEntity, IDeletable, IUpdatable
     {
         public string OrderId { get; set; }
         public Order Order { get; set; }

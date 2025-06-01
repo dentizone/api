@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -15,17 +16,9 @@ namespace Dentizone.Application.Repositories
         public async Task<UserActivity?> GetByIdAsync(string id)
         {
             return await dbContext.UserActivities
-                                  .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<IEnumerable<UserActivity>> GetAllAsync(int page = 1)
-        {
-            return await dbContext.UserActivities
-                                  .Where(u => !u.IsDeleted)
-                                  .Skip(CalculatePagination(page))
-                                  .Take(DefaultPageSize)
-                                  .ToListAsync();
-        }
 
         public async Task<UserActivity> CreateAsync(UserActivity entity)
         {
@@ -34,17 +27,34 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
-        public async Task<UserActivity?> DeleteAsync(string id)
+        public async Task<UserActivity?> FindBy(Expression<Func<UserActivity, bool>> condition,
+            Expression<Func<UserActivity, object>>[]? includes)
         {
-            var toBeDeleted = await GetByIdAsync(id);
-            if (toBeDeleted == null)
+            IQueryable<UserActivity> query = dbContext.UserActivities;
+            if (includes != null)
             {
-                return null;
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
             }
 
-            dbContext.UserActivities.Remove(toBeDeleted);
-            await dbContext.SaveChangesAsync();
-            return toBeDeleted;
+            return await query.FirstOrDefaultAsync(condition);
+        }
+
+        public async Task<ICollection<UserActivity>> GetAllBy(int page, Expression<Func<UserActivity, bool>>? filter)
+        {
+            IQueryable<UserActivity> query = dbContext.UserActivities;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query
+                .OrderByDescending(u => u.CreatedAt)
+                .Skip(CalculatePagination(page))
+                .Take(DefaultPageSize)
+                .ToListAsync();
         }
     }
 }

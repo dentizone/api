@@ -17,15 +17,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.Property(sa => sa.OrderId)
                 .IsRequired();
 
-            builder.Property(sa => sa.ShippedBy)
-                .IsRequired();
-
 
             builder.Property(sa => sa.Status)
-                .IsRequired();
-
-
-            builder.Property(sa => sa.AssignedBy)
                 .IsRequired();
 
 
@@ -34,8 +27,8 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             builder.Property(sa => sa.CreatedAt)
                 .IsRequired()
-                .HasColumnType("timestamp")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql(SqlCommon.Date);
 
 
             builder.HasOne(sa => sa.Order)

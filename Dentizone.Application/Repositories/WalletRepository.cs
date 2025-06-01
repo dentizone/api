@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -22,25 +23,26 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
-        public Task<Wallet?> DeleteAsync(string id)
+        public async Task<Wallet?> FindBy(Expression<Func<Wallet, bool>> condition,
+            Expression<Func<Wallet, object>>[]? includes)
         {
-            throw new NotImplementedException(); // TO BE REVMOVED 
+            IQueryable<Wallet> query = DbContext.Wallets;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
         }
 
-
-        public async Task<IEnumerable<Wallet>> GetAllAsync(int page = 1)
-        {
-            var wallets = await DbContext.Wallets.Where(w => !w.IsDeleted)
-                                         .Skip(CalculatePagination(page))
-                                         .Take(DefaultPageSize)
-                                         .ToListAsync();
-            return wallets;
-        }
 
         public async Task<Wallet?> GetByIdAsync(string id)
         {
-            var wallet = await DbContext.Wallets.Where(w => w.Id == id && !w.IsDeleted)
-                                        .FirstOrDefaultAsync();
+            var wallet = await DbContext.Wallets.Where(w => w.Id == id)
+                .FirstOrDefaultAsync();
             return wallet;
         }
 

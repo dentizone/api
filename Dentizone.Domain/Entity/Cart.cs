@@ -2,13 +2,12 @@
 
 namespace Dentizone.Domain.Entity
 {
-    public class Cart : IBaseEntity
+    public class Cart : IBaseEntity, IDeletable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string UserId { get; set; }
         public string PostId { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
 
         public bool IsDeleted { get; set; }
 

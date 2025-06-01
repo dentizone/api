@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -16,17 +17,9 @@ namespace Dentizone.Application.Repositories
         {
             return await
                 dbContext.ShipmentActivities
-                         .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted);
+                    .FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task<IEnumerable<ShipmentActivity>> GetAllAsync(int page = 1)
-        {
-            return await dbContext.ShipmentActivities
-                                  .Where(s => !s.IsDeleted)
-                                  .Skip(CalculatePagination(page))
-                                  .Take(DefaultPageSize)
-                                  .ToListAsync();
-        }
 
         public async Task<ShipmentActivity> CreateAsync(ShipmentActivity entity)
         {
@@ -35,9 +28,29 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
+        public async Task<ShipmentActivity?> FindBy(Expression<Func<ShipmentActivity, bool>> condition,
+            Expression<Func<ShipmentActivity, object>>[]? includes)
+        {
+            IQueryable<ShipmentActivity> query = dbContext.ShipmentActivities;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
+        }
+
         public async Task<ShipmentActivity?> DeleteAsync(string id)
         {
             var toBeDeleted = await GetByIdAsync(id);
+
+            if (toBeDeleted == null)
+            {
+                return null;
+            }
 
             dbContext.ShipmentActivities.Remove(toBeDeleted);
             await dbContext.SaveChangesAsync();

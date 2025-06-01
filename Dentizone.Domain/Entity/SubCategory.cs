@@ -2,7 +2,7 @@
 
 namespace Dentizone.Domain.Entity
 {
-    public class SubCategory : IBaseEntity
+    public class SubCategory : IBaseEntity, IDeletable, IUpdatable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
 

@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -17,14 +18,6 @@ namespace Dentizone.Application.Repositories
             return await dbContext.Universities.Where(u => !u.IsDeleted).FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<IEnumerable<University>> GetAllAsync(int page = 1)
-        {
-            return await dbContext.Universities
-                                  .Where(u => !u.IsDeleted)
-                                  .Skip(CalculatePagination(page))
-                                  .Take(DefaultPageSize)
-                                  .ToListAsync();
-        }
 
         public async Task<University> CreateAsync(University entity)
         {
@@ -33,9 +26,29 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
+        public async Task<University?> FindBy(Expression<Func<University, bool>> condition,
+            Expression<Func<University, object>>[]? includes)
+        {
+            IQueryable<University> query = dbContext.Universities.Where(u => !u.IsDeleted);
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
+        }
+
         public async Task<University?> DeleteAsync(string id)
         {
             var toBeDeleted = await GetByIdAsync(id);
+
+            if (toBeDeleted == null)
+            {
+                return null;
+            }
 
             dbContext.Universities.Remove(toBeDeleted);
             await dbContext.SaveChangesAsync();
@@ -48,6 +61,14 @@ namespace Dentizone.Application.Repositories
             dbContext.Universities.Update(entity);
             await dbContext.SaveChangesAsync();
             return entity;
+        }
+
+
+        public async Task<ICollection<University>> GetAll()
+        {
+            return await dbContext.Universities
+                .Where(u => !u.IsDeleted)
+                .ToListAsync();
         }
     }
 }

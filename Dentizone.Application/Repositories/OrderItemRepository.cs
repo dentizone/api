@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -16,18 +17,9 @@ public class OrderItemRepository : AbstractRepository, IOrderItemRepository
     {
         return
             await dbContext.OrderItems
-                           .FirstOrDefaultAsync(o => o.Id == id && !o.IsDeleted);
+                .FirstOrDefaultAsync(o => o.Id == id);
     }
 
-    public async Task<IEnumerable<OrderItem>> GetAllAsync(int page = 1)
-    {
-        return
-            await dbContext.OrderItems
-                           .Where(o => !o.IsDeleted)
-                           .Skip(CalculatePagination(page))
-                           .Take(DefaultPageSize)
-                           .ToListAsync();
-    }
 
     public async Task<OrderItem> CreateAsync(OrderItem entity)
     {
@@ -36,16 +28,18 @@ public class OrderItemRepository : AbstractRepository, IOrderItemRepository
         return entity;
     }
 
-    public async Task<OrderItem?> DeleteAsync(string id)
+    public async Task<OrderItem?> FindBy(Expression<Func<OrderItem, bool>> condition,
+        Expression<Func<OrderItem, object>>[]? includes)
     {
-        var toBeDeleted = await GetByIdAsync(id);
-        if (toBeDeleted == null)
+        IQueryable<OrderItem> query = dbContext.OrderItems;
+        if (includes != null)
         {
-            return null;
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
         }
 
-        dbContext.OrderItems.Remove(toBeDeleted);
-        await dbContext.SaveChangesAsync();
-        return toBeDeleted;
+        return await query.FirstOrDefaultAsync(condition);
     }
 }

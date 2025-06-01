@@ -23,7 +23,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             builder.HasOne(o => o.ShipInfo)
                 .WithOne(si => si.Order)
-                .HasForeignKey<Order>(o => o.ShipInfoId);
+                .HasForeignKey<ShipInfo>(o => o.OrderId);
 
             builder.Property(p => p.CompletedAt).IsRequired(false);
 

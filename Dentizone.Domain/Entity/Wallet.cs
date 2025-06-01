@@ -3,7 +3,7 @@ using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Domain.Entity
 {
-    public class Wallet : IBaseEntity
+    public class Wallet : IBaseEntity, IUpdatable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
@@ -17,7 +17,6 @@ namespace Dentizone.Domain.Entity
         // Relationship: One Wallet to One User
         public virtual AppUser User { get; set; }
         public string UserId { get; set; }
-        public bool IsDeleted { get; set; }
 
         public virtual ICollection<WalletActivity> WalletActivities { get; set; } = new List<WalletActivity>();
         public virtual ICollection<SalesTransaction> SalesTransactions { get; set; } = new List<SalesTransaction>();

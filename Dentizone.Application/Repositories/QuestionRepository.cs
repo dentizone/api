@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -19,22 +20,34 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
+        public async Task<Question?> FindBy(Expression<Func<Question, bool>> condition,
+            Expression<Func<Question, object>>[]? includes)
+        {
+            IQueryable<Question> query = dbContext.Questions;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
+        }
+
         public async Task<Question?> DeleteAsync(string id)
         {
             var question = await GetByIdAsync(id);
+            if (question == null)
+            {
+                return null;
+            }
+
             dbContext.Questions.Remove(question);
             await dbContext.SaveChangesAsync();
             return question;
         }
 
-        public async Task<IEnumerable<Question>> GetAllAsync(int page = 1)
-        {
-            int skippedPages = CalculatePagination(page);
-            return await dbContext.Questions
-                .Skip(skippedPages)
-                .Take(DefaultPageSize)
-                .ToListAsync();
-        }
 
         public async Task<Question?> GetByIdAsync(string id)
         {

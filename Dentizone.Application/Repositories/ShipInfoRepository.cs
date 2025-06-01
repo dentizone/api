@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -15,17 +16,9 @@ namespace Dentizone.Application.Repositories
         public async Task<ShipInfo?> GetByIdAsync(string id)
         {
             return await dbContext.ShipInfos
-                                  .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted);
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task<IEnumerable<ShipInfo>> GetAllAsync(int page = 1)
-        {
-            return await dbContext.ShipInfos
-                                  .Where(s => !s.IsDeleted)
-                                  .Skip(CalculatePagination(page))
-                                  .Take(DefaultPageSize)
-                                  .ToListAsync();
-        }
 
         public async Task<ShipInfo> CreateAsync(ShipInfo entity)
         {
@@ -34,19 +27,19 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
-        public async Task<ShipInfo?> DeleteAsync(string id)
+        public async Task<ShipInfo?> FindBy(Expression<Func<ShipInfo, bool>> condition,
+            Expression<Func<ShipInfo, object>>[]? includes)
         {
-            var entity = await GetByIdAsync(id);
-            dbContext.ShipInfos.Remove(entity);
-            await dbContext.SaveChangesAsync();
-            return entity;
-        }
+            IQueryable<ShipInfo> query = dbContext.ShipInfos;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
 
-        public async Task<ShipInfo> Update(ShipInfo entity)
-        {
-            dbContext.ShipInfos.Update(entity);
-            await dbContext.SaveChangesAsync();
-            return entity;
+            return await query.FirstOrDefaultAsync(condition);
         }
     }
 }

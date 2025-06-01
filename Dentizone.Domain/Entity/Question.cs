@@ -3,7 +3,7 @@ using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Domain.Entity
 {
-    public class Question : IBaseEntity
+    public class Question : IBaseEntity, IUpdatable, IDeletable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string PostId { get; set; }

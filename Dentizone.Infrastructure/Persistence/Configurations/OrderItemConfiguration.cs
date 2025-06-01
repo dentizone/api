@@ -18,6 +18,12 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.HasOne(oi => oi.Order)
                 .WithMany(o => o.OrderItems)
                 .HasForeignKey(oi => oi.OrderId);
+
+
+            builder.HasOne(oi => oi.Post)
+                .WithMany()
+                .HasForeignKey(oi => oi.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
