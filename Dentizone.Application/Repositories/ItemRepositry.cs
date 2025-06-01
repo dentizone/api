@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -8,40 +9,44 @@ namespace Dentizone.Application.Repositories
 {
     internal class ItemRepository : AbstractRepository, IItemRepository
     {
-        private readonly AppDbContext DbContext;
-
         public ItemRepository(AppDbContext dbContext) : base(dbContext)
         {
-            DbContext = dbContext;
         }
 
         public async Task<Item> CreateAsync(Item entity)
         {
-            await DbContext.Items.AddAsync(entity);
-            await DbContext.SaveChangesAsync();
+            await dbContext.Items.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task<Item?> FindBy(Expression<Func<Item, bool>> condition,
+            Expression<Func<Item, object>>[]? includes)
+        {
+            IQueryable<Item> query = dbContext.Items;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
         }
 
         public async Task<Item?> DeleteAsync(string id)
         {
             var deletedItem = await GetByIdAsync(id);
-            DbContext.Items.Remove(deletedItem);
-            await DbContext.SaveChangesAsync();
+            dbContext.Items.Remove(deletedItem);
+            await dbContext.SaveChangesAsync();
             return deletedItem;
         }
 
-        public async Task<IEnumerable<Item>> GetAllAsync(int page = 1)
-        {
-            var items = await DbContext.Items.Where(i => !i.IsDeleted)
-                .Skip(CalculatePagination(page))
-                .Take(DefaultPageSize)
-                .ToListAsync();
-            return items;
-        }
 
         public async Task<Item?> GetByIdAsync(string id)
         {
-            var item = await DbContext.Items.Where(i => i.Id == id && !i.IsDeleted)
+            var item = await dbContext.Items.Where(i => i.Id == id && !i.IsDeleted)
                 .FirstOrDefaultAsync();
             return item;
         }

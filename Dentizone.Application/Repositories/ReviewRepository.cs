@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -15,17 +16,9 @@ namespace Dentizone.Application.Repositories
         public async Task<Review?> GetByIdAsync(string id)
         {
             return await dbContext.Reviews
-                                  .FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
+                .FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
         }
 
-        public async Task<IEnumerable<Review>> GetAllAsync(int page = 1)
-        {
-            return await dbContext.Reviews
-                                  .Where(r => !r.IsDeleted)
-                                  .Skip(CalculatePagination(page))
-                                  .Take(DefaultPageSize)
-                                  .ToListAsync();
-        }
 
         public async Task<Review> CreateAsync(Review entity)
         {
@@ -34,9 +27,29 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
+        public async Task<Review?> FindBy(Expression<Func<Review, bool>> condition,
+            Expression<Func<Review, object>>[]? includes)
+        {
+            IQueryable<Review> query = dbContext.Reviews;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
+        }
+
         public async Task<Review?> DeleteAsync(string id)
         {
             var toBeDeleted = await GetByIdAsync(id);
+            if (toBeDeleted == null)
+            {
+                return null;
+            }
+
             dbContext.Reviews.Remove(toBeDeleted);
             return toBeDeleted;
         }

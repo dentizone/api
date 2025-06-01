@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -15,19 +16,9 @@ namespace Dentizone.Application.Repositories
         public async Task<Cart?> GetByIdAsync(string id)
         {
             return await dbContext.Carts
-                                  .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+                .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
         }
 
-        public async Task<IEnumerable<Cart>> GetAllAsync(int page = 1)
-        {
-            return
-                await
-                    dbContext.Carts
-                             .Where(c => !c.IsDeleted)
-                             .Skip(CalculatePagination(page))
-                             .Take(DefaultPageSize)
-                             .ToListAsync();
-        }
 
         public async Task<Cart> CreateAsync(Cart entity)
         {
@@ -36,17 +27,30 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
+        public async Task<Cart?> FindBy(Expression<Func<Cart, bool>> condition,
+            Expression<Func<Cart, object>>[]? includes)
+        {
+            IQueryable<Cart> query = dbContext.Carts;
+            if (includes == null) return await query.FirstOrDefaultAsync(condition);
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
+        }
+
         public async Task<Cart?> DeleteAsync(string id)
         {
-            var toBeDeleted = await GetByIdAsync(id);
-            if (toBeDeleted == null)
+            var cart = await GetByIdAsync(id);
+            if (cart == null)
             {
                 return null;
             }
 
-            dbContext.Carts.Remove(toBeDeleted);
+            dbContext.Carts.Remove(cart);
             await dbContext.SaveChangesAsync();
-            return toBeDeleted;
+            return cart;
         }
     }
 }

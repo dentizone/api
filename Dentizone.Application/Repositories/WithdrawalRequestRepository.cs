@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -22,6 +23,21 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
+        public async Task<WithdrawalRequest?> FindBy(Expression<Func<WithdrawalRequest, bool>> condition,
+            Expression<Func<WithdrawalRequest, object>>[]? includes)
+        {
+            IQueryable<WithdrawalRequest> query = DbContext.WithdrawalRequests;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
+        }
+
         public async Task<WithdrawalRequest?> DeleteAsync(string id)
         {
             var deleted_request = await GetByIdAsync(id);
@@ -32,19 +48,11 @@ namespace Dentizone.Application.Repositories
             return deleted_request;
         }
 
-        public async Task<IEnumerable<WithdrawalRequest>> GetAllAsync(int page = 1)
-        {
-            var requests = await DbContext.WithdrawalRequests.Where(w => !w.IsDeleted)
-                                          .Skip(CalculatePagination(page))
-                                          .Take(DefaultPageSize)
-                                          .ToListAsync();
-            return requests;
-        }
 
         public async Task<WithdrawalRequest?> GetByIdAsync(string id)
         {
-            var request = await DbContext.WithdrawalRequests.Where(w => w.Id == id && !w.IsDeleted)
-                                         .FirstOrDefaultAsync();
+            var request = await DbContext.WithdrawalRequests.Where(w => w.Id == id)
+                .FirstOrDefaultAsync();
             return request;
         }
 

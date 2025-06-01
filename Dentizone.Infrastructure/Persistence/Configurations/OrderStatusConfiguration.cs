@@ -10,6 +10,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(os => os.Id);
 
+
             builder.Property(os => os.Comment)
                 .HasMaxLength(250);
 
@@ -18,9 +19,6 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasDefaultValueSql(SqlCommon.Date);
 
-
-            builder.Property(os => os.UpdatedAt)
-                .IsRequired();
 
             builder.Property(os => os.Status)
                 .IsRequired()

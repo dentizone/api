@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -8,42 +9,52 @@ namespace Dentizone.Application.Repositories
 {
     internal class WalletActivityRepository : AbstractRepository, IWalletActivityRepository
     {
-        private readonly AppDbContext DbContext;
-
         public WalletActivityRepository(AppDbContext dbContext) : base(dbContext)
         {
-            DbContext = dbContext;
-        }
-
-        public async Task<WalletActivity> CreateAsync(WalletActivity entity)
-        {
-            await DbContext.WalletActivities.AddAsync(entity);
-            await DbContext.SaveChangesAsync();
-            return entity;
-        }
-
-        public async Task<WalletActivity?> DeleteAsync(string id)
-        {
-            var activity = await GetByIdAsync(id);
-            DbContext.WalletActivities.Remove(activity);
-            await DbContext.SaveChangesAsync();
-            return activity;
-        }
-
-        public async Task<IEnumerable<WalletActivity>> GetAllAsync(int page = 1)
-        {
-            var wallets = await DbContext.WalletActivities.Where(w => !w.IsDeleted)
-                .Skip(CalculatePagination(page))
-                .Take(DefaultPageSize)
-                .ToListAsync();
-            return wallets;
         }
 
         public async Task<WalletActivity?> GetByIdAsync(string id)
         {
-            var wallet = await DbContext.WalletActivities.Where(w => w.Id == id && !w.IsDeleted)
-                .FirstOrDefaultAsync();
-            return wallet;
+            return await dbContext.WalletActivities
+                .FirstOrDefaultAsync(w => w.Id == id);
+        }
+
+        public async Task<WalletActivity> CreateAsync(WalletActivity entity)
+        {
+            await dbContext.WalletActivities.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<WalletActivity?> FindBy(Expression<Func<WalletActivity, bool>> condition,
+            Expression<Func<WalletActivity, object>>[]? includes)
+        {
+            IQueryable<WalletActivity> query = dbContext.WalletActivities;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
+        }
+
+        public async Task<ICollection<WalletActivity>> GetAllBy(int page,
+            Expression<Func<WalletActivity, bool>>? filter)
+        {
+            IQueryable<WalletActivity> query = dbContext.WalletActivities;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query
+                .OrderByDescending(w => w.CreatedAt)
+                .Skip(CalculatePagination(page))
+                .Take(DefaultPageSize)
+                .ToListAsync();
         }
     }
 }

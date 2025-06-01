@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -8,6 +9,8 @@ namespace Dentizone.Application.Repositories
 {
     internal class ReviewUXRepository : AbstractRepository, IReviewUXRepository
     {
+        private IReviewUXRepository _reviewUxRepositoryImplementation;
+
         public ReviewUXRepository(AppDbContext dbContext) : base(dbContext)
         {
         }
@@ -15,17 +18,9 @@ namespace Dentizone.Application.Repositories
         public async Task<ReviewUx?> GetByIdAsync(string id)
         {
             return await dbContext.ReviewUxes
-                                  .FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
+                .FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
         }
 
-        public async Task<IEnumerable<ReviewUx>> GetAllAsync(int page = 1)
-        {
-            return await dbContext.ReviewUxes
-                                  .Where(r => !r.IsDeleted)
-                                  .Skip(CalculatePagination(page))
-                                  .Take(DefaultPageSize)
-                                  .ToListAsync();
-        }
 
         public async Task<ReviewUx> CreateAsync(ReviewUx entity)
         {
@@ -34,9 +29,30 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
+        public async Task<ReviewUx?> FindBy(Expression<Func<ReviewUx, bool>> condition,
+            Expression<Func<ReviewUx, object>>[]? includes)
+        {
+            IQueryable<ReviewUx> query = dbContext.ReviewUxes;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
+        }
+
         public async Task<ReviewUx?> DeleteAsync(string id)
         {
             var toBeDeleted = await GetByIdAsync(id);
+
+            if (toBeDeleted == null)
+            {
+                return null;
+            }
+
             dbContext.ReviewUxes.Remove(toBeDeleted);
             return toBeDeleted;
         }

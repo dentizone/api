@@ -5,4 +5,5 @@ namespace Dentizone.Application.Interfaces;
 interface IReviewUXRepository : IBaseRepo<ReviewUx>
 {
     Task<ReviewUx> Update(ReviewUx entity);
+    Task<ReviewUx?> DeleteAsync(string id);
 }

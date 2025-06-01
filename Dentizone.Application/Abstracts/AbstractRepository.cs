@@ -8,6 +8,7 @@ namespace Dentizone.Application.Abstracts
     {
         protected readonly int DefaultPageSize = Pagination.DefaultPageSize;
         protected readonly AppDbContext dbContext;
+
         public AbstractRepository(AppDbContext dbContext)
         {
             this.dbContext = dbContext;

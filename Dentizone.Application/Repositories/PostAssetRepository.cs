@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Abstracts;
+﻿using System.Linq.Expressions;
+using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
@@ -19,6 +20,19 @@ namespace Dentizone.Application.Repositories
             return entity;
         }
 
+        public async Task<PostAsset?> FindBy(Expression<Func<PostAsset, bool>> condition,
+            Expression<Func<PostAsset, object>>[]? includes)
+        {
+            IQueryable<PostAsset> query = dbContext.PostAssets;
+            if (includes == null) return await query.FirstOrDefaultAsync(condition);
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.FirstOrDefaultAsync(condition);
+        }
+
         public async Task<PostAsset?> DeleteAsync(string id)
         {
             var postAsset = await GetByIdAsync(id);
@@ -28,14 +42,6 @@ namespace Dentizone.Application.Repositories
             return postAsset;
         }
 
-        public async Task<IEnumerable<PostAsset>> GetAllAsync(int page = 1)
-        {
-            int skippedPages = CalculatePagination(page);
-            return await dbContext.PostAssets
-                .Skip(skippedPages)
-                .Take(DefaultPageSize)
-                .ToListAsync();
-        }
 
         public async Task<PostAsset?> GetByIdAsync(string id)
         {

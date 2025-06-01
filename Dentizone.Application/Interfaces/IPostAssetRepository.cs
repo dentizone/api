@@ -7,8 +7,9 @@ using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.Interfaces
 {
-    internal interface IPostAssetRepository:IBaseRepo<PostAsset>
+    internal interface IPostAssetRepository : IBaseRepo<PostAsset>
     {
         Task<PostAsset> UpdateAsync(PostAsset entity);
+        Task<PostAsset?> DeleteAsync(string id);
     }
 }

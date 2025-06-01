@@ -3,13 +3,12 @@ using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Domain.Entity
 {
-    public class UserAsset : IBaseEntity, IDeletable, IUpdatable
+    public class UserAsset : IBaseEntity, IDeletable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
         public UserAssetsType Type { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
         // Every UserAsset is associated with a User

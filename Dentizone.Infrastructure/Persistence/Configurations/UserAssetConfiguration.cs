@@ -24,8 +24,7 @@ internal class UserAssetConfiguration : IEntityTypeConfiguration<UserAsset>
             .HasDefaultValueSql(SqlCommon.Date)
             .ValueGeneratedOnAdd();
 
-        builder.Property(ua => ua.UpdatedAt)
-            .IsRequired();
+
         builder.Property(ua => ua.IsDeleted)
             .IsRequired()
             .HasDefaultValue(false);

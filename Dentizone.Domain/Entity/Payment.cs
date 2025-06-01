@@ -3,7 +3,7 @@ using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Domain.Entity
 {
-    public class Payment : IBaseEntity
+    public class Payment : IBaseEntity, IUpdatable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string OrderId { get; set; }
@@ -19,5 +19,6 @@ namespace Dentizone.Domain.Entity
         public virtual Order Order { get; set; }
 
         public virtual ICollection<SalesTransaction> SalesTransactions { get; set; } = new List<SalesTransaction>();
+        public DateTime UpdatedAt { get; set; }
     }
 }
