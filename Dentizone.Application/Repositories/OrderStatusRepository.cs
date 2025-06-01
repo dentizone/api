@@ -1,4 +1,5 @@
 ﻿using Dentizone.Application.Abstracts;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -14,16 +15,16 @@ public class OrderStatusRepository : AbstractRepository, IOrderStatusRepository
     public async Task<OrderStatus?> GetByIdAsync(string id)
     {
         return await dbContext.OrderStatuses
-                              .FirstOrDefaultAsync(o => o.Id == id && !o.IsDeleted);
+            .FirstOrDefaultAsync(o => o.Id == id && !o.IsDeleted);
     }
 
     public async Task<IEnumerable<OrderStatus>> GetAllAsync(int page = 1)
     {
         return await dbContext.OrderStatuses
-                              .Where(o => !o.IsDeleted)
-                              .Skip(CalculatePagination(page))
-                              .Take(DefaultPageSize)
-                              .ToListAsync();
+            .Where(o => !o.IsDeleted)
+            .Skip(CalculatePagination(page))
+            .Take(DefaultPageSize)
+            .ToListAsync();
     }
 
     public async Task<OrderStatus> CreateAsync(OrderStatus entity)
