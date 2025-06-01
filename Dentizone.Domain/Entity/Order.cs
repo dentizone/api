@@ -12,7 +12,6 @@ namespace Dentizone.Domain.Entity
         public decimal TotalAmount { get; set; }
         public DateTime? CompletedAt { get; set; }
         public virtual ShipInfo ShipInfo { get; set; }
-        public string ShipInfoId { get; set; }
         public virtual ICollection<OrderPickup> OrderPickups { get; set; } = new List<OrderPickup>();
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public virtual ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
