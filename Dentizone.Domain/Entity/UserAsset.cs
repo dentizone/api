@@ -3,7 +3,7 @@ using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Domain.Entity
 {
-    public class UserAsset : IBaseEntity
+    public class UserAsset : IBaseEntity, IDeletable, IUpdatable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
 

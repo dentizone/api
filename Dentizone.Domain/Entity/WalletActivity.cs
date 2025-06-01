@@ -15,8 +15,6 @@ namespace Dentizone.Domain.Entity
 
 
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
         public Wallet Wallet { get; set; }
     }
 }

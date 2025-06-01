@@ -2,8 +2,10 @@
 
 namespace Dentizone.Domain.Entity
 {
-    public class Order : IBaseEntity
+    public class Order : IBaseEntity, IDeletable, IUpdatable
     {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+
         public string BuyerId { get; set; }
         public AppUser Buyer { get; set; }
         public decimal CommissionAmount { get; set; }
@@ -15,7 +17,6 @@ namespace Dentizone.Domain.Entity
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public virtual ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
         public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
-        public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Dentizone.Domain.Entity
 {
-    public class PostAsset : IBaseEntity
+    public class PostAsset : IBaseEntity, IDeletable,IUpdatable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string PostId { get; set; }

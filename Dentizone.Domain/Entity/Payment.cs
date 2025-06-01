@@ -12,10 +12,7 @@ namespace Dentizone.Domain.Entity
         public PaymentMethod Method { get; set; }
         public PaymentStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public DateTime ProcessedAt { get; set; }
 
-        public bool IsDeleted { get; set; }
 
         // Navigation properties
         public virtual AppUser Buyer { get; set; }
