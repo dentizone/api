@@ -3,7 +3,7 @@ using Dentizone.Domain.Enums;
 
 namespace Dentizone.Domain.Interfaces
 {
-    public interface IAppUser : IBaseEntity
+    public interface IAppUser
     {
         string Id { get; set; }
         string FullName { get; set; }

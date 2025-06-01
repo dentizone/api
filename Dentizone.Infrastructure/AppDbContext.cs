@@ -34,7 +34,8 @@ namespace Dentizone.Infrastructure
         public DbSet<WalletActivity> WalletActivities { get; set; }
         public DbSet<WithdrawalRequest> WithdrawalRequests { get; set; }
 
-        public DbSet<ShipmentActivity> ShipmentActivites { get; set; }
+        public DbSet<ShipmentActivity> ShipmentActivities { get; set; }
+        public DbSet<SalesTransaction> SalesTransactions { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)

@@ -15,13 +15,13 @@ namespace Dentizone.Application.Repositories
         public async Task<ShipmentActivity?> GetByIdAsync(string id)
         {
             return await
-                dbContext.ShipmentActivites
+                dbContext.ShipmentActivities
                          .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted);
         }
 
         public async Task<IEnumerable<ShipmentActivity>> GetAllAsync(int page = 1)
         {
-            return await dbContext.ShipmentActivites
+            return await dbContext.ShipmentActivities
                                   .Where(s => !s.IsDeleted)
                                   .Skip(CalculatePagination(page))
                                   .Take(DefaultPageSize)
@@ -30,7 +30,7 @@ namespace Dentizone.Application.Repositories
 
         public async Task<ShipmentActivity> CreateAsync(ShipmentActivity entity)
         {
-            await dbContext.ShipmentActivites.AddAsync(entity);
+            await dbContext.ShipmentActivities.AddAsync(entity);
             await dbContext.SaveChangesAsync();
             return entity;
         }
@@ -39,7 +39,7 @@ namespace Dentizone.Application.Repositories
         {
             var toBeDeleted = await GetByIdAsync(id);
 
-            dbContext.ShipmentActivites.Remove(toBeDeleted);
+            dbContext.ShipmentActivities.Remove(toBeDeleted);
             await dbContext.SaveChangesAsync();
             return toBeDeleted;
         }

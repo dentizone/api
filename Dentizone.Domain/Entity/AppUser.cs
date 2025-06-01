@@ -3,7 +3,7 @@ using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Domain.Entity
 {
-    public class AppUser : IAppUser
+    public class AppUser : IAppUser, IBaseEntity
     {
         public string FullName { get; set; }
         public string Username { get; set; }
@@ -29,6 +29,6 @@ namespace Dentizone.Domain.Entity
         public ICollection<Payment> Payments { get; set; }
         public ICollection<ReviewUx> UXReviews { get; set; }
         public ICollection<Review> Reviews { get; set; }
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
     }
 }
