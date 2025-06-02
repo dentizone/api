@@ -1,3 +1,4 @@
+using Dentizone.Application.DI;
 using Dentizone.Infrastructure.DependencyInjection;
 
 namespace Dentizone.Presentaion
@@ -13,10 +14,10 @@ namespace Dentizone.Presentaion
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
+            builder.Services.AddSecretManager();
             builder.Services.AddSQLServer(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(Application.AssemblyReference).Assembly);
-
+            builder.Services.AddApplicationServices();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
