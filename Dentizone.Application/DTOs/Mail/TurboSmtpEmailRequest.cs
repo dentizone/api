@@ -12,11 +12,11 @@ public class TurboSmtpEmailRequest
         From = mailSecrets.From;
     }
 
-    [JsonPropertyName("authuser")] private string AuthUser { get; set; }
+    [JsonPropertyName("authuser")] public string AuthUser { get; private set; }
 
-    [JsonPropertyName("authpass")] private string AuthPass { get; set; }
+    [JsonPropertyName("authpass")] public string AuthPass { get; private set; }
 
-    [JsonPropertyName("from")] private string From { get; set; }
+    [JsonPropertyName("from")] public string From { get; private set; }
 
     [JsonPropertyName("to")] public string To { get; set; }
 

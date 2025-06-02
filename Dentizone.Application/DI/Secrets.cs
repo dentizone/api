@@ -33,7 +33,7 @@ namespace Dentizone.Application.DI
 
             var infisicalClient = new InfisicalClient(settings);
 
-            services.AddSingleton(infisicalClient);
+            services.AddScoped(_ => infisicalClient);
 
             services.AddScoped<ISecretService, SecretService>();
 
