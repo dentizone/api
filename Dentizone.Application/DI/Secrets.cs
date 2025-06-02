@@ -1,4 +1,4 @@
-﻿using Dentizone.Application.Interfaces.Secret;
+using Dentizone.Application.Interfaces.Secret;
 using Dentizone.Application.Services;
 using dotenv.net;
 using Infisical.Sdk;
@@ -8,6 +8,14 @@ namespace Dentizone.Application.DI
 {
     public static class Secrets
     {
+        /// <summary>
+        /// Configures and registers secret management services, including Infisical client and secret service, using credentials from environment variables.
+        /// </summary>
+        /// <param name="services">The service collection to which secret management services will be added.</param>
+        /// <returns>The updated service collection with secret management services registered.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if required Infisical credentials are not found in environment variables.
+        /// </exception>
         public static IServiceCollection AddSecretManager(this IServiceCollection services)
         {
             DotEnv.Load();

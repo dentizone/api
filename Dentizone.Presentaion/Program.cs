@@ -5,6 +5,10 @@ namespace Dentizone.Presentaion
 {
     public class Program
     {
+        /// <summary>
+        /// Entry point for the web application, configuring services, middleware, and starting the HTTP server.
+        /// </summary>
+        /// <param name="args">Command-line arguments for application configuration.</param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
