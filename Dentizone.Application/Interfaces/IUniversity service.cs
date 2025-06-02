@@ -7,11 +7,11 @@ using Dentizone.Application.DTOs;
 
 namespace Dentizone.Application.Interfaces
 {
-    internal interface IUniversity_service
+    internal interface IUniversityService
     {
         Task<ICollection<SupportedUniversitiesDTO>> GetSupportedUniversitiesAsync();
         Task<bool>DeleteUniversity(string id);
         Task<CreateUniversityDTO> CreateUniversityAsync(CreateUniversityDTO universityDto);
-        Task<bool> UpdateUniversityAsync(string id,bool IsSupported);
+        Task<UpdateUniversityDTO> UpdateUniversityAsync(string id,UpdateUniversityDTO updateUniversityDTO);
     }
 }

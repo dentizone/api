@@ -8,7 +8,8 @@ namespace Dentizone.Application.DTOs
 {
     internal class UpdateUniversityDTO
     {
-        public string Id{ get; set; }
+   
         public bool IsSupported { get; set; }
+        public string Name { get; set; }
     }
 }

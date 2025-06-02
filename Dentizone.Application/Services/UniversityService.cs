@@ -10,7 +10,7 @@ using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.Services
 {
-    internal class UniversityService : IUniversity_service
+    internal class UniversityService : IUniversityService
     {
         private readonly IMapper _mapper;
         private readonly IUniversityRepository _repo;
@@ -27,13 +27,9 @@ namespace Dentizone.Application.Services
         }
         public async Task<bool> DeleteUniversity(string id)
         {
-            var deleteTask = await _repo.GetByIdAsync(id);
-            if (deleteTask == null)
-            {
-                throw new ArgumentException("University not found");
-            }
-            deleteTask.IsSupported = false;
-            return await _repo.Update(deleteTask) != null;
+            
+            var deletedTask = await _repo.DeleteAsync(id);
+            return deletedTask != null && !deletedTask.IsDeleted;
         }
 
 
@@ -43,17 +39,19 @@ namespace Dentizone.Application.Services
             var supported = universities.Where(u => u.IsSupported).ToList();
             return _mapper.Map<ICollection<SupportedUniversitiesDTO>>(supported);
         }
-        public async Task<bool> UpdateUniversityAsync(string id, bool IsSupported)
+        public async Task<UpdateUniversityDTO> UpdateUniversityAsync(string id,UpdateUniversityDTO newUniversityDTO)
         {
             var university = await _repo.GetByIdAsync(id);
             if (university == null)
             {
                 throw new ArgumentException("University not found");
             }
-            university.IsSupported = IsSupported;
+            university.IsSupported =newUniversityDTO.IsSupported;
+            university.Name = newUniversityDTO.Name;
             await _repo.Update(university);
-            return true;
+            return _mapper.Map<UpdateUniversityDTO>(university);
         }
+
     }
 }
 
