@@ -1,4 +1,5 @@
 using Dentizone.Infrastructure.DependencyInjection;
+using Dentizone.Application.AutoMapper;
 
 namespace Dentizone.Presentaion
 {
@@ -16,7 +17,7 @@ namespace Dentizone.Presentaion
 
             builder.Services.AddSQLServer(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(Application.AssemblyReference).Assembly);
-
+          
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
