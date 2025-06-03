@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.CatalogDTOs;
 using Dentizone.Application.Interfaces;
+using Dentizone.Application.Interfaces.Catalog;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Exceptions;
 
 
 namespace Dentizone.Application.Services
 {
-    public class CatalogService
+    public class CatalogService : ICatalogService
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly ISubCategoryRepository _subCategoryRepository;
