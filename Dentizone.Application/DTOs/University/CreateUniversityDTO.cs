@@ -14,8 +14,9 @@ namespace Dentizone.Application.DTOs.University
                 .NotEmpty().WithMessage("University name is required.")
                 .MaximumLength(100).WithMessage("University name cannot exceed 100 characters.");
             RuleFor(x => x.Domain)
-                .NotEmpty().WithMessage("University domain is required.")
-                .MaximumLength(100).WithMessage("University domain cannot exceed 100 characters.");
+                .MaximumLength(48).WithMessage("University domain cannot exceed 48 characters.")
+                .Matches(@"^[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.edu$")
+                .WithMessage("University domain must be a valid .edu domain format.");
         }
     }
 }

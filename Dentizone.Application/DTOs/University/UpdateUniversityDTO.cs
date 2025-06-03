@@ -1,6 +1,6 @@
 ﻿namespace Dentizone.Application.DTOs.University
 {
-    public class UpdateUniversityDTO
+    public class UpdateUniversityDto
     {
         public bool? IsSupported { get; set; }
         public string? Name { get; set; }

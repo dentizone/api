@@ -23,10 +23,11 @@ namespace Dentizone.Application.Services
             return _mapper.Map<CreateUniversityDto>(newUniversity);
         }
 
-        public async Task<University> DeleteUniversity(string id)
+        public async Task<UniversityDto> DeleteUniversity(string id)
         {
             var deleted = await _repo.DeleteAsync(id);
-            return deleted ?? throw new NotFoundException("No University found with this id. Please check the id and try again.")
+
+            return _mapper.Map<UniversityDto>(deleted) ?? throw new NotFoundException("No University found with this id. Please check the id and try again.")
         }
 
 
@@ -37,7 +38,7 @@ namespace Dentizone.Application.Services
             return _mapper.Map<IReadOnlyList<SupportedUniversitiesDto>>(supported);
         }
 
-        public async Task<UpdateUniversityDTO> UpdateUniversityAsync(string id, UpdateUniversityDTO updateUniversityDto)
+        public async Task<UpdateUniversityDto> UpdateUniversityAsync(string id, UpdateUniversityDto updateUniversityDto)
         {
             var university = await _repo.GetByIdAsync(id);
             if (university == null)
@@ -49,7 +50,7 @@ namespace Dentizone.Application.Services
             var updatedUniversity = _mapper.Map(updateUniversityDto, university);
 
             await _repo.Update(updatedUniversity);
-            return _mapper.Map<UpdateUniversityDTO>(updatedUniversity);
+            return _mapper.Map<UpdateUniversityDto>(updatedUniversity);
         }
     }
 }
