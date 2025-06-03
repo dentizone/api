@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.DTOs;
+﻿using Dentizone.Application.DTOs.University;
+using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.Interfaces
 {
     internal interface IUniversityService
     {
-        Task<ICollection<SupportedUniversitiesDTO>> GetSupportedUniversitiesAsync();
-        Task<bool>DeleteUniversity(string id);
-        Task<CreateUniversityDTO> CreateUniversityAsync(CreateUniversityDTO universityDto);
-        Task<UpdateUniversityDTO> UpdateUniversityAsync(string id,UpdateUniversityDTO updateUniversityDTO);
+        Task<IReadOnlyList<SupportedUniversitiesDto>> GetSupportedUniversitiesAsync();
+        Task<University> DeleteUniversity(string id);
+        Task<CreateUniversityDto> CreateUniversityAsync(CreateUniversityDto universityDto);
+        Task<UpdateUniversityDTO> UpdateUniversityAsync(string id, UpdateUniversityDTO updateUniversityDTO);
     }
 }
