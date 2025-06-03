@@ -1,20 +1,21 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.Asset;
 using Dentizone.Application.Interfaces;
+using Dentizone.Application.Interfaces.Asset;
 using Dentizone.Domain.Entity;
-using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 
 namespace Dentizone.Application.Services
 {
-    public class AssetService
+    public class AssetService : IAssetService
     {
         private readonly IAssetRepository _assetRepository;
         private readonly IMapper _mapper;
 
-        public AssetService(IAssetRepository assetRepository)
+        public AssetService(IAssetRepository assetRepository, IMapper mapper)
         {
             _assetRepository = assetRepository;
+            _mapper = mapper;
         }
 
 
@@ -48,12 +49,6 @@ namespace Dentizone.Application.Services
         {
             var deletedAsset = await _assetRepository.DeleteAsync(id);
             return _mapper.Map<AssetDto>(deletedAsset);
-        }
-
-        public async Task<AssetDto> GetAssetByType(AssetType type)
-        {
-            var assets = await _assetRepository.FindBy(a => !a.IsDeleted && a.Type == type);
-            return _mapper.Map<AssetDto>(assets);
         }
     }
 }
