@@ -11,6 +11,7 @@ using Dentizone.Application.Interfaces;
 using Dentizone.Application.Repositories;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
+using Dentizone.Domain.Exceptions;
 
 namespace Dentizone.Application.Services
 {
@@ -32,13 +33,15 @@ namespace Dentizone.Application.Services
         public async Task<UserActivityDTO?> GetByIdAsync(string id)
         {
             var userActivity = await _userActivityRepository.GetByIdAsync(id);
-            if (userActivity == null) return null;
+            if (userActivity == null) throw new NotFoundException("There's no user activity with this id ");
             return _mapper.Map<UserActivityDTO>(userActivity);
         }
         public async Task<ICollection<UserActivityDTO>> GetAllByActivityTypeAndUserIdAsync(int page, string userId, UserActivities activityType)
         {      
             Expression<Func<UserActivity, bool>> filter = ua => ua.UserId == userId && ua.ActivityType == activityType;
             var filteredActivities = await _userActivityRepository.GetAllBy(page, filter); 
+            if(!filteredActivities.Any())
+                throw new NotFoundException($"No activities found for user {userId} with activity type {activityType}");
             var mapped = _mapper.Map<ICollection<UserActivityDTO>>(filteredActivities);
             return mapped;
         }
