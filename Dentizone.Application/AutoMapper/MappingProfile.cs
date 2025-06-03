@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
+using Dentizone.Application.DTOs.CatalogDTOs;
+using Dentizone.Domain.Entity;
+
+namespace Dentizone.Application.AutoMapper
+{
+    public class MappingProfile: Profile
+    {
+        public MappingProfile()
+        {
+            CreateMap<CategoryDTO, Category>().ReverseMap();
+            CreateMap<SubCategoryDTO, SubCategory>().ReverseMap();
+            CreateMap<CreatedItemDTO,Item>().ReverseMap();
+            CreateMap<ItemDTO, Item>()
+                .ReverseMap()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.SubCategoryName, opt => opt.MapFrom(src => src.SubCategory.Name));
+        }
+    }
+
+}
