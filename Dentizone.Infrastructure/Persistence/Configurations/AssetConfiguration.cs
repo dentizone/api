@@ -1,6 +1,7 @@
 ﻿using Dentizone.Domain.Entity;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Dentizone.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Dentizone.Infrastructure.Persistence.Configurations
 {
@@ -11,31 +12,32 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.HasKey(a => a.Id);
 
             builder.Property(a => a.Url)
-                .IsRequired()
-                .HasMaxLength(2048);
+                   .IsRequired()
+                   .HasMaxLength(2048);
 
             builder.Property(a => a.Size)
-                .IsRequired();
+                   .IsRequired();
 
             builder.Property(a => a.Type)
-                .IsRequired()
-                .HasConversion<string>();
+                   .IsRequired()
+                   .HasConversion<string>();
 
             builder.Property(a => a.CreatedAt)
-                .ValueGeneratedOnAdd()
-                .IsRequired()
-                .HasDefaultValueSql(SqlCommon.Date);
+                   .ValueGeneratedOnAdd()
+                   .IsRequired()
+                   .HasDefaultValueSql(SqlCommon.Date);
 
             builder.Property(a => a.UpdatedAt)
-                .IsRequired();
+                   .IsRequired().HasDefaultValueSql(SqlCommon.Date);
 
             builder.Property(a => a.Status)
-                .IsRequired()
-                .HasConversion<string>();
+                   .IsRequired()
+                   .HasDefaultValue(AssetStatus.Active)
+                   .HasConversion<string>();
 
             builder.Property(a => a.IsDeleted)
-                .IsRequired()
-                .HasDefaultValue(false);
+                   .IsRequired()
+                   .HasDefaultValue(false);
 
 
             // --- Relationships ---
@@ -43,15 +45,15 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             // One-to-Many: Asset to UserAssets
             builder.HasMany(a => a.UserAssets)
-                .WithOne(ua => ua.Asset)
-                .HasForeignKey(ua => ua.AssetId)
-                .OnDelete(DeleteBehavior.Cascade);
+                   .WithOne(ua => ua.Asset)
+                   .HasForeignKey(ua => ua.AssetId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
 
             // One-to-Many: Asset to PostAssets
             builder.HasMany(a => a.PostAssets)
-                .WithOne(pa => pa.Asset)
-                .HasForeignKey(pa => pa.AssetId);
+                   .WithOne(pa => pa.Asset)
+                   .HasForeignKey(pa => pa.AssetId);
         }
     }
 }
