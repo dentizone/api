@@ -9,9 +9,9 @@ using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.AutoMapper
 {
-    public class MappingProfile: Profile
+    public class CatalogProfile: Profile
     {
-        public MappingProfile()
+        public CatalogProfile()
         {
             CreateMap<CategoryDTO, Category>().ReverseMap();
             CreateMap<SubCategoryDTO, SubCategory>().ReverseMap();
