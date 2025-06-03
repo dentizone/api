@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Repositories
 {
-    internal class UserActivityRepository : AbstractRepository, IUserActivityRepository
+    public class UserActivityRepository : AbstractRepository, IUserActivityRepository
     {
         public UserActivityRepository(AppDbContext dbContext) : base(dbContext)
         {
