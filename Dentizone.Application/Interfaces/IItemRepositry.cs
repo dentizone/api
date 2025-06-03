@@ -2,7 +2,7 @@
 
 namespace Dentizone.Application.Interfaces
 {
-    internal interface IItemRepository : IBaseRepo<Item>
+    public interface IItemRepository : IBaseRepo<Item>
     {
         Task<Item?> DeleteAsync(string id);
     }

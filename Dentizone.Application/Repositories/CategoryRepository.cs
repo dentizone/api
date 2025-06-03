@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Repositories
 {
-    internal class CategoryRepository : AbstractRepository, ICategoryRepository
+    public class CategoryRepository : AbstractRepository, ICategoryRepository
     {
         private readonly AppDbContext DbContext;
 
