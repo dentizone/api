@@ -12,37 +12,38 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
 
             builder.Property(u => u.Name)
-                .IsRequired()
-                .HasMaxLength(255);
+                   .IsRequired()
+                   .HasMaxLength(255);
 
             builder.Property(u => u.IsSupported)
-                .IsRequired()
-                .HasDefaultValue(true);
+                   .IsRequired()
+                   .HasDefaultValue(true);
 
             builder.Property(u => u.IsDeleted)
-                .IsRequired()
-                .HasDefaultValue(false);
+                   .IsRequired()
+                   .HasDefaultValue(false);
 
             builder.Property(u => u.CreatedAt)
-                .HasDefaultValueSql(SqlCommon.Date)
-                .ValueGeneratedOnAdd()
-                .IsRequired();
+                   .HasDefaultValueSql(SqlCommon.Date)
+                   .ValueGeneratedOnAdd()
+                   .IsRequired();
 
             builder.Property(u => u.UpdatedAt)
-                .IsRequired();
+                   .HasDefaultValueSql(SqlCommon.Date)
+                   .IsRequired();
 
 
             builder.Property(u => u.Domain)
-                .IsRequired()
-                .HasMaxLength(48);
+                   .IsRequired()
+                   .HasMaxLength(48);
 
             // --- Relationships ---
 
             // One-to-Many: University to Users
             builder.HasMany(u => u.Users)
-                .WithOne(usr => usr.University)
-                .HasForeignKey(usr => usr.UniversityId)
-                .OnDelete(DeleteBehavior.NoAction);
+                   .WithOne(usr => usr.University)
+                   .HasForeignKey(usr => usr.UniversityId)
+                   .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
+﻿using Dentizone.Application.Abstracts;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Dentizone.Application.Repositories
 {
@@ -21,7 +21,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<Asset?> FindBy(Expression<Func<Asset, bool>> condition,
-            Expression<Func<Asset, object>>[]? includes)
+                                         Expression<Func<Asset, object>>[]? includes)
         {
             var query = dbContext.Assets.AsQueryable();
             if (includes == null)
@@ -50,7 +50,7 @@ namespace Dentizone.Application.Repositories
         public async Task<Asset?> GetByIdAsync(string id)
         {
             return await dbContext.Assets
-                .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
+                                  .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
         }
 
         public async Task<Asset> UpdateAsync(Asset entity)

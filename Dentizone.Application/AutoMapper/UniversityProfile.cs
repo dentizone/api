@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using Dentizone.Application.DTOs;
+﻿using AutoMapper;
+using Dentizone.Application.DTOs.University;
 using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.AutoMapper
 {
-    internal class UniversityProfile: Profile
+    internal class UniversityProfile : Profile
     {
         public UniversityProfile()
         {
-            CreateMap<SupportedUniversitiesDTO, University>()
+            CreateMap<SupportedUniversitiesDto, University>()
                 .ReverseMap();
-            CreateMap<DeleteUniversityDTO, University>().ReverseMap();
-            CreateMap<CreateUniversityDTO, University>() .ReverseMap();
-            CreateMap<CreateUniversityDTO,University>().ReverseMap();
+            CreateMap<CreateUniversityDto, University>().ReverseMap()
+                                                        .ForAllMembers(opts => opts.Condition((src, dest, srcMember) =>
+                                                                                srcMember != null));
         }
     }
-    
 }
