@@ -33,5 +33,9 @@ msbuild.wrn
 # Visual Studio 2015
 .vs/
 *.env
+
+/Dentizone.Tests/CatalogServiceTests.cs
+/Dentizone.Tests/Class1.cs
+/Dentizone.Tests/Dentizone.Tests.csproj
 /Dentizone.Tests
-/Dentizone.sln
+

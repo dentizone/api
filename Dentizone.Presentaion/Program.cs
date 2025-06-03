@@ -1,5 +1,6 @@
 using Dentizone.Application.DI;
 using Dentizone.Infrastructure.DependencyInjection;
+using Dentizone.Application.AutoMapper;
 
 namespace Dentizone.Presentaion
 {
