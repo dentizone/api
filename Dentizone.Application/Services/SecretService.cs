@@ -48,5 +48,19 @@ namespace Dentizone.Application.Services
                 throw;
             }
         }
+
+
+        public string GetSecret(string name)
+        {
+            try
+            {
+                return _infisicalClient.GetSecret(CreateSecret(name)).SecretValue;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving secret: {ex.Message}");
+                throw;
+            }
+        }
     }
 }
