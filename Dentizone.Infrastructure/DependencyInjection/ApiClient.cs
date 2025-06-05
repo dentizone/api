@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 
-namespace Dentizone.Application.DI
+namespace Dentizone.Infrastructure.DependencyInjection
 {
     public static class ApiClient
     {

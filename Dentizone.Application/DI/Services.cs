@@ -1,6 +1,7 @@
 ﻿using Dentizone.Application.Interfaces.Cloudinary;
 using Dentizone.Application.Services;
 using Dentizone.Domain.Interfaces.Mail;
+using Dentizone.Infrastructure.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dentizone.Application.DI
