@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces.Repositories;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class UserAssetRepository : AbstractRepository, IUserAssetRepository
     {
@@ -16,7 +14,7 @@ namespace Dentizone.Application.Repositories
         public async Task<UserAsset?> GetByIdAsync(string id)
         {
             return await dbContext.UserAssets
-                .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
+                                  .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
         }
 
 
@@ -28,7 +26,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<UserAsset?> FindBy(Expression<Func<UserAsset, bool>> condition,
-            Expression<Func<UserAsset, object>>[]? includes)
+                                             Expression<Func<UserAsset, object>>[]? includes)
         {
             IQueryable<UserAsset> query = dbContext.UserAssets.Where(u => !u.IsDeleted);
             if (includes != null)
@@ -64,10 +62,10 @@ namespace Dentizone.Application.Repositories
             }
 
             return await query
-                .OrderByDescending(u => u.CreatedAt)
-                .Skip(CalculatePagination(page))
-                .Take(DefaultPageSize)
-                .ToListAsync();
+                         .OrderByDescending(u => u.CreatedAt)
+                         .Skip(CalculatePagination(page))
+                         .Take(DefaultPageSize)
+                         .ToListAsync();
         }
     }
 }

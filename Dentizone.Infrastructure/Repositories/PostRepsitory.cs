@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class PostRepository : AbstractRepository, IPostRepository
     {
@@ -21,7 +19,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<Post?> FindBy(Expression<Func<Post, bool>> condition,
-            Expression<Func<Post, object>>[]? includes)
+                                        Expression<Func<Post, object>>[]? includes)
         {
             IQueryable<Post> query = dbContext.Posts;
             if (includes != null)
@@ -54,13 +52,14 @@ namespace Dentizone.Application.Repositories
         {
             int skippedPages = CalculatePagination(page);
             return await dbContext.Posts
-                .Skip(skippedPages)
-                .Take(DefaultPageSize)
-                .ToListAsync();
+                                  .Skip(skippedPages)
+                                  .Take(DefaultPageSize)
+                                  .ToListAsync();
         }
 
         public async Task<IEnumerable<Post>> GetAllAsync(int page, Expression<Func<Post, bool>>? filter,
-            Expression<Func<Post, object>>? orderBy, Expression<Func<Post, object>>[]? includes = null)
+                                                         Expression<Func<Post, object>>? orderBy,
+                                                         Expression<Func<Post, object>>[]? includes = null)
         {
             IQueryable<Post> query = dbContext.Posts;
             if (filter != null)

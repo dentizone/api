@@ -1,8 +1,8 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Dentizone.Application.Interfaces.Cloudinary;
-using Dentizone.Application.Interfaces.Secret;
 using Dentizone.Domain.Exceptions;
+using Dentizone.Domain.Interfaces.Secret;
 
 namespace Dentizone.Application.Services
 {

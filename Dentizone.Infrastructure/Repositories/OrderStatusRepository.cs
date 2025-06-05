@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces.Repositories;
 
-namespace Dentizone.Application.Repositories;
+namespace Dentizone.Infrastructure.Repositories;
 
 public class OrderStatusRepository : AbstractRepository, IOrderStatusRepository
 {
@@ -16,7 +14,7 @@ public class OrderStatusRepository : AbstractRepository, IOrderStatusRepository
     public async Task<OrderStatus?> GetByIdAsync(string id)
     {
         return await dbContext.OrderStatuses
-            .FirstOrDefaultAsync(o => o.Id == id);
+                              .FirstOrDefaultAsync(o => o.Id == id);
     }
 
 
@@ -28,7 +26,7 @@ public class OrderStatusRepository : AbstractRepository, IOrderStatusRepository
     }
 
     public async Task<OrderStatus?> FindBy(Expression<Func<OrderStatus, bool>> condition,
-        Expression<Func<OrderStatus, object>>[]? includes)
+                                           Expression<Func<OrderStatus, object>>[]? includes)
     {
         IQueryable<OrderStatus> query = dbContext.OrderStatuses;
         if (includes != null)
@@ -46,7 +44,7 @@ public class OrderStatusRepository : AbstractRepository, IOrderStatusRepository
     public async Task<IEnumerable<OrderStatus>> Find(Expression<Func<OrderStatus, bool>> filter)
     {
         return await dbContext.OrderStatuses
-            .Where(filter)
-            .ToListAsync();
+                              .Where(filter)
+                              .ToListAsync();
     }
 }

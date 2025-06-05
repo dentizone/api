@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class PickupInfoRepository : AbstractRepository, IPickupInfoRepository
     {
@@ -16,7 +14,7 @@ namespace Dentizone.Application.Repositories
         public async Task<PickupInfo?> GetByIdAsync(string id)
         {
             return await dbContext.PickupInfos
-                .FirstOrDefaultAsync(p => p.Id == id);
+                                  .FirstOrDefaultAsync(p => p.Id == id);
         }
 
 
@@ -28,7 +26,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<PickupInfo?> FindBy(Expression<Func<PickupInfo, bool>> condition,
-            Expression<Func<PickupInfo, object>>[]? includes)
+                                              Expression<Func<PickupInfo, object>>[]? includes)
         {
             IQueryable<PickupInfo> query = dbContext.PickupInfos;
             if (includes != null)

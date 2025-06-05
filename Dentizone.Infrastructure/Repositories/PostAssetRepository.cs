@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class PostAssetRepository : AbstractRepository, IPostAssetRepository
     {
@@ -21,7 +19,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<PostAsset?> FindBy(Expression<Func<PostAsset, bool>> condition,
-            Expression<Func<PostAsset, object>>[]? includes)
+                                             Expression<Func<PostAsset, object>>[]? includes)
         {
             IQueryable<PostAsset> query = dbContext.PostAssets;
             if (includes == null) return await query.FirstOrDefaultAsync(condition);

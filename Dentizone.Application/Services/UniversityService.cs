@@ -3,6 +3,7 @@ using Dentizone.Application.DTOs.University;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Exceptions;
+using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Application.Services
 {
@@ -27,7 +28,8 @@ namespace Dentizone.Application.Services
         {
             var deleted = await _repo.DeleteAsync(id);
 
-            return _mapper.Map<UniversityDto>(deleted) ?? throw new NotFoundException("No University found with this id. Please check the id and try again.")
+            return _mapper.Map<UniversityDto>(deleted) ??
+                   throw new NotFoundException("No University found with this id. Please check the id and try again.");
         }
 
 

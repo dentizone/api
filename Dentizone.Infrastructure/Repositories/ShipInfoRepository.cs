@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces.Repositories;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class ShipInfoRepository : AbstractRepository, IShipInfoRepository
     {
@@ -16,7 +14,7 @@ namespace Dentizone.Application.Repositories
         public async Task<ShipInfo?> GetByIdAsync(string id)
         {
             return await dbContext.ShipInfos
-                .FirstOrDefaultAsync(s => s.Id == id);
+                                  .FirstOrDefaultAsync(s => s.Id == id);
         }
 
 
@@ -28,7 +26,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<ShipInfo?> FindBy(Expression<Func<ShipInfo, bool>> condition,
-            Expression<Func<ShipInfo, object>>[]? includes)
+                                            Expression<Func<ShipInfo, object>>[]? includes)
         {
             IQueryable<ShipInfo> query = dbContext.ShipInfos;
             if (includes != null)

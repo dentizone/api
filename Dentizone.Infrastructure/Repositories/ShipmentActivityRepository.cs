@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces.Repositories;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class ShipmentActivityRepository : AbstractRepository, IShipmentActivityRepository
     {
@@ -17,7 +15,7 @@ namespace Dentizone.Application.Repositories
         {
             return await
                 dbContext.ShipmentActivities
-                    .FirstOrDefaultAsync(s => s.Id == id);
+                         .FirstOrDefaultAsync(s => s.Id == id);
         }
 
 
@@ -29,7 +27,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<ShipmentActivity?> FindBy(Expression<Func<ShipmentActivity, bool>> condition,
-            Expression<Func<ShipmentActivity, object>>[]? includes)
+                                                    Expression<Func<ShipmentActivity, object>>[]? includes)
         {
             IQueryable<ShipmentActivity> query = dbContext.ShipmentActivities;
             if (includes != null)

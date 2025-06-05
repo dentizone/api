@@ -1,11 +1,9 @@
 ﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     public class UserActivityRepository : AbstractRepository, IUserActivityRepository
     {
@@ -16,7 +14,7 @@ namespace Dentizone.Application.Repositories
         public async Task<UserActivity?> GetByIdAsync(string id)
         {
             return await dbContext.UserActivities
-                .FirstOrDefaultAsync(u => u.Id == id);
+                                  .FirstOrDefaultAsync(u => u.Id == id);
         }
 
 
@@ -28,7 +26,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<UserActivity?> FindBy(Expression<Func<UserActivity, bool>> condition,
-            Expression<Func<UserActivity, object>>[]? includes)
+                                                Expression<Func<UserActivity, object>>[]? includes)
         {
             IQueryable<UserActivity> query = dbContext.UserActivities;
             if (includes != null)
@@ -51,10 +49,10 @@ namespace Dentizone.Application.Repositories
             }
 
             return await query
-                .OrderByDescending(u => u.CreatedAt)
-                .Skip(CalculatePagination(page))
-                .Take(DefaultPageSize)
-                .ToListAsync();
+                         .OrderByDescending(u => u.CreatedAt)
+                         .Skip(CalculatePagination(page))
+                         .Take(DefaultPageSize)
+                         .ToListAsync();
         }
     }
 }

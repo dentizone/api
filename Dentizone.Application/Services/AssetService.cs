@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.Asset;
-using Dentizone.Application.Interfaces;
 using Dentizone.Application.Interfaces.Asset;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Exceptions;
+using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Application.Services
 {

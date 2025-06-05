@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class ReviewRepository : AbstractRepository, IReviewRepository
     {
@@ -16,7 +14,7 @@ namespace Dentizone.Application.Repositories
         public async Task<Review?> GetByIdAsync(string id)
         {
             return await dbContext.Reviews
-                .FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
+                                  .FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
         }
 
 
@@ -28,7 +26,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<Review?> FindBy(Expression<Func<Review, bool>> condition,
-            Expression<Func<Review, object>>[]? includes)
+                                          Expression<Func<Review, object>>[]? includes)
         {
             IQueryable<Review> query = dbContext.Reviews;
             if (includes != null)

@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces.Repositories;
 
-namespace Dentizone.Application.Repositories;
+namespace Dentizone.Infrastructure.Repositories;
 
 public class FavouriteRepository : AbstractRepository, IFavouriteRepository
 {
@@ -16,7 +14,7 @@ public class FavouriteRepository : AbstractRepository, IFavouriteRepository
     public async Task<Favourite?> GetByIdAsync(string id)
     {
         return await dbContext.Favourites
-            .FirstOrDefaultAsync(f => f.Id == id && !f.IsDeleted);
+                              .FirstOrDefaultAsync(f => f.Id == id && !f.IsDeleted);
     }
 
 
@@ -28,7 +26,7 @@ public class FavouriteRepository : AbstractRepository, IFavouriteRepository
     }
 
     public async Task<Favourite?> FindBy(Expression<Func<Favourite, bool>> condition,
-        Expression<Func<Favourite, object>>[]? incldues)
+                                         Expression<Func<Favourite, object>>[]? incldues)
     {
         IQueryable<Favourite> query = dbContext.Favourites;
         if (incldues != null)

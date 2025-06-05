@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Dentizone.Application.Repositories;
+namespace Dentizone.Infrastructure.Repositories;
 
 public class OrderPickupRepository : AbstractRepository, IOrderPickupRepository
 {
@@ -21,7 +19,7 @@ public class OrderPickupRepository : AbstractRepository, IOrderPickupRepository
     }
 
     public async Task<OrderPickup?> FindBy(Expression<Func<OrderPickup, bool>> condition,
-        Expression<Func<OrderPickup, object>>[]? includes)
+                                           Expression<Func<OrderPickup, object>>[]? includes)
     {
         IQueryable<OrderPickup> query = dbContext.OrderPickups;
         if (includes != null)
@@ -61,6 +59,6 @@ public class OrderPickupRepository : AbstractRepository, IOrderPickupRepository
     public async Task<OrderPickup?> GetByIdAsync(string id)
     {
         return await dbContext.OrderPickups
-            .FirstOrDefaultAsync(o => o.Id == id && !o.IsDeleted);
+                              .FirstOrDefaultAsync(o => o.Id == id && !o.IsDeleted);
     }
 }

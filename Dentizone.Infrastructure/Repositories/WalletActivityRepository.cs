@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces.Repositories;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class WalletActivityRepository : AbstractRepository, IWalletActivityRepository
     {
@@ -16,7 +14,7 @@ namespace Dentizone.Application.Repositories
         public async Task<WalletActivity?> GetByIdAsync(string id)
         {
             return await dbContext.WalletActivities
-                .FirstOrDefaultAsync(w => w.Id == id);
+                                  .FirstOrDefaultAsync(w => w.Id == id);
         }
 
         public async Task<WalletActivity> CreateAsync(WalletActivity entity)
@@ -27,7 +25,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<WalletActivity?> FindBy(Expression<Func<WalletActivity, bool>> condition,
-            Expression<Func<WalletActivity, object>>[]? includes)
+                                                  Expression<Func<WalletActivity, object>>[]? includes)
         {
             IQueryable<WalletActivity> query = dbContext.WalletActivities;
             if (includes != null)
@@ -42,7 +40,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<ICollection<WalletActivity>> GetAllBy(int page,
-            Expression<Func<WalletActivity, bool>>? filter)
+                                                                Expression<Func<WalletActivity, bool>>? filter)
         {
             IQueryable<WalletActivity> query = dbContext.WalletActivities;
             if (filter != null)
@@ -51,10 +49,10 @@ namespace Dentizone.Application.Repositories
             }
 
             return await query
-                .OrderByDescending(w => w.CreatedAt)
-                .Skip(CalculatePagination(page))
-                .Take(DefaultPageSize)
-                .ToListAsync();
+                         .OrderByDescending(w => w.CreatedAt)
+                         .Skip(CalculatePagination(page))
+                         .Take(DefaultPageSize)
+                         .ToListAsync();
         }
     }
 }

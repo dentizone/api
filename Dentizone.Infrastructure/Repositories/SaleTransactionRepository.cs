@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Dentizone.Application.Repositories;
+namespace Dentizone.Infrastructure.Repositories;
 
 public class SaleTransactionRepository : AbstractRepository, ISaleTransactionRepository
 {
@@ -16,7 +14,7 @@ public class SaleTransactionRepository : AbstractRepository, ISaleTransactionRep
     public async Task<SalesTransaction?> GetByIdAsync(string id)
     {
         return await dbContext.SalesTransactions
-            .FirstOrDefaultAsync(st => st.Id == id);
+                              .FirstOrDefaultAsync(st => st.Id == id);
     }
 
 
@@ -28,7 +26,7 @@ public class SaleTransactionRepository : AbstractRepository, ISaleTransactionRep
     }
 
     public async Task<SalesTransaction?> FindBy(Expression<Func<SalesTransaction, bool>> condition,
-        Expression<Func<SalesTransaction, object>>[]? includes)
+                                                Expression<Func<SalesTransaction, object>>[]? includes)
     {
         IQueryable<SalesTransaction> query = dbContext.SalesTransactions;
         if (includes != null)

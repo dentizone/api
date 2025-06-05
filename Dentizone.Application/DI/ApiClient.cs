@@ -1,4 +1,4 @@
-﻿using Dentizone.Application.Interfaces.ApiClient;
+﻿using Dentizone.Infrastructure.ApiClient;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 

@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces.Repositories;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class WithdrawalRequestRepository : AbstractRepository, IWithdrawalRequestRepository
     {
@@ -24,7 +22,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<WithdrawalRequest?> FindBy(Expression<Func<WithdrawalRequest, bool>> condition,
-            Expression<Func<WithdrawalRequest, object>>[]? includes)
+                                                     Expression<Func<WithdrawalRequest, object>>[]? includes)
         {
             IQueryable<WithdrawalRequest> query = DbContext.WithdrawalRequests;
             if (includes != null)
@@ -52,7 +50,7 @@ namespace Dentizone.Application.Repositories
         public async Task<WithdrawalRequest?> GetByIdAsync(string id)
         {
             var request = await DbContext.WithdrawalRequests.Where(w => w.Id == id)
-                .FirstOrDefaultAsync();
+                                         .FirstOrDefaultAsync();
             return request;
         }
 

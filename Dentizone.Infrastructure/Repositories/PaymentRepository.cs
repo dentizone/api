@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces.Repositories;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class PaymentRepository : AbstractRepository, IPaymentRepository
     {
@@ -21,7 +19,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<Payment?> FindBy(Expression<Func<Payment, bool>> condition,
-            Expression<Func<Payment, object>>[]? includes)
+                                           Expression<Func<Payment, object>>[]? includes)
         {
             IQueryable<Payment> query = dbContext.Payments;
             if (includes != null)

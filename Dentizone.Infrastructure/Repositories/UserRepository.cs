@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces.Repositories;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class UserRepository : AbstractRepository, IUserRepository
     {
@@ -17,7 +15,7 @@ namespace Dentizone.Application.Repositories
         {
             return await
                 dbContext.AppUsers
-                    .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
+                         .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
         }
 
         public async Task<IEnumerable<AppUser>> GetAllAsync(int page = 1)
@@ -25,9 +23,9 @@ namespace Dentizone.Application.Repositories
             return
                 await
                     dbContext.AppUsers
-                        .Skip(CalculatePagination(page))
-                        .Take(DefaultPageSize)
-                        .ToListAsync();
+                             .Skip(CalculatePagination(page))
+                             .Take(DefaultPageSize)
+                             .ToListAsync();
         }
 
         public async Task<AppUser> CreateAsync(AppUser entity)
@@ -38,7 +36,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<AppUser?> FindBy(Expression<Func<AppUser, bool>> condition,
-            Expression<Func<AppUser, object>>[]? includes)
+                                           Expression<Func<AppUser, object>>[]? includes)
         {
             IQueryable<AppUser> query = dbContext.AppUsers.Where(u => !u.IsDeleted);
             if (includes != null)

@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class WalletRepository : AbstractRepository, IWalletRepository
     {
@@ -24,7 +22,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<Wallet?> FindBy(Expression<Func<Wallet, bool>> condition,
-            Expression<Func<Wallet, object>>[]? includes)
+                                          Expression<Func<Wallet, object>>[]? includes)
         {
             IQueryable<Wallet> query = DbContext.Wallets;
             if (includes != null)
@@ -42,7 +40,7 @@ namespace Dentizone.Application.Repositories
         public async Task<Wallet?> GetByIdAsync(string id)
         {
             var wallet = await DbContext.Wallets.Where(w => w.Id == id)
-                .FirstOrDefaultAsync();
+                                        .FirstOrDefaultAsync();
             return wallet;
         }
 

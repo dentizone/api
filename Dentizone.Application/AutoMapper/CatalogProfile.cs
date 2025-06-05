@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Dentizone.Application.DTOs.CatalogDTOs;
+using Dentizone.Application.DTOs.Catalog;
 using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.AutoMapper
 {
-    public class CatalogProfile: Profile
+    public class CatalogProfile : Profile
     {
         public CatalogProfile()
         {

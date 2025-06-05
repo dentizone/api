@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class SubCategoryRepository : AbstractRepository,
         ISubCategoryRepository
@@ -17,7 +15,7 @@ namespace Dentizone.Application.Repositories
         public async Task<SubCategory?> GetByIdAsync(string id)
         {
             return await dbContext.SubCategories
-                .FirstOrDefaultAsync(sc => sc.Id == id);
+                                  .FirstOrDefaultAsync(sc => sc.Id == id);
         }
 
 
@@ -29,7 +27,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<SubCategory?> FindBy(Expression<Func<SubCategory, bool>> condition,
-            Expression<Func<SubCategory, object>>[]? includes)
+                                               Expression<Func<SubCategory, object>>[]? includes)
         {
             IQueryable<SubCategory> query = dbContext.SubCategories;
             if (includes != null)
@@ -60,8 +58,8 @@ namespace Dentizone.Application.Repositories
         public async Task<ICollection<SubCategory>> GetAll()
         {
             return await dbContext.SubCategories
-                .Include(sc => sc.Category)
-                .ToListAsync();
+                                  .Include(sc => sc.Category)
+                                  .ToListAsync();
         }
 
         public async Task<SubCategory?> Update(SubCategory entity)

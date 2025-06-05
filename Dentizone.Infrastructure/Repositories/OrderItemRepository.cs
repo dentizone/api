@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Dentizone.Application.Repositories;
+namespace Dentizone.Infrastructure.Repositories;
 
 public class OrderItemRepository : AbstractRepository, IOrderItemRepository
 {
@@ -17,7 +15,7 @@ public class OrderItemRepository : AbstractRepository, IOrderItemRepository
     {
         return
             await dbContext.OrderItems
-                .FirstOrDefaultAsync(o => o.Id == id);
+                           .FirstOrDefaultAsync(o => o.Id == id);
     }
 
 
@@ -29,7 +27,7 @@ public class OrderItemRepository : AbstractRepository, IOrderItemRepository
     }
 
     public async Task<OrderItem?> FindBy(Expression<Func<OrderItem, bool>> condition,
-        Expression<Func<OrderItem, object>>[]? includes)
+                                         Expression<Func<OrderItem, object>>[]? includes)
     {
         IQueryable<OrderItem> query = dbContext.OrderItems;
         if (includes != null)

@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class AnswerRepository : AbstractRepository, IAnswerRepository
     {
@@ -22,13 +20,13 @@ namespace Dentizone.Application.Repositories
 
 
         public async Task<Answer?> FindBy(Expression<Func<Answer, bool>> condition,
-            Expression<Func<Answer, object>>[]? includes)
+                                          Expression<Func<Answer, object>>[]? includes)
         {
             var query = dbContext.Answers.AsQueryable();
 
             if (includes == null)
                 return await dbContext.Answers
-                    .FirstOrDefaultAsync(condition);
+                                      .FirstOrDefaultAsync(condition);
 
 
             foreach (var include in includes)

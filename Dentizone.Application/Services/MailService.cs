@@ -1,7 +1,6 @@
-﻿using Dentizone.Application.DTOs.Mail;
-using Dentizone.Application.Interfaces.ApiClient;
-using Dentizone.Application.Interfaces.Mail;
-using Dentizone.Application.Interfaces.Secret;
+﻿using Dentizone.Domain.Interfaces.Mail;
+using Dentizone.Domain.Interfaces.Secret;
+using Dentizone.Infrastructure.ApiClient;
 
 namespace Dentizone.Application.Services
 {

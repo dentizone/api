@@ -1,5 +1,5 @@
-﻿using Dentizone.Application.Interfaces.Secret;
-using Dentizone.Application.Services;
+﻿using Dentizone.Domain.Interfaces.Secret;
+using Dentizone.Infrastructure.Secret;
 using dotenv.net;
 using Infisical.Sdk;
 using Microsoft.Extensions.DependencyInjection;

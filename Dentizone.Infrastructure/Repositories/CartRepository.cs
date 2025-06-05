@@ -1,11 +1,9 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Application.Abstracts;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Entity;
-using Dentizone.Infrastructure;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Dentizone.Application.Repositories
+namespace Dentizone.Infrastructure.Repositories
 {
     internal class CartRepository : AbstractRepository, ICartRepository
     {
@@ -16,7 +14,7 @@ namespace Dentizone.Application.Repositories
         public async Task<Cart?> GetByIdAsync(string id)
         {
             return await dbContext.Carts
-                .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+                                  .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
         }
 
 
@@ -28,7 +26,7 @@ namespace Dentizone.Application.Repositories
         }
 
         public async Task<Cart?> FindBy(Expression<Func<Cart, bool>> condition,
-            Expression<Func<Cart, object>>[]? includes)
+                                        Expression<Func<Cart, object>>[]? includes)
         {
             IQueryable<Cart> query = dbContext.Carts;
             if (includes == null) return await query.FirstOrDefaultAsync(condition);
