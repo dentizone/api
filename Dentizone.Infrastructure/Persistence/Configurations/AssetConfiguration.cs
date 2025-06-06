@@ -2,7 +2,6 @@
 using Dentizone.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.ComponentModel.DataAnnotations;
 
 namespace Dentizone.Infrastructure.Persistence.Configurations
 {
@@ -17,8 +16,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                             .HasMaxLength(2048);
 
                      builder.Property(a => a.Size)
-                            .IsRequired()
-                            .HasAnnotation("Range", new RangeAttribute(1, 104857600));
+                            .IsRequired();
                      builder.Property(a => a.Type)
                             .IsRequired()
                             .HasConversion<string>();

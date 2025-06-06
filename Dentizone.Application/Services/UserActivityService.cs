@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.UserActivityDTO;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
@@ -8,22 +9,36 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services
 {
-    public class UserActivityService
+    public class UserActivityService : IUserActivityService
     {
         private readonly IUserActivityRepository _userActivityRepository;
         private readonly IMapper _mapper;
+        private readonly IRequestContextService requestContextService;
 
-        public UserActivityService(IUserActivityRepository userActivityRepository, IMapper mapper)
+        public UserActivityService(IUserActivityRepository userActivityRepository, IMapper mapper,
+                                   IRequestContextService requestContextService)
         {
             _userActivityRepository = userActivityRepository;
             _mapper = mapper;
+            this.requestContextService = requestContextService;
         }
 
-        public async Task<CreatedUserActivityDTO> CreateAsync(CreatedUserActivityDTO createdUserActivityDTO)
+        public async Task<CreatedUserActivityDto> CreateAsync(UserActivities activity,
+                                                              DateTime? DetectedAt = null, string? userId = null)
         {
-            var userActivity = _mapper.Map<UserActivity>(createdUserActivityDTO);
+            var userActivity = new UserActivity
+            {
+                FingerprintToken = requestContextService.GetFingerprint(),
+                IpAddress = requestContextService.GetIpAddress(),
+                UserAgent = requestContextService.GetUserAgent(),
+                Device = requestContextService.GetDeviceType(),
+                ActivityType = activity,
+                UserId = requestContextService.GetUserId() ?? userId,
+                DetectedAt = DetectedAt ?? DateTime.UtcNow
+            };
+
             var newUserActivity = await _userActivityRepository.CreateAsync(userActivity);
-            return _mapper.Map<CreatedUserActivityDTO>(newUserActivity);
+            return _mapper.Map<CreatedUserActivityDto>(newUserActivity);
         }
 
         public async Task<UserActivityDTO?> GetByIdAsync(string id)

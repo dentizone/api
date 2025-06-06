@@ -4,7 +4,7 @@ using Refit;
 
 namespace Dentizone.Infrastructure.DependencyInjection
 {
-    public static class ApiClient
+    internal static class ApiClient
     {
         public static IServiceCollection AddApiClients(this IServiceCollection services)
         {

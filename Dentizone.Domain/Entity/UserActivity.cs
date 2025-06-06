@@ -11,13 +11,12 @@ namespace Dentizone.Domain.Entity
         public string Device { get; set; }
         public string UserAgent { get; set; }
         public DateTime DetectedAt { get; set; }
-       
+
         public string IpAddress { get; set; }
         public UserActivities ActivityType { get; set; }
 
         public virtual AppUser User { get; set; }
-        
+
         public DateTime CreatedAt { get; set; }
-    
     }
 }
