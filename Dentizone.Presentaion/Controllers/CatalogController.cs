@@ -1,6 +1,5 @@
 ﻿using Dentizone.Application.DTOs.Catalog;
 using Dentizone.Application.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers
@@ -105,7 +104,7 @@ namespace Dentizone.Presentaion.Controllers
         {
             var createdSubCategory = await catalogService.CreateSubCategory(subCategoryDto);
             return CreatedAtAction(nameof(GetSubCategoryById), new { subCategoryId = createdSubCategory.Id },
-                createdSubCategory);
+                                   createdSubCategory);
         }
 
         [HttpPut("subcategories")]

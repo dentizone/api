@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
+using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services
 {
@@ -24,14 +19,14 @@ namespace Dentizone.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<CreatedUserDTO> CreateAsync(UserDto userDto)
+        public async Task<UserView> CreateAsync(CreateAppUser userDto)
         {
             var userEntity = _mapper.Map<AppUser>(userDto);
             var createdUser = await _userRepository.CreateAsync(userEntity);
-            return _mapper.Map<CreatedUserDTO>(createdUser);
+            return _mapper.Map<UserView>(createdUser);
         }
 
-        public async Task<UserDto> DeleteAsync(string id)
+        public async Task<UserView> DeleteAsync(string id)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
@@ -40,11 +35,11 @@ namespace Dentizone.Application.Services
             }
 
             var deletedUser = await _userRepository.DeleteAsync(id);
-            return _mapper.Map<UserDto>(deletedUser);
+            return _mapper.Map<UserView>(deletedUser);
         }
 
-        public async Task<ICollection<UserDto>> GetAllAsync(int page, string? searchByName = null,
-            Expression<Func<AppUser, bool>>? filterExpression = null)
+        public async Task<ICollection<UserView>> GetAllAsync(int page, string? searchByName = null,
+                                                             Expression<Func<AppUser, bool>>? filterExpression = null)
         {
             var users = await _userRepository.GetAllAsync(page, filterExpression);
             if (users == null)
@@ -55,25 +50,29 @@ namespace Dentizone.Application.Services
             if (!string.IsNullOrEmpty(searchByName))
             {
                 users = users.Where(u => u.FullName.Contains(searchByName, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                             .ToList();
             }
 
-            return _mapper.Map<ICollection<UserDto>>(users);
+            return _mapper.Map<ICollection<UserView>>(users);
         }
 
-        public async Task<UserDto?> GetByIdAsync(string id)
+        public async Task<UserView> GetByIdAsync(string id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await _userRepository.FindBy(u => u.Id == id,
+                                                    [
+                                                        u => u.University
+                                                    ]
+                                                   );
             if (user == null)
             {
                 throw new NotFoundException($"User with id {id} not found.");
             }
 
-            return _mapper.Map<UserDto>(user);
+            return _mapper.Map<UserView>(user);
         }
 
         // TO BE REVIEWED CAREFULLY and TESTED
-        public async Task<UserDto> UpdateAsync(string id, UserDto userDto)
+        public async Task<UserView> UpdateAsync(string id, UserDto userDto)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
@@ -89,7 +88,7 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException($"User with id {id} not found.");
             }
 
-            return _mapper.Map<UserDto>(updatedUser);
+            return _mapper.Map<UserView>(updatedUser);
         }
 
         public async Task SetKycStatusAsync(string userId, KycStatusDTO kycStatusDto)
