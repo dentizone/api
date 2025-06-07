@@ -9,11 +9,11 @@ using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.AutoMapper
 {
-    public class UserProfile: Profile
+    public class UserProfile : Profile
     {
         public UserProfile()
         {
-             CreateMap<UserDTO, AppUser>().ReverseMap();
+            CreateMap<UserDto, AppUser>().ReverseMap();
             CreateMap<KycStatusDTO, AppUser>().ReverseMap();
             CreateMap<UserStateDTO, AppUser>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))

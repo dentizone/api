@@ -7,19 +7,14 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController(UserService userService) : ControllerBase
     {
-        private readonly UserService _userService;
-        public UsersController(UserService userService) 
-        {
-            _userService = userService;
-        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(string id)
         {
             try
             {
-                var user = await _userService.GetByIdAsync(id);
+                var user = await userService.GetByIdAsync(id);
                 return Ok(user);
             }
             catch (Exception ex)
@@ -27,24 +22,27 @@ namespace Dentizone.Presentaion.Controllers
                 return NotFound(ex.Message);
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllUsers(int page, string? search = null)
         {
-            var users = await _userService.GetAllAsync(page, search);
+            var users = await userService.GetAllAsync(page, search);
             return Ok(users);
         }
+
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserDTO userDTO)
+        public async Task<IActionResult> CreateUser([FromBody] UserDto userDto)
         {
-            var createdUser = await _userService.CreateAsync(userDTO);
+            var createdUser = await userService.CreateAsync(userDto);
             return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             try
             {
-                var deletedUser = await _userService.DeleteAsync(id);
+                var deletedUser = await userService.DeleteAsync(id);
                 return Ok(deletedUser);
             }
             catch (Exception ex)
@@ -52,12 +50,13 @@ namespace Dentizone.Presentaion.Controllers
                 return NotFound(ex.Message);
             }
         }
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(string id, [FromBody] UserDTO userDTO)
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UserDto userDto)
         {
             try
             {
-                var updatedUser = await _userService.UpdateAsync(id, userDTO);
+                var updatedUser = await userService.UpdateAsync(id, userDto);
                 return Ok(updatedUser);
             }
             catch (Exception ex)
@@ -65,12 +64,13 @@ namespace Dentizone.Presentaion.Controllers
                 return NotFound(ex.Message);
             }
         }
-        [HttpPost("{id}/kyc")]
-        public async Task<IActionResult> SetKycStatus(string id, [FromBody] KycStatusDTO kycStatusDTO)
+
+        [HttpPatch("{id}/kyc")]
+        public async Task<IActionResult> SetKycStatus(string id, [FromBody] KycStatusDTO kycStatusDto)
         {
             try
             {
-                await _userService.SetKycStatusAsync(id, kycStatusDTO);
+                await userService.SetKycStatusAsync(id, kycStatusDto);
                 return NoContent();
             }
             catch (Exception ex)
@@ -78,13 +78,13 @@ namespace Dentizone.Presentaion.Controllers
                 return NotFound(ex.Message);
             }
         }
-        [HttpPost("{id}/state")]
-        public async Task<IActionResult> SetUserState(string id, [FromBody] UserStateDTO userStateDTO)
-        {
 
+        [HttpPatch("{id}/state")]
+        public async Task<IActionResult> SetUserState(string id, [FromBody] UserStateDTO userStateDto)
+        {
             try
             {
-                await _userService.SetUserStateAsync(id, userStateDTO);
+                await userService.SetUserStateAsync(id, userStateDto);
                 return NoContent();
             }
             catch (Exception ex)
