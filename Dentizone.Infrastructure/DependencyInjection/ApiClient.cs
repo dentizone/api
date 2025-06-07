@@ -1,4 +1,5 @@
 ﻿using Dentizone.Infrastructure.ApiClient;
+using Dentizone.Infrastructure.ApiClient.KYC;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 
@@ -8,8 +9,10 @@ namespace Dentizone.Infrastructure.DependencyInjection
     {
         public static IServiceCollection AddApiClients(this IServiceCollection services)
         {
+            services.AddRefitClient<IDiditApi>()
+                .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://verification.didit.me"); });
             services.AddRefitClient<ITruboSMTP>()
-                    .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://api.turbo-smtp.com/api/v2"); });
+                .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://api.turbo-smtp.com/api/v2"); });
             return services;
         }
     }

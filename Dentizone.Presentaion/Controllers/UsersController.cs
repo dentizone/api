@@ -1,5 +1,8 @@
-﻿using Dentizone.Application.DTOs.User;
+﻿using System.Security.Claims;
+using Dentizone.Application.DTOs.User;
+using Dentizone.Application.Interfaces.User;
 using Dentizone.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,8 +10,26 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController(UserService userService) : ControllerBase
+    public class UsersController(IUserService userService) : ControllerBase
     {
+        [Authorize]
+        [HttpGet]
+        [Route("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            try
+            {
+                var user = await userService.GetByIdAsync(userId!);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(string id)
         {
@@ -28,13 +49,6 @@ namespace Dentizone.Presentaion.Controllers
         {
             var users = await userService.GetAllAsync(page, search);
             return Ok(users);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserDto userDto)
-        {
-            var createdUser = await userService.CreateAsync(userDto);
-            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
         }
 
         [HttpDelete("{id}")]

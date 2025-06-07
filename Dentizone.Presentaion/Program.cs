@@ -2,6 +2,8 @@ using Dentizone.Application.DI;
 using Dentizone.Application.Interfaces;
 using Dentizone.Infrastructure.DependencyInjection;
 using Dentizone.Infrastructure.Persistence.Seeder;
+using Microsoft.OpenApi.Models;
+using Scalar.AspNetCore;
 
 namespace Dentizone.Presentaion
 {
@@ -22,14 +24,42 @@ namespace Dentizone.Presentaion
 
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IRequestContextService, RequestContextService>();
+            builder.Services.AddSwaggerGen(opt =>
+            {
+                opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    BearerFormat = "JWT",
+                    Description = "JWT Authorization header using the Bearer scheme.",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer"
+                });
+                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Id = "Bearer",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
 
             var app = builder.Build();
-
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger(opt => { opt.RouteTemplate = "openapi/{documentName}.json"; });
+            app.MapScalarApiReference(opt =>
             {
-                app.MapOpenApi();
-            }
+                opt.Title = "Dentizone API";
+                opt.Theme = ScalarTheme.Mars;
+                opt.DefaultHttpClient = new(ScalarTarget.Http, ScalarClient.Http11);
+            });
 
             app.UseHttpsRedirection();
 

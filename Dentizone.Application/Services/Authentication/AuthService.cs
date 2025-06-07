@@ -1,4 +1,7 @@
-﻿using Dentizone.Application.Interfaces;
+﻿using Dentizone.Application.DTOs.Auth;
+using Dentizone.Application.DTOs.User;
+using Dentizone.Application.Interfaces;
+using Dentizone.Application.Interfaces.User;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces;
@@ -11,7 +14,7 @@ namespace Dentizone.Application.Services.Authentication
     public interface IAuthService
     {
         Task<string> LoginWithEmailAndPassword(string email, string password);
-        Task<string> RegisterWithEmailAndPassword(string email, string password);
+        Task<string> RegisterWithEmailAndPassword(RegisterRequestDto userData);
         Task<string> ConfirmEmail(string token, string userId);
         Task SendVerificationEmail(string email);
         Task<string> ResetPassword(string email, string token, string newPassword);
@@ -22,7 +25,8 @@ namespace Dentizone.Application.Services.Authentication
         ITokenService tokenService,
         UserManager<ApplicationUser> userManager,
         IMailService mailService,
-        IUserActivityService userActivityService
+        IUserActivityService userActivityService,
+        IUserService userService
     )
         : IAuthService
     {
@@ -59,7 +63,8 @@ namespace Dentizone.Application.Services.Authentication
             {
                 await userActivityService.CreateAsync(UserActivities.LOCKDOUT, DateTime.Now, user.Id);
                 throw new
-                    UserLockedOutException("User is locked out due to too many failed login attempts. Please try again later.");
+                    UserLockedOutException(
+                        "User is locked out due to too many failed login attempts. Please try again later.");
             }
 
 
@@ -96,10 +101,10 @@ namespace Dentizone.Application.Services.Authentication
             return GenerateToken(user.Id, user.Email, roles.FirstOrDefault());
         }
 
-        public async Task<string> RegisterWithEmailAndPassword(string email, string password)
+        public async Task<string> RegisterWithEmailAndPassword(RegisterRequestDto userData)
         {
             // 1. Check if email already exists
-            var existingUser = await userManager.FindByEmailAsync(email);
+            var existingUser = await userManager.FindByEmailAsync(userData.Email);
             if (existingUser != null)
             {
                 throw new UserAlreadyExistsException("User with this email already exists");
@@ -108,21 +113,32 @@ namespace Dentizone.Application.Services.Authentication
             // 2. Create user
             var user = new ApplicationUser
             {
-                UserName = email,
-                Email = email,
+                UserName = userData.Username,
+                Email = userData.Email,
             };
-            var result = await userManager.CreateAsync(user, password);
+            var result = await userManager.CreateAsync(user, userData.Password);
             if (!result.Succeeded)
             {
                 throw new BadRequestException("User creation failed: " +
                                               string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
+            var userDataDto = new UserDto
+            {
+                FullName = userData.FullName,
+                AcademicYear = userData.AcademicYear,
+                UniversityId = userData.UniversityId,
+                KycStatus = KycStatus.PENDING,
+                Username = userData.Username,
+                Status = UserState.PendingVerification,
+                Id = user.Id, // IdentityServer uses string IDs for users
+            };
+            await userService.CreateAsync(userDataDto);
+
             // 3. Assign default role
             await userManager.AddToRoleAsync(user, UserRoles.GHOST.ToString());
 
             // 4. Send Verification Email 
-
 
             await SendVerificationEmail(user.Email);
             // 5. Generate token
@@ -139,7 +155,7 @@ namespace Dentizone.Application.Services.Authentication
                 throw new NotFoundException("User not found");
             }
 
-            // check if already confimred
+            // check if already confirmed
             if (user.EmailConfirmed)
             {
                 throw new BadRequestException("Email is already confirmed");
@@ -179,7 +195,7 @@ namespace Dentizone.Application.Services.Authentication
             var verificationLink = $"https://dentizone.com/authverify-email?userId={user.Id}&token={token}";
             // 3. Send Verification Email
             await mailService.Send(email, "Dentizone: Verify your email",
-                                   $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
+                $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
         }
 
         public async Task SendForgetPasswordEmail(string email)
@@ -196,7 +212,7 @@ namespace Dentizone.Application.Services.Authentication
             var resetLink = $"https://dentizone.com/auth/reset-password?userId={user.Id}&token={token}";
             // 3. Send Reset Password Email
             await mailService.Send(email, "Dentizone: Reset your password",
-                                   $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
+                $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
         }
 
         public async Task<string> ResetPassword(string email, string token, string newPassword)

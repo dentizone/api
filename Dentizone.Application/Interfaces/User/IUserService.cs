@@ -14,8 +14,8 @@ namespace Dentizone.Application.Interfaces.User
         Task<CreatedUserDTO> CreateAsync(UserDto userDto);
         Task<UserDto?> GetByIdAsync(string id);
 
-        Task<ICollection<UserDto>> GetAllAsync(int page, string? searchByName,
-            Expression<Func<AppUser, bool>>? filterExpression);
+        Task<ICollection<UserDto>> GetAllAsync(int page, string? searchByName = null,
+            Expression<Func<AppUser, bool>>? filterExpression = null);
 
         Task<UserDto> UpdateAsync(string id, UserDto userDto);
         Task<UserDto> DeleteAsync(string id);

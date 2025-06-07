@@ -22,10 +22,9 @@ namespace Dentizone.Presentaion.Controllers
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerPayloadDtp)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerPayloadDto)
         {
-            var auth = await authenticationService.RegisterWithEmailAndPassword(registerPayloadDtp.Email,
-                                                                                registerPayloadDtp.Password);
+            var auth = await authenticationService.RegisterWithEmailAndPassword(registerPayloadDto);
             return Ok(new { Token = auth });
         }
 
@@ -50,12 +49,6 @@ namespace Dentizone.Presentaion.Controllers
             return Ok(new { Message = "Verification email sent successfully." });
         }
 
-        [HttpGet("get-user")]
-        [Authorize]
-        public IActionResult GetUser()
-        {
-            return Ok();
-        }
 
         [HttpPost("send-forget-password-email")]
         [AllowAnonymous]
@@ -70,7 +63,7 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
             var result = await authenticationService.ResetPassword(resetPasswordDto.Email, resetPasswordDto.Token,
-                                                                   resetPasswordDto.NewPassword);
+                resetPasswordDto.NewPassword);
 
 
             return Ok(new { Message = result });
