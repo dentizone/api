@@ -9,7 +9,7 @@ using FluentValidation;
 namespace Dentizone.Application.DTOs.User
 {
     public class UserDTO
-    {
+    { 
         public string FullName { get; set; }
         public string Username { get; set; }
         public int AcademicYear { get; set; }
@@ -33,4 +33,4 @@ namespace Dentizone.Application.DTOs.User
             RuleFor(x => x.UniversityId).NotEmpty().WithMessage("University ID is required.");
         }
     }
-    }
+}

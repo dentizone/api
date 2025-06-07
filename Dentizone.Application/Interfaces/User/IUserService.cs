@@ -9,7 +9,7 @@ namespace Dentizone.Application.Interfaces.User
 {
     public interface IUserService
     {
-        Task<UserDTO>CreateAsync(UserDTO userDTO);
+        Task<CreatedUserDTO>CreateAsync(UserDTO userDTO);
         Task<UserDTO?> GetByIdAsync(string id);
         Task<ICollection<UserDTO>> GetAllAsync(int page, string? search = null);
         Task<UserDTO> UpdateAsync(string id, UserDTO userDTO);

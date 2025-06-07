@@ -7,6 +7,7 @@ using AutoMapper;
 using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Domain.Entity;
+using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Application.Services
@@ -22,21 +23,22 @@ namespace Dentizone.Application.Services
             _userRepository = userRepository;
             _mapper = mapper;
         }
-        public async Task<UserDTO> CreateAsync(UserDTO userDTO)
+        public async Task<CreatedUserDTO> CreateAsync(UserDTO userDTO)
         {
             var userEntity = _mapper.Map<AppUser>(userDTO);
             var createdUser = await _userRepository.CreateAsync(userEntity);
-            return _mapper.Map<UserDTO>(createdUser);
+            return _mapper.Map<CreatedUserDTO>(createdUser);
         }
 
-        public Task DeleteAsync(string id)
+        public async Task<UserDTO> DeleteAsync(string id)
         {
-            var user = _userRepository.GetByIdAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
-                throw new KeyNotFoundException($"User with id {id} not found.");
+                throw new NotFoundException($"User with id {id} not found.");
             }
-            return _userRepository.DeleteAsync(id);
+            var deletedUser = await _userRepository.DeleteAsync(id);
+            return _mapper.Map<UserDTO>(deletedUser);
         }
 
         public async Task<ICollection<UserDTO>> GetAllAsync(int page, string? search = null)
@@ -44,7 +46,7 @@ namespace Dentizone.Application.Services
             var users = await _userRepository.GetAllAsync(page);
             if (users == null)
             {
-                throw new KeyNotFoundException("No users found.");
+                throw new NotFoundException("No users found.");
             }
             if (!string.IsNullOrEmpty(search))
             {
@@ -58,7 +60,7 @@ namespace Dentizone.Application.Services
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
-                throw new KeyNotFoundException($"User with id {id} not found.");
+                throw new NotFoundException($"User with id {id} not found.");
             }
             return _mapper.Map<UserDTO>(user);
         }
@@ -68,14 +70,14 @@ namespace Dentizone.Application.Services
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
-                throw new KeyNotFoundException($"User with id {id} not found.");
+                throw new NotFoundException($"User with id {id} not found.");
             }
             var userEntity = _mapper.Map<AppUser>(userDTO);
             userEntity.Id = id; 
             var updatedUser = await _userRepository.Update(userEntity);
             if (updatedUser == null)
             {
-                throw new KeyNotFoundException($"User with id {id} not found.");
+                throw new NotFoundException($"User with id {id} not found.");
             }
             return _mapper.Map<UserDTO>(updatedUser);
         }
@@ -84,7 +86,7 @@ namespace Dentizone.Application.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
             {
-                throw new KeyNotFoundException($"User with id {userId} not found.");
+                throw new NotFoundException($"User with id {userId} not found.");
             }
             user.KycStatus = kycStatusDTO.KycStatus;
             await _userRepository.Update(user);
@@ -94,7 +96,7 @@ namespace Dentizone.Application.Services
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
             {
-                throw new KeyNotFoundException($"User with id {userId} not found.");
+                throw new NotFoundException($"User with id {userId} not found.");
             }
             user.Status = userStateDTO.Status;
             await _userRepository.Update(user);
