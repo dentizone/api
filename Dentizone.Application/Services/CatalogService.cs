@@ -24,11 +24,11 @@ namespace Dentizone.Application.Services
             _itemRepository = itemRepository;
         }
 
-        public async Task<CategoryDTO> CreateCategory(CategoryDTO createdCategoryDto)
+        public async Task<CreatedCategoryDTO> CreateCategory(CategoryDTO createdCategoryDto)
         {
             var category = _mapper.Map<Category>(createdCategoryDto);
             var createdCategory = await _categoryRepository.CreateAsync(category);
-            return _mapper.Map<CategoryDTO>(createdCategory);
+            return _mapper.Map<CreatedCategoryDTO>(createdCategory);
         }
 
         public async Task<CategoryDTO?> GetCategoryById(string id)
@@ -74,11 +74,11 @@ namespace Dentizone.Application.Services
             return relatedSubCategories.Select(sc => _mapper.Map<SubCategoryDTO>(sc));
         }
 
-        public async Task<SubCategoryDTO> CreateSubCategory(SubCategoryDTO createdSubCategoryDto)
+        public async Task<CreatedSubCategoryDTO> CreateSubCategory(SubCategoryDTO createdSubCategoryDto)
         {
             var subCategory = _mapper.Map<SubCategory>(createdSubCategoryDto);
             var createdSubCategory = await _subCategoryRepository.CreateAsync(subCategory);
-            return _mapper.Map<SubCategoryDTO>(createdSubCategory);
+            return _mapper.Map<CreatedSubCategoryDTO>(createdSubCategory);
         }
 
         public async Task<SubCategoryDTO?> GetSubCategoryById(string id)
@@ -110,25 +110,25 @@ namespace Dentizone.Application.Services
             return mapped;
         }
 
-        public async Task<CreatedItemDTO> CreateItem(CreatedItemDTO createdItemDto)
+        public async Task<CreatedItemDTO> CreateItem(ItemDTO createdItemDto)
         {
             var item = _mapper.Map<Item>(createdItemDto);
             var createdItem = await _itemRepository.CreateAsync(item);
             return _mapper.Map<CreatedItemDTO>(createdItem);
         }
 
-        public async Task<ItemDTO?> GetItemById(string id)
+        public async Task<ItemViewDTO?> GetItemById(string id)
         {
             var item = await _itemRepository.GetByIdAsync(id);
             if (item == null) throw new NotFoundException("Item with this id is not found");
-            return _mapper.Map<ItemDTO>(item);
+            return _mapper.Map<ItemViewDTO>(item);
         }
 
-        public async Task<ItemDTO> DeleteItem(string id)
+        public async Task<ItemViewDTO> DeleteItem(string id)
         {
             var item = await _itemRepository.DeleteAsync(id);
             if (item == null) throw new NotFoundException("Item with this id is not found");
-            return _mapper.Map<ItemDTO>(item);
+            return _mapper.Map<ItemViewDTO>(item);
         }
     }
 }

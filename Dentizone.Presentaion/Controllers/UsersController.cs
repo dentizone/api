@@ -17,8 +17,15 @@ namespace Dentizone.Presentaion.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(string id)
         {
-            var user = await _userService.GetByIdAsync(id);
-            return Ok(user);
+            try
+            {
+                var user = await _userService.GetByIdAsync(id);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
         [HttpGet]
         public async Task<IActionResult> GetAllUsers(int page, string? search = null)
@@ -35,27 +42,55 @@ namespace Dentizone.Presentaion.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            var deletedUser = await _userService.DeleteAsync(id);
-            return Ok(deletedUser);
+            try
+            {
+                var deletedUser = await _userService.DeleteAsync(id);
+                return Ok(deletedUser);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] UserDTO userDTO)
         {
-            var updatedUser = await _userService.UpdateAsync(id, userDTO);
-            return Ok(updatedUser);
+            try
+            {
+                var updatedUser = await _userService.UpdateAsync(id, userDTO);
+                return Ok(updatedUser);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
         [HttpPost("{id}/kyc")]
         public async Task<IActionResult> SetKycStatus(string id, [FromBody] KycStatusDTO kycStatusDTO)
         {
-            await _userService.SetKycStatusAsync(id, kycStatusDTO);
-            return NoContent();
+            try
+            {
+                await _userService.SetKycStatusAsync(id, kycStatusDTO);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
         [HttpPost("{id}/state")]
         public async Task<IActionResult> SetUserState(string id, [FromBody] UserStateDTO userStateDTO)
         {
-            await _userService.SetUserStateAsync(id, userStateDTO);
-            return NoContent();
 
+            try
+            {
+                await _userService.SetUserStateAsync(id, userStateDTO);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

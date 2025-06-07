@@ -13,7 +13,7 @@ namespace Dentizone.Application.Interfaces.User
         Task<UserDTO?> GetByIdAsync(string id);
         Task<ICollection<UserDTO>> GetAllAsync(int page, string? search = null);
         Task<UserDTO> UpdateAsync(string id, UserDTO userDTO);
-        Task DeleteAsync(string id);
+        Task<UserDTO> DeleteAsync(string id);
         Task SetKycStatusAsync(string userId, KycStatusDTO kycStatusDTO);
         Task SetUserStateAsync(string userId, UserStateDTO userStateDTO);
 
