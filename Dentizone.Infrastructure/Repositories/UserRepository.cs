@@ -15,17 +15,22 @@ namespace Dentizone.Infrastructure.Repositories
         {
             return await
                 dbContext.AppUsers
-                         .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
+                    .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
         }
 
-        public async Task<IEnumerable<AppUser>> GetAllAsync(int page = 1)
+        public async Task<IEnumerable<AppUser>> GetAllAsync(int page = 1,
+            Expression<Func<AppUser, bool>>? filter = null)
         {
-            return
-                await
-                    dbContext.AppUsers
-                             .Skip(CalculatePagination(page))
-                             .Take(DefaultPageSize)
-                             .ToListAsync();
+            var query = dbContext.AppUsers
+                .Skip(CalculatePagination(page))
+                .Take(DefaultPageSize);
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<AppUser> CreateAsync(AppUser entity)
@@ -36,7 +41,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<AppUser?> FindBy(Expression<Func<AppUser, bool>> condition,
-                                           Expression<Func<AppUser, object>>[]? includes)
+            Expression<Func<AppUser, object>>[]? includes)
         {
             IQueryable<AppUser> query = dbContext.AppUsers.Where(u => !u.IsDeleted);
             if (includes != null)
