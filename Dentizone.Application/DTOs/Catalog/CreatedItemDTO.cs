@@ -4,6 +4,7 @@ namespace Dentizone.Application.DTOs.Catalog
 {
     public class CreatedItemDTO
     {
+        public string Id { get; set; }
         public string CategoryId { get; set; }
         public string SubCategoryId { get; set; }
     }
@@ -12,6 +13,7 @@ namespace Dentizone.Application.DTOs.Catalog
     {
         public CreatedItemDTOValidator()
         {
+
             RuleFor(b => b.CategoryId)
                 .NotEmpty().WithMessage("Category ID is required.");
 

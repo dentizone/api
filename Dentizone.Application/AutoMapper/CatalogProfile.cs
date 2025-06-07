@@ -8,10 +8,13 @@ namespace Dentizone.Application.AutoMapper
     {
         public CatalogProfile()
         {
-            CreateMap<CategoryDTO, Category>().ReverseMap();
+            CreateMap<CategoryDto, Category>().ReverseMap();
+            CreateMap<CreatedCategoryDTO, Category>().ReverseMap();
             CreateMap<SubCategoryDTO, SubCategory>().ReverseMap();
+            CreateMap<CreatedSubCategoryDTO, SubCategory>().ReverseMap();
             CreateMap<CreatedItemDTO, Item>().ReverseMap();
-            CreateMap<ItemDTO, Item>()
+            CreateMap<ItemDTO, Item>().ReverseMap();
+            CreateMap<ItemViewDTO, Item>()
                 .ReverseMap()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.SubCategoryName, opt => opt.MapFrom(src => src.SubCategory.Name));
