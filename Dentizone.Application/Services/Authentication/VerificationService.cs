@@ -34,15 +34,15 @@ namespace Dentizone.Application.Services.Authentication
         public static Dictionary<string, KycStatus> MapVerificationStatusToEnum()
         {
             return new Dictionary<string, KycStatus>
-            {
-                { "approved", KycStatus.APPROVED },
-                { "declined", KycStatus.REJECTED },
-                { "pending", KycStatus.PENDING }
-            };
+                   {
+                       { "approved", KycStatus.APPROVED },
+                       { "declined", KycStatus.REJECTED },
+                       { "pending", KycStatus.PENDING }
+                   };
         }
 
         public VerificationService(IDiditApi diditApi, ISecretService secretService, IAuthService authService,
-            IUserService userService, IMapper mapper)
+                                   IUserService userService, IMapper mapper)
         {
             _diditApi = diditApi;
             _secretService = secretService;
@@ -75,7 +75,10 @@ namespace Dentizone.Application.Services.Authentication
                 }
             };
 
-            return await _diditApi.CreateSessionAsync(request, _secretService.GetSecret("DiditApi"));
+            var session = await _diditApi.CreateSessionAsync(request, _secretService.GetSecret("DiditApi"));
+            await _userService.SetKycStatusAsync(userId, KycStatus.NOT_SUBMITTED);
+
+            return session;
         }
 
         public async Task<SessionDecisionResponse> GetVerificationStatusAsync(string sessionId)
@@ -90,13 +93,10 @@ namespace Dentizone.Application.Services.Authentication
 
         public async Task<UserView> UpdateUserVerificationState(string userId, string status)
         {
-            var kycStatus = status.ToLower() switch
+            if (!MapVerificationStatusToEnum().TryGetValue(status.ToLower(), out var kycStatus))
             {
-                "approved" => KycStatus.APPROVED,
-                "declined" => KycStatus.REJECTED,
-                "pending" => KycStatus.PENDING,
-                _ => throw new ArgumentException("Invalid status provided.")
-            };
+                throw new ArgumentException($"Invalid verification status: {status}");
+            }
 
             var output = await _userService.SetKycStatusAsync(userId, kycStatus);
 

@@ -1,13 +1,12 @@
-﻿using System.Security.Claims;
-using Dentizone.Application.DTOs.Auth;
+﻿using Dentizone.Application.DTOs.Auth;
 using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces.User;
-using Dentizone.Application.Services;
 using Dentizone.Application.Services.Authentication;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dentizone.Presentaion.Controllers
 {
@@ -22,17 +21,20 @@ namespace Dentizone.Presentaion.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginPayload)
         {
-            var auth =
+            var loggedInUser =
                 await authenticationService.LoginWithEmailAndPassword(loginPayload.Email, loginPayload.Password);
-            var token = tokenService.GenerateToken(auth.User.Id, auth.User.Email, UserRoles.GHOST.ToString());
-            return Ok(new { Token = token });
+
+
+            var token = tokenService.GenerateToken(loggedInUser.User.Id, loggedInUser.User.Email,
+                                                   loggedInUser.role.ToString());
+            return Ok(new { Token = token, loggedInUser });
         }
 
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerPayloadDto)
         {
-            var newUserId = await authenticationService.RegisterWithEmailAndPassword(registerPayloadDto);
+            var LoggedInUser = await authenticationService.RegisterWithEmailAndPassword(registerPayloadDto);
             var userDataDto = new CreateAppUser
             {
                 FullName = registerPayloadDto.FullName,
@@ -41,11 +43,12 @@ namespace Dentizone.Presentaion.Controllers
                 KycStatus = KycStatus.PENDING,
                 Username = registerPayloadDto.Username,
                 Status = UserState.PendingVerification,
-                Id = newUserId, // IdentityServer uses string IDs for users
+                Id = LoggedInUser.User.Id, // IdentityServer uses string IDs for users
             };
             var userData = await userService.CreateAsync(userDataDto);
-            var token = tokenService.GenerateToken(newUserId, registerPayloadDto.Email, UserRoles.GHOST.ToString());
-            return Ok(new { Token = token, userData });
+            var token = tokenService.GenerateToken(LoggedInUser.User.Id, registerPayloadDto.Email,
+                                                   LoggedInUser.role.ToString());
+            return Ok(new { Token = token, LoggedInUser, userData });
         }
 
         [HttpGet("confirm-email")]
@@ -83,7 +86,7 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
             var result = await authenticationService.ResetPassword(resetPasswordDto.Email, resetPasswordDto.Token,
-                resetPasswordDto.NewPassword);
+                                                                   resetPasswordDto.NewPassword);
 
 
             return Ok(new { Message = result });

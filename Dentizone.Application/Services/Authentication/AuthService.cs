@@ -1,7 +1,5 @@
 ﻿using Dentizone.Application.DTOs.Auth;
-using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces;
-using Dentizone.Application.Interfaces.User;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces;
@@ -79,7 +77,7 @@ namespace Dentizone.Application.Services.Authentication
                 await userActivityService.CreateAsync(UserActivities.LOCKDOUT, DateTime.Now, user.Id);
                 throw new
                     UserLockedOutException(
-                        "User is locked out due to too many failed login attempts. Please try again later.");
+                                           "User is locked out due to too many failed login attempts. Please try again later.");
             }
 
 
@@ -149,8 +147,6 @@ namespace Dentizone.Application.Services.Authentication
             // 4. Send Verification Email 
 
             await SendVerificationEmail(user.Email);
-            // 5. Generate token
-            await userActivityService.CreateAsync(UserActivities.REGISTER, DateTime.Now, user.Id);
             return new LoggedInUser()
             {
                 User = user,
@@ -207,7 +203,7 @@ namespace Dentizone.Application.Services.Authentication
             var verificationLink = $"https://dentizone.com/authverify-email?userId={user.Id}&token={token}";
             // 3. Send Verification Email
             await mailService.Send(email, "Dentizone: Verify your email",
-                $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
+                                   $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
         }
 
         public async Task SendForgetPasswordEmail(string email)
@@ -224,7 +220,7 @@ namespace Dentizone.Application.Services.Authentication
             var resetLink = $"https://dentizone.com/auth/reset-password?userId={user.Id}&token={token}";
             // 3. Send Reset Password Email
             await mailService.Send(email, "Dentizone: Reset your password",
-                $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
+                                   $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
         }
 
         public async Task<ApplicationUser> GetById(string userId)
