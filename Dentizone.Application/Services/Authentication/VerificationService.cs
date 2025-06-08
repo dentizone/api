@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Dentizone.Application.DTOs.User;
+﻿using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces.Secret;
@@ -18,7 +17,7 @@ namespace Dentizone.Application.Services.Authentication
     {
         Task<CreateSessionResponse> StartSessionAsync(string userId);
         Task<SessionDecisionResponse> GetVerificationStatusAsync(string sessionId);
-        string GetWebhookSecret();
+
     }
 
 
@@ -28,7 +27,6 @@ namespace Dentizone.Application.Services.Authentication
         private readonly ISecretService _secretService;
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
-        private readonly IMapper _mapper;
 
 
         public static Dictionary<string, KycStatus> MapVerificationStatusToEnum()
@@ -42,13 +40,12 @@ namespace Dentizone.Application.Services.Authentication
         }
 
         public VerificationService(IDiditApi diditApi, ISecretService secretService, IAuthService authService,
-                                   IUserService userService, IMapper mapper)
+                                   IUserService userService)
         {
             _diditApi = diditApi;
             _secretService = secretService;
             _authService = authService;
             _userService = userService;
-            _mapper = mapper;
         }
 
         public async Task<CreateSessionResponse> StartSessionAsync(string userId)
@@ -86,10 +83,6 @@ namespace Dentizone.Application.Services.Authentication
             return await _diditApi.GetSessionDecisionAsync(sessionId, _secretService.GetSecret("DiditApi"));
         }
 
-        public string GetWebhookSecret()
-        {
-            return _secretService.GetSecret("DiditWebhookSecret");
-        }
 
         public async Task<UserView> UpdateUserVerificationState(string userId, string status)
         {
