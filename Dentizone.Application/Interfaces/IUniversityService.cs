@@ -2,11 +2,13 @@
 
 namespace Dentizone.Application.Interfaces
 {
-    internal interface IUniversityService
+    public interface IUniversityService
     {
+        Task<UniversityDto> GetUniversityByIdAsync(string id);
+        Task<IReadOnlyList<UniversityDto>> GetAllUniversitiesAsync();
         Task<IReadOnlyList<SupportedUniversitiesDto>> GetSupportedUniversitiesAsync();
         Task<UniversityDto> DeleteUniversity(string id);
-        Task<CreateUniversityDto> CreateUniversityAsync(CreateUniversityDto universityDto);
+        Task<UniversityView> CreateUniversityAsync(CreateUniversityDto universityDto);
         Task<UpdateUniversityDto> UpdateUniversityAsync(string id, UpdateUniversityDto updateUniversityDto);
     }
 }

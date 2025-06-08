@@ -7,7 +7,7 @@ using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Application.Services
 {
-    internal class UniversityService : IUniversityService
+    public class UniversityService : IUniversityService
     {
         private readonly IMapper _mapper;
         private readonly IUniversityRepository _repo;
@@ -18,10 +18,10 @@ namespace Dentizone.Application.Services
             _repo = repo;
         }
 
-        public async Task<CreateUniversityDto> CreateUniversityAsync(CreateUniversityDto universityDto)
+        public async Task<UniversityView> CreateUniversityAsync(CreateUniversityDto universityDto)
         {
             var newUniversity = await _repo.CreateAsync(_mapper.Map<University>(universityDto));
-            return _mapper.Map<CreateUniversityDto>(newUniversity);
+            return _mapper.Map<UniversityView>(newUniversity);
         }
 
         public async Task<UniversityDto> DeleteUniversity(string id)
@@ -32,12 +32,27 @@ namespace Dentizone.Application.Services
                    throw new NotFoundException("No University found with this id. Please check the id and try again.");
         }
 
+        public async Task<IReadOnlyList<UniversityDto>> GetAllUniversitiesAsync()
+        {
+            var universities = await _repo.GetAll();
+            return _mapper.Map<IReadOnlyList<UniversityDto>>(universities);
+        }
 
         public async Task<IReadOnlyList<SupportedUniversitiesDto>> GetSupportedUniversitiesAsync()
         {
             var universities = await _repo.GetAll();
             var supported = universities.Where(u => u.IsSupported).ToList();
             return _mapper.Map<IReadOnlyList<SupportedUniversitiesDto>>(supported);
+        }
+
+        public async Task<UniversityDto> GetUniversityByIdAsync(string id)
+        {
+            var university = await _repo.GetByIdAsync(id);
+            if (university == null)
+            {
+                throw new NotFoundException("University not found");
+            }
+            return _mapper.Map<UniversityDto>(university);
         }
 
         public async Task<UpdateUniversityDto> UpdateUniversityAsync(string id, UpdateUniversityDto updateUniversityDto)

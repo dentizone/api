@@ -1,4 +1,5 @@
 ﻿using Dentizone.Application.DTOs.Catalog;
+using Dentizone.Application.Interfaces.Catalog;
 using Dentizone.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +7,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CatalogController(CatalogService catalogService) : ControllerBase
+    public class CatalogController(ICatalogService catalogService) : ControllerBase
     {
         [HttpGet("categories")]
         public async Task<IActionResult> GetAllCategories()
