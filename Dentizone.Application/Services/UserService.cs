@@ -2,6 +2,7 @@
 using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
 using System.Linq.Expressions;
@@ -24,6 +25,11 @@ namespace Dentizone.Application.Services
             var userEntity = _mapper.Map<AppUser>(userDto);
             var createdUser = await _userRepository.CreateAsync(userEntity);
             return _mapper.Map<UserView>(createdUser);
+        }
+
+        public async Task<UserView> UpdateAsync(string id, UserDto appUser)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<UserView> DeleteAsync(string id)
@@ -71,25 +77,6 @@ namespace Dentizone.Application.Services
             return _mapper.Map<UserView>(user);
         }
 
-        // TO BE REVIEWED CAREFULLY and TESTED
-        public async Task<UserView> UpdateAsync(string id, UserDto userDto)
-        {
-            var user = await _userRepository.GetByIdAsync(id);
-            if (user == null)
-            {
-                throw new NotFoundException($"User with id {id} not found.");
-            }
-
-            var userEntity = _mapper.Map<AppUser>(userDto);
-            userEntity.Id = id;
-            var updatedUser = await _userRepository.Update(userEntity);
-            if (updatedUser == null)
-            {
-                throw new NotFoundException($"User with id {id} not found.");
-            }
-
-            return _mapper.Map<UserView>(updatedUser);
-        }
 
         public async Task SetKycStatusAsync(string userId, KycStatusDTO kycStatusDto)
         {
@@ -113,6 +100,26 @@ namespace Dentizone.Application.Services
 
             user.Status = userStateDto.Status;
             await _userRepository.Update(user);
+        }
+
+        public async Task<UserView> UpdateKyc(string userId, KycStatus status)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new NotFoundException($"User with id {userId} not found.");
+            }
+
+            user.Status = status switch
+                          {
+                              KycStatus.APPROVED => UserState.Active,
+                              KycStatus.REJECTED => UserState.Banned,
+                              _ => user.Status
+                          };
+
+            user.KycStatus = status;
+            var updatedUser = await _userRepository.Update(user);
+            return _mapper.Map<UserView>(updatedUser);
         }
     }
 }

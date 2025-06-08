@@ -19,6 +19,7 @@ namespace Dentizone.Application.Services.Authentication
         Task SendVerificationEmail(string email);
         Task<string> ResetPassword(string email, string token, string newPassword);
         Task SendForgetPasswordEmail(string email);
+        Task<ApplicationUser> GetById(string userId);
     }
 
     public class AuthService(
@@ -143,7 +144,11 @@ namespace Dentizone.Application.Services.Authentication
             await SendVerificationEmail(user.Email);
             // 5. Generate token
             await userActivityService.CreateAsync(UserActivities.REGISTER, DateTime.Now, user.Id);
-            return GenerateToken(user.Id, user.Email, UserRoles.GHOST.ToString());
+            return userData;
+
+            // Return userData,
+            // On Contollrer, Create App User
+            // That will make the Auth Service avalible in user service to update the roles
         }
 
         public async Task<string> ConfirmEmail(string token, string userId)
@@ -213,6 +218,11 @@ namespace Dentizone.Application.Services.Authentication
             // 3. Send Reset Password Email
             await mailService.Send(email, "Dentizone: Reset your password",
                                    $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
+        }
+
+        public async Task<ApplicationUser> GetById(string userId)
+        {
+            return await userManager.FindByIdAsync(userId) ?? throw new NotFoundException("User not found");
         }
 
         public async Task<string> ResetPassword(string email, string token, string newPassword)

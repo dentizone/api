@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using Dentizone.Application.DTOs.User;
+using Dentizone.Application.Interfaces.User;
+using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces.Secret;
 using Dentizone.Infrastructure.ApiClient.KYC;
 using Newtonsoft.Json;
@@ -18,22 +16,33 @@ namespace Dentizone.Application.Services.Authentication
 
     public interface IVerificationService
     {
-        Task<CreateSessionResponse> StartSessionAsync(string userId, string email, string country);
+        Task<CreateSessionResponse> StartSessionAsync(string userId);
+        Task<SessionDecisionResponse> GetVerificationStatusAsync(string sessionId);
+        string GetWebhookSecret();
     }
 
     public class VerificationService : IVerificationService
     {
         private readonly IDiditApi _diditApi;
         private readonly ISecretService _secretService;
+        private readonly IAuthService _authService;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public VerificationService(IDiditApi diditApi, ISecretService secretService)
+        public VerificationService(IDiditApi diditApi, ISecretService secretService, IAuthService authService,
+                                   IUserService userService, IMapper mapper)
         {
             _diditApi = diditApi;
             _secretService = secretService;
+            _authService = authService;
+            _userService = userService;
+            _mapper = mapper;
         }
 
-        public async Task<CreateSessionResponse> StartSessionAsync(string userId, string email, string country)
+        public async Task<CreateSessionResponse> StartSessionAsync(string userId)
         {
+            var user = await _authService.GetById(userId);
+
             var request = new CreateSessionRequest
             {
                 WorkflowId = _secretService.GetSecret("DiditWorkflowId"),
@@ -41,20 +50,45 @@ namespace Dentizone.Application.Services.Authentication
                 Callback = "https://dentizone.com/auth/kyc/status",
                 Metadata = JsonConvert.SerializeObject(new Metadata()
                 {
-                    Email = email,
+                    Email = user.Email,
                     UserId = userId
                 }),
                 ContactDetails = new ContactDetails
                 {
-                    Email = email,
+                    Email = user.Email,
                 },
-                ExpectedDetails = new ExpectedDetails
+                ExpectedDetails = new ExpectedDetails()
                 {
-                    Country = country,
+                    Country = "EGY"
                 }
             };
 
             return await _diditApi.CreateSessionAsync(request, _secretService.GetSecret("DiditApi"));
+        }
+
+        public async Task<SessionDecisionResponse> GetVerificationStatusAsync(string sessionId)
+        {
+            return await _diditApi.GetSessionDecisionAsync(sessionId, _secretService.GetSecret("DiditApi"));
+        }
+
+        public string GetWebhookSecret()
+        {
+            return _secretService.GetSecret("DiditWebhookSecret");
+        }
+
+        public async Task<UserView> UpdateUserVerificationState(string userId, string status)
+        {
+            var kycStatus = status.ToLower() switch
+            {
+                "approved" => KycStatus.APPROVED,
+                "declined" => KycStatus.REJECTED,
+                "pending" => KycStatus.PENDING,
+                _ => throw new ArgumentException("Invalid status provided.")
+            };
+
+            var output = await _userService.UpdateKyc(userId, kycStatus);
+
+            return output;
         }
     }
 }

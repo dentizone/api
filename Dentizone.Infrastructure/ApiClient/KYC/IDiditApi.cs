@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Refit;
+﻿using Refit;
 
 namespace Dentizone.Infrastructure.ApiClient.KYC
 {
@@ -14,5 +9,9 @@ namespace Dentizone.Infrastructure.ApiClient.KYC
             [Body] CreateSessionRequest request,
             [Header("x-api-key")] string apiKey
         );
+
+        [Get("/v2/session/{sessionId}/decision/")]
+        Task<SessionDecisionResponse> GetSessionDecisionAsync([AliasAs("sessionId")] string sessionId,
+                                                              [Header("x-api-key")] string apiKey);
     }
 }
