@@ -13,7 +13,7 @@ namespace Dentizone.Application.Services.Authentication
 {
     public interface IAuthService
     {
-        Task<string> LoginWithEmailAndPassword(string email, string password);
+        Task<LoggedInUser> LoginWithEmailAndPassword(string email, string password);
         Task<string> RegisterWithEmailAndPassword(RegisterRequestDto userData);
         Task<string> ConfirmEmail(string token, string userId);
         Task SendVerificationEmail(string email);
@@ -22,12 +22,18 @@ namespace Dentizone.Application.Services.Authentication
         Task<ApplicationUser> GetById(string userId);
     }
 
+    public class LoggedInUser
+    {
+        public ApplicationUser User { get; set; }
+        public UserRoles role { get; set; }
+    }
+
+
     public class AuthService(
         ITokenService tokenService,
         UserManager<ApplicationUser> userManager,
         IMailService mailService,
-        IUserActivityService userActivityService,
-        IUserService userService
+        IUserActivityService userActivityService
     )
         : IAuthService
     {
@@ -47,7 +53,7 @@ namespace Dentizone.Application.Services.Authentication
             await userManager.AddToRoleAsync(user, newRole.ToString());
         }
 
-        public async Task<string> LoginWithEmailAndPassword(string email, string password)
+        public async Task<LoggedInUser> LoginWithEmailAndPassword(string email, string password)
         {
             // 1. Check if email exists
 
@@ -65,7 +71,7 @@ namespace Dentizone.Application.Services.Authentication
                 await userActivityService.CreateAsync(UserActivities.LOCKDOUT, DateTime.Now, user.Id);
                 throw new
                     UserLockedOutException(
-                                           "User is locked out due to too many failed login attempts. Please try again later.");
+                        "User is locked out due to too many failed login attempts. Please try again later.");
             }
 
 
@@ -99,10 +105,14 @@ namespace Dentizone.Application.Services.Authentication
 
             await userManager.ResetAccessFailedCountAsync(user);
             await userActivityService.CreateAsync(UserActivities.LOGIN, DateTime.Now, user.Id);
-            return GenerateToken(user.Id, user.Email, roles.FirstOrDefault());
+            return new LoggedInUser()
+            {
+                User = user,
+                role = Enum.Parse<UserRoles>(roles.FirstOrDefault())
+            };
         }
 
-        public async Task<string> RegisterWithEmailAndPassword(RegisterRequestDto userData)
+        public async Task<LoggedInUser> RegisterWithEmailAndPassword(RegisterRequestDto userData)
         {
             // 1. Check if email already exists
             var existingUser = await userManager.FindByEmailAsync(userData.Email);
@@ -124,17 +134,6 @@ namespace Dentizone.Application.Services.Authentication
                                               string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
-            var userDataDto = new CreateAppUser
-            {
-                FullName = userData.FullName,
-                AcademicYear = userData.AcademicYear,
-                UniversityId = userData.UniversityId,
-                KycStatus = KycStatus.PENDING,
-                Username = userData.Username,
-                Status = UserState.PendingVerification,
-                Id = user.Id, // IdentityServer uses string IDs for users
-            };
-            await userService.CreateAsync(userDataDto);
 
             // 3. Assign default role
             await userManager.AddToRoleAsync(user, UserRoles.GHOST.ToString());
@@ -144,11 +143,11 @@ namespace Dentizone.Application.Services.Authentication
             await SendVerificationEmail(user.Email);
             // 5. Generate token
             await userActivityService.CreateAsync(UserActivities.REGISTER, DateTime.Now, user.Id);
-            return userData;
-
-            // Return userData,
-            // On Contollrer, Create App User
-            // That will make the Auth Service avalible in user service to update the roles
+            return new LoggedInUser()
+            {
+                User = user,
+                role = UserRoles.GHOST
+            };
         }
 
         public async Task<string> ConfirmEmail(string token, string userId)
@@ -200,7 +199,7 @@ namespace Dentizone.Application.Services.Authentication
             var verificationLink = $"https://dentizone.com/authverify-email?userId={user.Id}&token={token}";
             // 3. Send Verification Email
             await mailService.Send(email, "Dentizone: Verify your email",
-                                   $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
+                $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
         }
 
         public async Task SendForgetPasswordEmail(string email)
@@ -217,7 +216,7 @@ namespace Dentizone.Application.Services.Authentication
             var resetLink = $"https://dentizone.com/auth/reset-password?userId={user.Id}&token={token}";
             // 3. Send Reset Password Email
             await mailService.Send(email, "Dentizone: Reset your password",
-                                   $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
+                $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
         }
 
         public async Task<ApplicationUser> GetById(string userId)

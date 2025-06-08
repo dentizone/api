@@ -1,14 +1,22 @@
-﻿using Dentizone.Application.DTOs.Auth;
+﻿using System.Security.Claims;
+using Dentizone.Application.DTOs.Auth;
+using Dentizone.Application.DTOs.User;
+using Dentizone.Application.Interfaces.User;
+using Dentizone.Application.Services;
 using Dentizone.Application.Services.Authentication;
+using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/auth")]
     [ApiController]
-    public class AuthenticationController(IAuthService authenticationService) : ControllerBase
+    public class AuthenticationController(
+        IAuthService authenticationService,
+        IUserService userService,
+        ITokenService tokenService) : ControllerBase
     {
         [HttpPost("login")]
         [AllowAnonymous]
@@ -16,16 +24,28 @@ namespace Dentizone.Presentaion.Controllers
         {
             var auth =
                 await authenticationService.LoginWithEmailAndPassword(loginPayload.Email, loginPayload.Password);
-
-            return Ok(new { Token = auth });
+            var token = tokenService.GenerateToken(auth.User.Id, auth.User.Email, UserRoles.GHOST.ToString());
+            return Ok(new { Token = token });
         }
 
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerPayloadDto)
         {
-            var auth = await authenticationService.RegisterWithEmailAndPassword(registerPayloadDto);
-            return Ok(new { Token = auth });
+            var newUserId = await authenticationService.RegisterWithEmailAndPassword(registerPayloadDto);
+            var userDataDto = new CreateAppUser
+            {
+                FullName = registerPayloadDto.FullName,
+                AcademicYear = registerPayloadDto.AcademicYear,
+                UniversityId = registerPayloadDto.UniversityId,
+                KycStatus = KycStatus.PENDING,
+                Username = registerPayloadDto.Username,
+                Status = UserState.PendingVerification,
+                Id = newUserId, // IdentityServer uses string IDs for users
+            };
+            var userData = await userService.CreateAsync(userDataDto);
+            var token = tokenService.GenerateToken(newUserId, registerPayloadDto.Email, UserRoles.GHOST.ToString());
+            return Ok(new { Token = token, userData });
         }
 
         [HttpGet("confirm-email")]
