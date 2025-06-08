@@ -89,5 +89,11 @@ namespace Dentizone.Application.Services.Authentication
 
             return output;
         }
+
+        public async Task<UserView> UpdateUserNationalId(string userId, string nationalId)
+        {
+            var output = await _userService.SetNationalId(userId, nationalId);
+            return output;
+        }
     }
 }

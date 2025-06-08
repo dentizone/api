@@ -11,11 +11,11 @@ namespace Dentizone.Application.Interfaces.User
         Task<UserView> GetByIdAsync(string id);
 
         Task<ICollection<UserView>> GetAllAsync(int page, string? searchByName = null,
-            Expression<Func<AppUser, bool>>? filterExpression = null);
+                                                Expression<Func<AppUser, bool>>? filterExpression = null);
 
-        Task<UserView> UpdateAsync(string id, UserDto appUser);
         Task<UserView> DeleteAsync(string id);
         Task<UserView> SetKycStatusAsync(string userId, KycStatus status);
         Task SetUserStateAsync(string userId, UserStateDTO userStateDto);
+        Task<UserView> SetNationalId(string userId, string nationalId);
     }
 }

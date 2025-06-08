@@ -69,8 +69,8 @@ namespace Dentizone.Presentaion.Controllers
         {
             try
             {
-                var updatedUser = await userService.UpdateAsync(id, userDto);
-                return Ok(updatedUser);
+                // var updatedUser = await userService.UpdateAsync(id, userDto);
+                return Ok();
             }
             catch (Exception ex)
             {

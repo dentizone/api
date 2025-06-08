@@ -27,10 +27,6 @@ namespace Dentizone.Application.Services
             return _mapper.Map<UserView>(createdUser);
         }
 
-        public async Task<UserView> UpdateAsync(string id, UserDto appUser)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<UserView> DeleteAsync(string id)
         {
@@ -100,16 +96,30 @@ namespace Dentizone.Application.Services
             }
 
             user.Status = status switch
-                          {
-                              KycStatus.APPROVED => UserState.Active,
-                              KycStatus.REJECTED => UserState.Banned,
-                              KycStatus.NOT_SUBMITTED => UserState.PendingVerification,
-                              _ => user.Status
-                          };
+            {
+                KycStatus.APPROVED => UserState.Active,
+                KycStatus.REJECTED => UserState.Banned,
+                KycStatus.NOT_SUBMITTED => UserState.PendingVerification,
+                _ => user.Status
+            };
 
             user.KycStatus = status;
             var updatedUser = await _userRepository.Update(user);
             return _mapper.Map<UserView>(updatedUser);
+        }
+
+        public async Task<UserView> SetNationalId(string userId, string NationalId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new NotFoundException($"User with id {userId} not found.");
+            }
+
+            user.NationalId = long.Parse(NationalId);
+            var updated = await _userRepository.Update(user);
+
+            return _mapper.Map<UserView>(updated);
         }
     }
 }

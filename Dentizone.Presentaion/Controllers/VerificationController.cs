@@ -37,8 +37,8 @@ namespace Dentizone.Presentaion.Controllers
                 return BadRequest("Your Kyc is already started");
             }
 
-
             var session = await verificationService.StartSessionAsync(userId);
+            await userService.SetKycStatusAsync(user.Id, KycStatus.NOT_SUBMITTED);
 
             return Ok(session);
         }
@@ -88,14 +88,17 @@ namespace Dentizone.Presentaion.Controllers
                 var root = jsonDoc.RootElement;
 
                 var sessionId = root.GetProperty("session_id").GetString();
-                var status = root.GetProperty("status").GetString();
-                var userId = root.GetProperty("vendor_data").ToString();
+                var verification = await verificationService.GetVerificationStatusAsync(sessionId);
 
-                await verificationService.UpdateUserVerificationState(userId, status!);
-                switch (status.ToLower())
+                var userId = verification.VendorData.ToString();
+
+                await verificationService.UpdateUserVerificationState(userId, verification.Status);
+                switch (verification.Status.ToLower())
                 {
                     case "approved":
                         await authService.AlternateUserRoleAsync(UserRoles.VERIFIED, userId);
+                        await verificationService.UpdateUserNationalId(userId,
+                                                                       verification.IdVerification.PersonalNumber);
                         break;
                     case "declined":
                         await authService.AlternateUserRoleAsync(UserRoles.BLACKLISTED, userId);
