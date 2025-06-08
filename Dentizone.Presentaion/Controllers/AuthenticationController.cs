@@ -1,9 +1,9 @@
 ﻿using Dentizone.Application.DTOs.Auth;
 using Dentizone.Application.DTOs.User;
+using Dentizone.Application.Interfaces;
 using Dentizone.Application.Interfaces.User;
-using Dentizone.Application.Services.Authentication;
 using Dentizone.Domain.Enums;
-using Dentizone.Domain.Interfaces;
+using Dentizone.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -25,8 +25,8 @@ namespace Dentizone.Presentaion.Controllers
                 await authenticationService.LoginWithEmailAndPassword(loginPayload.Email, loginPayload.Password);
 
 
-            var token = tokenService.GenerateToken(loggedInUser.User.Id, loggedInUser.User.Email,
-                                                   loggedInUser.role.ToString());
+            var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, loggedInUser.User.Email,
+                                                         loggedInUser.role.ToString());
             return Ok(new { Token = token, loggedInUser });
         }
 
@@ -46,8 +46,8 @@ namespace Dentizone.Presentaion.Controllers
                 Id = LoggedInUser.User.Id, // IdentityServer uses string IDs for users
             };
             var userData = await userService.CreateAsync(userDataDto);
-            var token = tokenService.GenerateToken(LoggedInUser.User.Id, registerPayloadDto.Email,
-                                                   LoggedInUser.role.ToString());
+            var token = tokenService.GenerateAccessToken(LoggedInUser.User.Id, registerPayloadDto.Email,
+                                                         LoggedInUser.role.ToString());
             return Ok(new { Token = token, LoggedInUser, userData });
         }
 

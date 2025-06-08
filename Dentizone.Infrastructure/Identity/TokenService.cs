@@ -1,6 +1,6 @@
-﻿using Dentizone.Domain.Interfaces;
-using Dentizone.Domain.Interfaces.Secret;
+﻿using Dentizone.Domain.Interfaces.Secret;
 using Dentizone.Infrastructure.Cache;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -8,97 +8,416 @@ using System.Text;
 
 namespace Dentizone.Infrastructure.Identity
 {
+    public class TokenValidationResult
+    {
+        public bool IsValid { get; set; }
+        public string? ErrorMessage { get; set; }
+        public ClaimsPrincipal? Principal { get; set; }
+
+        public static TokenValidationResult Success(ClaimsPrincipal principal) =>
+            new() { IsValid = true, Principal = principal };
+
+        public static TokenValidationResult Failure(string errorMessage) =>
+            new() { IsValid = false, ErrorMessage = errorMessage };
+    }
+
     public class TokenService : ITokenService
     {
         private readonly IRedisService _redis;
         private readonly ISecretService _secretService;
-        private const int DurationInMinutes = 5;
-        private readonly SigningCredentials _credentials;
+        private readonly ILogger<TokenService> _logger;
+        private readonly int AccessTokenDurationInMinutes = 1;  // Devpuposes;
+        private readonly int RefreshTokenDurationInMinutes = 5; // 5 min : dev purposes;
+        private readonly string _accessSecretKey;
+        private readonly string _refreshSecretKey;
 
-        public TokenService(IRedisService redis, ISecretService secretService)
+        private TokenValidationParameters _accessTokenValidationParams;
+        private TokenValidationParameters _refreshTokenValidationParams;
+
+        private SigningCredentials _accessTokenCredentials;
+        private SigningCredentials _refreshTokenCredentials;
+
+        public TokenService(
+            IRedisService redis,
+            ISecretService secretService,
+            ILogger<TokenService> logger
+        )
         {
-            _redis = redis;
-            _secretService = secretService;
-            var secretKey = _secretService.GetSecret("JwtSecret");
-            if (string.IsNullOrEmpty(secretKey))
-            {
-                throw new TokenConfigurationException("JWT Secret key is not configured.");
-            }
+            _redis = redis ?? throw new ArgumentNullException(nameof(redis));
+            _secretService = secretService ?? throw new ArgumentNullException(nameof(secretService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            _credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+            try
+            {
+                _accessSecretKey = _secretService.GetSecret("JwtSecret");
+                _refreshSecretKey = _secretService.GetSecret("JwtRefresh");
+
+                ValidateSecretKeys();
+                InitializeSigningCredentials();
+                InitializeValidationParameters();
+
+                _logger.LogInformation("TokenService initialized successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to initialize TokenService");
+                throw new TokenConfigurationException("Failed to initialize TokenService", ex);
+            }
         }
 
-        private IEnumerable<Claim> BuildClaims(string id, string email, string role)
+        private void ValidateSecretKeys()
         {
+            if (string.IsNullOrEmpty(_accessSecretKey))
+            {
+                throw new TokenConfigurationException("JWT Access Secret key is not configured.");
+            }
+
+            if (string.IsNullOrEmpty(_refreshSecretKey))
+            {
+                throw new TokenConfigurationException("JWT Refresh Secret key is not configured.");
+            }
+
+            if (_accessSecretKey.Length < 32)
+            {
+                throw new TokenConfigurationException("JWT Access Secret key must be at least 32 characters long.");
+            }
+
+            if (_refreshSecretKey.Length < 32)
+            {
+                throw new TokenConfigurationException("JWT Refresh Secret key must be at least 32 characters long.");
+            }
+        }
+
+        private void InitializeSigningCredentials()
+        {
+            var accessSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_accessSecretKey));
+            _accessTokenCredentials = new SigningCredentials(accessSecurityKey, SecurityAlgorithms.HmacSha256Signature);
+
+            var refreshSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_refreshSecretKey));
+            _refreshTokenCredentials =
+                new SigningCredentials(refreshSecurityKey, SecurityAlgorithms.HmacSha256Signature);
+        }
+
+        private void InitializeValidationParameters()
+        {
+            _accessTokenValidationParams = IdentityConfiguration.GetTokenValidationParameters(_accessSecretKey);
+
+            _refreshTokenValidationParams = IdentityConfiguration.GetTokenValidationParameters(_refreshSecretKey);
+        }
+
+        private static IEnumerable<Claim> BuildAccessTokenClaims(string userId, string email, string role)
+        {
+            if (string.IsNullOrEmpty(userId))
+                throw new ArgumentException("User ID cannot be null or empty", nameof(userId));
+            if (string.IsNullOrEmpty(email))
+                throw new ArgumentException("Email cannot be null or empty", nameof(email));
+            if (string.IsNullOrEmpty(role)) throw new ArgumentException("Role cannot be null or empty", nameof(role));
+
             return new List<Claim>
                    {
-                       new(ClaimTypes.NameIdentifier, id),
+                       new(ClaimTypes.NameIdentifier, userId),
                        new(ClaimTypes.Email, email),
-                       new(JwtRegisteredClaimNames.Jti,
-                           Guid.NewGuid()
-                               .ToString()), // This is a Claim that is used to identify this token exactly. for blacklisting.
-                       new(ClaimTypes.Role, role)
+                       new(ClaimTypes.Role, role),
+                       new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                       new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
+                           ClaimValueTypes.Integer64)
                    };
         }
 
-        public string GenerateToken(string id, string email, string role)
+        private static IEnumerable<Claim> BuildRefreshTokenClaims(string userId)
         {
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(BuildClaims(id, email, role)),
-                Expires = DateTime.UtcNow.AddMinutes(DurationInMinutes),
-                SigningCredentials = _credentials,
-                Issuer = _secretService.GetSecret("JwtIssuer"),
-                Audience = _secretService.GetSecret("JwtAudience"),
-            };
-            var handler = new JsonWebTokenHandler();
-            var token = handler.CreateToken(tokenDescriptor);
-            return token;
+            if (string.IsNullOrEmpty(userId))
+                throw new ArgumentException("User ID cannot be null or empty", nameof(userId));
+
+            return new List<Claim>
+                   {
+                       new(ClaimTypes.NameIdentifier, userId),
+                       new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                       new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
+                           ClaimValueTypes.Integer64)
+                   };
         }
 
-        public async Task BlacklistToken(string token)
+        public string GenerateAccessToken(string userId, string email, string role)
         {
-            var tokenHandler = new JsonWebTokenHandler();
-
-
-            // Check first if the token is valid,
-            // i don't want spammy requests to my redis server. -_-
-
-            var isValid = tokenHandler.CanReadToken(token);
-            if (!isValid)
+            try
             {
-                return;
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(BuildAccessTokenClaims(userId, email, role)),
+                    Expires =
+                                              DateTime.UtcNow.AddMinutes(AccessTokenDurationInMinutes),
+                    SigningCredentials = _accessTokenCredentials,
+                };
+
+                var handler = new JsonWebTokenHandler();
+                var token = handler.CreateToken(tokenDescriptor);
+
+                _logger.LogDebug("Access token generated successfully for user {UserId}", userId);
+                return token;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to generate access token for user {UserId}", userId);
+                throw;
+            }
+        }
+
+        public string GenerateRefreshToken(string userId)
+        {
+            try
+            {
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(BuildRefreshTokenClaims(userId)),
+                    Expires = DateTime.UtcNow.AddMinutes(
+                                                                               RefreshTokenDurationInMinutes),
+                    SigningCredentials = _refreshTokenCredentials,
+                };
+
+                var handler = new JsonWebTokenHandler();
+                var token = handler.CreateToken(tokenDescriptor);
+
+                _logger.LogDebug("Refresh token generated successfully for user {UserId}", userId);
+                return token;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to generate refresh token for user {UserId}", userId);
+                throw;
+            }
+        }
+
+        public async Task<TokenValidationResult> ValidateAccessTokenAsync(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return TokenValidationResult.Failure("Token is null or empty");
             }
 
-            // If the token is valid,
-            // then we need to check if it's already expired.
-            var validationResult = await tokenHandler.ValidateTokenAsync(token,
-                                                                         IdentityConfiguration
-                                                                             .GetTokenValidationParameters(_secretService)
-                                                                        );
-
-            if (validationResult.IsValid)
+            try
             {
+                var tokenHandler = new JsonWebTokenHandler();
+
+                if (!tokenHandler.CanReadToken(token))
+                {
+                    return TokenValidationResult.Failure("Token format is invalid");
+                }
+
+                // Check if token is blacklisted
+                var tokenId = ExtractTokenId(token);
+                if (!string.IsNullOrEmpty(tokenId) && await IsBlacklistedAsync(tokenId))
+                {
+                    return TokenValidationResult.Failure("Token has been revoked");
+                }
+
+                var validationResult = await tokenHandler.ValidateTokenAsync(token, _accessTokenValidationParams);
+
+                if (validationResult.IsValid)
+                {
+                    return TokenValidationResult.Success(new ClaimsPrincipal(validationResult.ClaimsIdentity));
+                }
+
+                return TokenValidationResult.Failure("Token validation failed");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error validating access token");
+                return TokenValidationResult.Failure($"Token validation error: {ex.Message}");
+            }
+        }
+
+        public async Task<TokenValidationResult> ValidateRefreshTokenAsync(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return TokenValidationResult.Failure("Token is null or empty");
+            }
+
+            try
+            {
+                var tokenHandler = new JsonWebTokenHandler();
+
+                if (!tokenHandler.CanReadToken(token))
+                {
+                    return TokenValidationResult.Failure("Token format is invalid");
+                }
+
+                // Check if token is blacklisted
+                var tokenId = ExtractTokenId(token);
+                if (!string.IsNullOrEmpty(tokenId) && await IsBlacklistedAsync(tokenId))
+                {
+                    return TokenValidationResult.Failure("Token has been revoked");
+                }
+
+                var validationResult = await tokenHandler.ValidateTokenAsync(token, _refreshTokenValidationParams);
+
+                if (validationResult.IsValid)
+                {
+                    return TokenValidationResult.Success(new ClaimsPrincipal(validationResult.ClaimsIdentity));
+                }
+
+                return TokenValidationResult.Failure("Token validation failed");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error validating refresh token");
+                return TokenValidationResult.Failure($"Token validation error: {ex.Message}");
+            }
+        }
+
+        public async Task<bool> BlacklistAccessTokenAsync(string token)
+        {
+            return await BlacklistTokenInternalAsync(token, _accessTokenValidationParams, "access");
+        }
+
+        public async Task<bool> BlacklistRefreshTokenAsync(string token)
+        {
+            return await BlacklistTokenInternalAsync(token, _refreshTokenValidationParams, "refresh");
+        }
+
+        private async Task<bool> BlacklistTokenInternalAsync(string token, TokenValidationParameters validationParams,
+                                                             string tokenType)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                _logger.LogWarning("Attempted to blacklist null or empty {TokenType} token", tokenType);
+                return false;
+            }
+
+            try
+            {
+                var tokenHandler = new JsonWebTokenHandler();
+
+                if (!tokenHandler.CanReadToken(token))
+                {
+                    _logger.LogWarning("Cannot read {TokenType} token for blacklisting", tokenType);
+                    return false;
+                }
+
+                var validationResult = await tokenHandler.ValidateTokenAsync(token, validationParams);
+
+                if (!validationResult.IsValid)
+                {
+                    _logger.LogWarning("Invalid {TokenType} token cannot be blacklisted", tokenType);
+                    return false;
+                }
+
                 var tokenPayload = tokenHandler.ReadJsonWebToken(token);
                 var tokenId = tokenPayload.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
-                var tokenExpiresIn = tokenPayload.ValidTo;
 
-                var expiresAtInTimeSpan = tokenExpiresIn - DateTime.UtcNow;
-                if (tokenId != null)
+                if (string.IsNullOrEmpty(tokenId))
                 {
-                    _redis.SetValue(tokenId, token, expiresAtInTimeSpan);
+                    _logger.LogWarning("{TokenType} token missing JTI claim", tokenType);
+                    return false;
                 }
+
+                var tokenExpiration = tokenPayload.ValidTo;
+                var timeToExpiration = tokenExpiration - DateTime.UtcNow;
+
+                if (timeToExpiration <= TimeSpan.Zero)
+                {
+                    _logger.LogDebug("{TokenType} token already expired, no need to blacklist", tokenType);
+                    return true;
+                }
+
+                await _redis.SetValueAsync(tokenId, token, timeToExpiration);
+                _logger.LogDebug("{TokenType} token successfully blacklisted with ID {TokenId}", tokenType, tokenId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to blacklist {TokenType} token", tokenType);
+                return false;
             }
         }
 
-        public bool IsBlacklisted(string tokenId)
+        public async Task<bool> IsBlacklistedAsync(string tokenId)
         {
-            var blacklistedToken = _redis.GetValue(tokenId);
-            return blacklistedToken != null;
+            if (string.IsNullOrEmpty(tokenId))
+            {
+                return false;
+            }
+
+            try
+            {
+                var blacklistedToken = await _redis.GetValueAsync(tokenId);
+                return !string.IsNullOrEmpty(blacklistedToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking if token {TokenId} is blacklisted", tokenId);
+                // Fail secure - if we can't check, assume it's not blacklisted
+                // but log the error for investigation
+                return false;
+            }
+        }
+
+        public string? ExtractTokenId(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return null;
+            }
+
+            try
+            {
+                var tokenHandler = new JsonWebTokenHandler();
+
+                if (!tokenHandler.CanReadToken(token))
+                {
+                    return null;
+                }
+
+                var tokenPayload = tokenHandler.ReadJsonWebToken(token);
+                return tokenPayload.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to extract token ID from token");
+                return null;
+            }
+        }
+
+        public ClaimsPrincipal? ExtractClaims(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return null;
+            }
+
+            try
+            {
+                var tokenHandler = new JsonWebTokenHandler();
+
+                if (!tokenHandler.CanReadToken(token))
+                {
+                    return null;
+                }
+
+                var tokenPayload = tokenHandler.ReadJsonWebToken(token);
+                var identity = new ClaimsIdentity(tokenPayload.Claims, "jwt");
+                return new ClaimsPrincipal(identity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to extract claims from token");
+                return null;
+            }
         }
     }
 
+    // Extension methods for Redis service to support async operations
+    public static class RedisServiceExtensions
+    {
+        public static async Task SetValueAsync(this IRedisService redis, string key, string value, TimeSpan expiration)
+        {
+            await Task.Run(() => redis.SetValue(key, value, expiration));
+        }
 
-    public class TokenConfigurationException(string message) : Exception(message);
+        public static async Task<string?> GetValueAsync(this IRedisService redis, string key)
+        {
+            return await Task.Run(() => redis.GetValue(key));
+        }
+    }
 }

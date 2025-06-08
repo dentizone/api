@@ -1,34 +1,14 @@
 ﻿using Dentizone.Application.DTOs.Auth;
+using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
-using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 
 namespace Dentizone.Application.Services.Authentication
 {
-    public interface IAuthService
-    {
-        Task<LoggedInUser> LoginWithEmailAndPassword(string email, string password);
-        Task<LoggedInUser> RegisterWithEmailAndPassword(RegisterRequestDto userData);
-        Task<string> ConfirmEmail(string token, string userId);
-        Task SendVerificationEmail(string email);
-        Task<string> ResetPassword(string email, string token, string newPassword);
-        Task SendForgetPasswordEmail(string email);
-        Task<ApplicationUser> GetById(string userId);
-        Task AlternateUserRoleAsync(UserRoles newRole, ApplicationUser user);
-        Task AlternateUserRoleAsync(UserRoles newRole, string userId);
-    }
-
-    public class LoggedInUser
-    {
-        public ApplicationUser User { get; set; }
-        public UserRoles role { get; set; }
-    }
-
-
     public class AuthService(
         ITokenService tokenService,
         UserManager<ApplicationUser> userManager,
@@ -39,7 +19,7 @@ namespace Dentizone.Application.Services.Authentication
     {
         private string GenerateToken(string userId, string email, string? role)
         {
-            return tokenService.GenerateToken(userId, email, role);
+            return tokenService.GenerateAccessToken(userId, email, role);
         }
 
         public async Task AlternateUserRoleAsync(UserRoles newRole, string userId)
