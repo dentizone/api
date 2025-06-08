@@ -2,6 +2,7 @@
 using Dentizone.Application.Interfaces;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Secret;
 using Dentizone.Infrastructure.ApiClient.KYC;
 using Newtonsoft.Json;
@@ -21,9 +22,10 @@ namespace Dentizone.Application.Services.Authentication
         private readonly ISecretService _secretService;
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
+        private readonly IMailService _mailService;
 
 
-        public static Dictionary<string, KycStatus> MapVerificationStatusToEnum()
+        private static Dictionary<string, KycStatus> MapVerificationStatusToEnum()
         {
             return new Dictionary<string, KycStatus>
                    {
@@ -68,7 +70,11 @@ namespace Dentizone.Application.Services.Authentication
 
             var session = await _diditApi.CreateSessionAsync(request, _secretService.GetSecret("DiditApi"));
             await _userService.SetKycStatusAsync(userId, KycStatus.NOT_SUBMITTED);
-
+            await _mailService.Send(user.Email, "Dentizone: Verification Started",
+                                    "Thank you for starting the email verification process." +
+                                    " You can use this url to verify your identity" +
+                                    $" <a href=\"{session.Url}\">Verify Now</a>"
+                                   );
             return session;
         }
 
