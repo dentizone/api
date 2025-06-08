@@ -1,4 +1,5 @@
 ﻿using Dentizone.Application.DTOs.User;
+using Dentizone.Application.Interfaces;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces.Secret;
@@ -11,13 +12,6 @@ namespace Dentizone.Application.Services.Authentication
     {
         public string Email { get; set; }
         public string UserId { get; set; }
-    }
-
-    public interface IVerificationService
-    {
-        Task<CreateSessionResponse> StartSessionAsync(string userId);
-        Task<SessionDecisionResponse> GetVerificationStatusAsync(string sessionId);
-
     }
 
 
