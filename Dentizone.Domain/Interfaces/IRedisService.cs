@@ -2,7 +2,7 @@
 
 public interface IRedisService
 {
-    void SetValue(string key, string value);
-    void SetValue(string key, string value, TimeSpan expireTime);
-    string? GetValue(string key);
+    Task SetValue(string key, string value);
+    Task SetValue(string key, string value, TimeSpan expireTime);
+    Task<string?> GetValue(string key);
 }

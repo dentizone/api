@@ -32,19 +32,19 @@ namespace Dentizone.Infrastructure.Cache
             database = redis.GetDatabase();
         }
 
-        public void SetValue(string key, string value)
+        public async Task SetValue(string key, string value)
         {
-            database.StringSetAsync(key, value);
+            await database.StringSetAsync(key, value);
         }
 
-        public void SetValue(string key, string value, TimeSpan expireTime)
+        public async Task SetValue(string key, string value, TimeSpan expireTime)
         {
-            database.StringSetAsync(key, value, expireTime);
+            await database.StringSetAsync(key, value, expireTime);
         }
 
-        public string? GetValue(string key)
+        public async Task<string?> GetValue(string key)
         {
-            var value = database.StringGet(key);
+            var value = await database.StringGetAsync(key);
             return value.IsNullOrEmpty ? null : value.ToString();
         }
     }

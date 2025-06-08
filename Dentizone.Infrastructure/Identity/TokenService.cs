@@ -321,7 +321,7 @@ namespace Dentizone.Infrastructure.Identity
                     return true;
                 }
 
-                await _redis.SetValueAsync(tokenId, token, timeToExpiration);
+                await _redis.SetValue(tokenId, token, timeToExpiration);
                 _logger.LogDebug("{TokenType} token successfully blacklisted with ID {TokenId}", tokenType, tokenId);
                 return true;
             }
@@ -341,7 +341,7 @@ namespace Dentizone.Infrastructure.Identity
 
             try
             {
-                var blacklistedToken = await _redis.GetValueAsync(tokenId);
+                var blacklistedToken = await _redis.GetValue(tokenId);
                 return !string.IsNullOrEmpty(blacklistedToken);
             }
             catch (Exception ex)
@@ -404,20 +404,6 @@ namespace Dentizone.Infrastructure.Identity
                 _logger.LogError(ex, "Failed to extract claims from token");
                 return null;
             }
-        }
-    }
-
-    // Extension methods for Redis service to support async operations
-    public static class RedisServiceExtensions
-    {
-        public static async Task SetValueAsync(this IRedisService redis, string key, string value, TimeSpan expiration)
-        {
-            await Task.Run(() => redis.SetValue(key, value, expiration));
-        }
-
-        public static async Task<string?> GetValueAsync(this IRedisService redis, string key)
-        {
-            return await Task.Run(() => redis.GetValue(key));
         }
     }
 }
