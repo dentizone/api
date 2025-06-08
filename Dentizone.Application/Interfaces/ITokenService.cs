@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using Dentizone.Application.Services.Authentication;
+using System.Security.Claims;
 
 namespace Dentizone.Infrastructure.Identity;
 

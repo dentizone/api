@@ -16,4 +16,5 @@ public interface IAuthService
     Task<ApplicationUser> GetById(string userId);
     Task AlternateUserRoleAsync(UserRoles newRole, ApplicationUser user);
     Task AlternateUserRoleAsync(UserRoles newRole, string userId);
+    Task<UserRoles> GetUserRoleAsync(string userId);
 }

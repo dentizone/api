@@ -22,6 +22,20 @@ namespace Dentizone.Application.Services.Authentication
             return tokenService.GenerateAccessToken(userId, email, role);
         }
 
+        public async Task<UserRoles> GetUserRoleAsync(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId) ?? throw new NotFoundException("User not found");
+
+            var currentRoles = await userManager.GetRolesAsync(user);
+
+            if (currentRoles == null || !currentRoles.Any())
+            {
+                throw new NotFoundException("User does not have any roles assigned");
+            }
+
+            return Enum.Parse<UserRoles>(currentRoles.FirstOrDefault() ?? UserRoles.GHOST.ToString());
+        }
+
         public async Task AlternateUserRoleAsync(UserRoles newRole, string userId)
         {
             var user = await userManager.FindByIdAsync(userId) ?? throw new NotFoundException("User not found");

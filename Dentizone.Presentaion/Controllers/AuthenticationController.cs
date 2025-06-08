@@ -27,14 +27,15 @@ namespace Dentizone.Presentaion.Controllers
 
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, loggedInUser.User.Email,
                                                          loggedInUser.role.ToString());
-            return Ok(new { Token = token, loggedInUser });
+            var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);
+            return Ok(new { Token = token, RefreshToken = refreshToken });
         }
 
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerPayloadDto)
         {
-            var LoggedInUser = await authenticationService.RegisterWithEmailAndPassword(registerPayloadDto);
+            var loggedInUser = await authenticationService.RegisterWithEmailAndPassword(registerPayloadDto);
             var userDataDto = new CreateAppUser
             {
                 FullName = registerPayloadDto.FullName,
@@ -43,12 +44,12 @@ namespace Dentizone.Presentaion.Controllers
                 KycStatus = KycStatus.PENDING,
                 Username = registerPayloadDto.Username,
                 Status = UserState.PendingVerification,
-                Id = LoggedInUser.User.Id, // IdentityServer uses string IDs for users
+                Id = loggedInUser.User.Id, // IdentityServer uses string IDs for users
             };
             var userData = await userService.CreateAsync(userDataDto);
-            var token = tokenService.GenerateAccessToken(LoggedInUser.User.Id, registerPayloadDto.Email,
-                                                         LoggedInUser.role.ToString());
-            return Ok(new { Token = token, LoggedInUser, userData });
+            var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, registerPayloadDto.Email,
+                                                         loggedInUser.role.ToString());
+            return Ok(new { Token = token, userData });
         }
 
         [HttpGet("confirm-email")]
@@ -91,5 +92,88 @@ namespace Dentizone.Presentaion.Controllers
 
             return Ok(new { Message = result });
         }
+
+        [HttpPost("refresh")]
+        [AllowAnonymous] // Refresh doesn't require active authentication
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.RefreshToken))
+                {
+                    return BadRequest(new { message = "Refresh token is required" });
+                }
+
+                // Validate the refresh token
+                var validationResult = await tokenService.ValidateRefreshTokenAsync(request.RefreshToken);
+
+                if (!validationResult.IsValid)
+                {
+                    return Unauthorized(new { message = "Invalid or expired refresh token" });
+                }
+
+                // Extract user information from the refresh token
+                var userId = validationResult.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized(new { message = "Invalid token claims" });
+                }
+
+                // This ensures that if user roles/permissions changed, the new token reflects that
+                var user = await authenticationService.GetById(userId);
+                var domainUser = await userService.GetByIdAsync(userId);
+                if (user == null)
+                {
+                    return Unauthorized(new { message = "User not found" });
+                }
+
+                if (domainUser.Status != UserState.Active &&
+                    domainUser.Status != UserState.PendingVerification) // Assuming you have an IsActive property
+                {
+                    return Unauthorized(new { message = "User account is inactive" });
+                }
+
+                // Get Current User Role
+                var userRole = await authenticationService.GetUserRoleAsync(userId);
+
+                // Generate new tokens
+                var newAccessToken = tokenService.GenerateAccessToken(user.Id, user.Email, userRole.ToString());
+                var newRefreshToken = tokenService.GenerateRefreshToken(user.Id);
+
+                // Blacklist the old refresh token to prevent reuse
+                await tokenService.BlacklistRefreshTokenAsync(request.RefreshToken);
+
+
+                if (!string.IsNullOrEmpty(request.AccessToken))
+                {
+                    await tokenService.BlacklistAccessTokenAsync(request.AccessToken);
+                }
+
+
+                return Ok(new RefreshTokenResponse
+                {
+                    AccessToken = newAccessToken,
+                    RefreshToken = newRefreshToken,
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred during token refresh" });
+            }
+        }
+    }
+
+    public class RefreshTokenResponse
+    {
+        public string AccessToken { get; set; } = string.Empty;
+        public string RefreshToken { get; set; } = string.Empty;
+    }
+
+    public class RefreshTokenRequest
+    {
+        public string RefreshToken { get; set; } = string.Empty;
+
+        public string? AccessToken { get; set; }
     }
 }

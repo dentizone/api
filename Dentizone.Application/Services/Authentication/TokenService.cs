@@ -1,12 +1,13 @@
 ﻿using Dentizone.Domain.Interfaces.Secret;
 using Dentizone.Infrastructure.Cache;
+using Dentizone.Infrastructure.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 
-namespace Dentizone.Infrastructure.Identity
+namespace Dentizone.Application.Services.Authentication
 {
     public class TokenValidationResult
     {
@@ -26,7 +27,7 @@ namespace Dentizone.Infrastructure.Identity
         private readonly IRedisService _redis;
         private readonly ISecretService _secretService;
         private readonly ILogger<TokenService> _logger;
-        private readonly int AccessTokenDurationInMinutes = 1;  // Devpuposes;
+        private readonly int AccessTokenDurationInMinutes = 2;  // Devpuposes;
         private readonly int RefreshTokenDurationInMinutes = 5; // 5 min : dev purposes;
         private readonly string _accessSecretKey;
         private readonly string _refreshSecretKey;
@@ -100,7 +101,7 @@ namespace Dentizone.Infrastructure.Identity
 
         private void InitializeValidationParameters()
         {
-            _accessTokenValidationParams = IdentityConfiguration.GetTokenValidationParameters(_accessSecretKey);
+            _accessTokenValidationParams = IdentityConfiguration.GetTokenValidationParameters(_secretService);
 
             _refreshTokenValidationParams = IdentityConfiguration.GetTokenValidationParameters(_refreshSecretKey);
         }
@@ -133,8 +134,6 @@ namespace Dentizone.Infrastructure.Identity
                    {
                        new(ClaimTypes.NameIdentifier, userId),
                        new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                       new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
-                           ClaimValueTypes.Integer64)
                    };
         }
 
@@ -148,6 +147,8 @@ namespace Dentizone.Infrastructure.Identity
                     Expires =
                                               DateTime.UtcNow.AddMinutes(AccessTokenDurationInMinutes),
                     SigningCredentials = _accessTokenCredentials,
+                    Issuer = _secretService.GetSecret("JwtIssuer"),
+                    Audience = _secretService.GetSecret("JwtAudience")
                 };
 
                 var handler = new JsonWebTokenHandler();
