@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  dentizone:
+    image: ${DOCKERHUB_USERNAME}/dentizone:latest
+    container_name: dentizone-app
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ClientSecret=${ClientSecret}
+      - ClientId=${ClientId}
+      - ProjectId=${ProjectId}
+    restart: unless-stopped
+    networks:
+      - dentizone-network
+
+networks:
+  dentizone-network:
+    driver: bridge 

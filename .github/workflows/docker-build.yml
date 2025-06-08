@@ -4,10 +4,17 @@ on:
   push:
     branches:
       - dev
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker image tag'
+        required: false
+        default: 'latest'
+        type: string
 
 env:
   DOCKER_IMAGE: dentizone
-  DOCKER_TAG: latest
+  DOCKER_TAG: ${{ github.event.inputs.tag || 'latest' }}
 
 jobs:
   build-and-push:
@@ -24,6 +31,14 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+          logout: false
+
+      - name: Debug Docker Hub Login
+        run: |
+          echo "Checking Docker Hub login status..."
+          docker info
+          echo "Listing Docker Hub images..."
+          docker images
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -32,4 +47,5 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max 
+          cache-to: type=gha,mode=max
+          no-cache-filters: true 
