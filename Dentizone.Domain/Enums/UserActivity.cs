@@ -11,5 +11,7 @@
         ORDER_COMPLETED,
         PROFILE_UPDATED,
         ACCOUNT_VERIFIED,
+        LOCKDOUT,
+        EMAIL_CONFIRMED
     }
 }

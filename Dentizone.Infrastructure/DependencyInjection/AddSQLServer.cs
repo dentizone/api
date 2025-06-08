@@ -1,21 +1,21 @@
-﻿using Dentizone.Infrastructure.Persistence.Interceptors;
-using System;
+﻿using Dentizone.Domain.Interfaces.Secret;
+using Dentizone.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dentizone.Infrastructure.DependencyInjection
 {
-    public static class InjectSQLServer
+    internal static class InjectSqlServer
     {
-        public static IServiceCollection AddSQLServer(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddSqlServer(this IServiceCollection services)
         {
             services.AddScoped<BaseEntityInterceptor>();
             services.AddDbContext<AppDbContext>((serviceProvider, options) =>
             {
                 var interceptor = serviceProvider.GetRequiredService<BaseEntityInterceptor>();
-                options.UseSqlServer(configuration.GetConnectionString("DentizoneDb"))
-                    .AddInterceptors(interceptor);
+                var configuration = serviceProvider.GetRequiredService<ISecretService>();
+                options.UseSqlServer(configuration.GetSecret("DentizoneDb"))
+                       .AddInterceptors(interceptor);
             });
 
             return services;

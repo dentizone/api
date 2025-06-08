@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.DTOs.User;
+﻿using Dentizone.Application.DTOs.User;
 using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
+using System.Linq.Expressions;
 
 namespace Dentizone.Application.Interfaces.User
 {
     public interface IUserService
     {
-        Task<CreatedUserDTO> CreateAsync(UserDto userDto);
-        Task<UserDto?> GetByIdAsync(string id);
+        Task<UserView> CreateAsync(CreateAppUser userDto);
+        Task<UserView> GetByIdAsync(string id);
 
-        Task<ICollection<UserDto>> GetAllAsync(int page, string? searchByName,
-            Expression<Func<AppUser, bool>>? filterExpression);
+        Task<ICollection<UserView>> GetAllAsync(int page, string? searchByName = null,
+                                                Expression<Func<AppUser, bool>>? filterExpression = null);
 
-        Task<UserDto> UpdateAsync(string id, UserDto userDto);
-        Task<UserDto> DeleteAsync(string id);
-        Task SetKycStatusAsync(string userId, KycStatusDTO kycStatusDto);
+        Task<UserView> DeleteAsync(string id);
+        Task<UserView> SetKycStatusAsync(string userId, KycStatus status);
         Task SetUserStateAsync(string userId, UserStateDTO userStateDto);
+        Task<UserView> SetNationalId(string userId, string nationalId);
     }
 }
