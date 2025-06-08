@@ -29,20 +29,18 @@ namespace Dentizone.Presentaion.Controllers
                 return BadRequest("User ID is required.");
             }
 
-            // Check if the user already verifed
+            // Check if the user already verified
             var user = await userService.GetByIdAsync(userId);
 
             if (user.KycStatus != KycStatus.PENDING)
             {
-                return BadRequest("User is already verified.");
+                return BadRequest("Your Kyc is already started");
             }
 
 
             var session = await verificationService.StartSessionAsync(userId);
 
             return Ok(session);
-
-            // return Ok();
         }
 
         [HttpGet("status")]
@@ -77,12 +75,12 @@ namespace Dentizone.Presentaion.Controllers
                 var timestamp = timestampHeader.ToString();
 
                 // 3) Validate timestamp
-                // if (!long.TryParse(timestamp, out long incomingTimestamp))
-                //     return Unauthorized("Invalid timestamp");
-                //
-                // var currentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                // if (Math.Abs(currentTimestamp - incomingTimestamp) > 300)
-                //     return Unauthorized("Stale request");
+                if (!long.TryParse(timestamp, out long incomingTimestamp))
+                    return Unauthorized("Invalid timestamp");
+
+                var currentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                if (Math.Abs(currentTimestamp - incomingTimestamp) > 300)
+                    return Unauthorized("Stale request");
 
 
                 // 6) Deserialize body and process event
