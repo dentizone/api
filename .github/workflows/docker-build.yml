@@ -4,10 +4,17 @@ on:
   push:
     branches:
       - dev
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker image tag'
+        required: false
+        default: 'latest'
+        type: string
 
 env:
   DOCKER_IMAGE: dentizone
-  DOCKER_TAG: latest
+  DOCKER_TAG: ${{ github.event.inputs.tag || 'latest' }}
 
 jobs:
   build-and-push:
