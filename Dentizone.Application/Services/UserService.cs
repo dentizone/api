@@ -45,7 +45,7 @@ namespace Dentizone.Application.Services
         }
 
         public async Task<ICollection<UserView>> GetAllAsync(int page, string? searchByName = null,
-                                                             Expression<Func<AppUser, bool>>? filterExpression = null)
+            Expression<Func<AppUser, bool>>? filterExpression = null)
         {
             var users = await _userRepository.GetAllAsync(page, filterExpression);
             if (users == null)
@@ -56,7 +56,7 @@ namespace Dentizone.Application.Services
             if (!string.IsNullOrEmpty(searchByName))
             {
                 users = users.Where(u => u.FullName.Contains(searchByName, StringComparison.OrdinalIgnoreCase))
-                             .ToList();
+                    .ToList();
             }
 
             return _mapper.Map<ICollection<UserView>>(users);
@@ -65,10 +65,10 @@ namespace Dentizone.Application.Services
         public async Task<UserView> GetByIdAsync(string id)
         {
             var user = await _userRepository.FindBy(u => u.Id == id,
-                                                    [
-                                                        u => u.University
-                                                    ]
-                                                   );
+                [
+                    u => u.University
+                ]
+            );
             if (user == null)
             {
                 throw new NotFoundException($"User with id {id} not found.");
@@ -77,18 +77,6 @@ namespace Dentizone.Application.Services
             return _mapper.Map<UserView>(user);
         }
 
-
-        public async Task SetKycStatusAsync(string userId, KycStatusDTO kycStatusDto)
-        {
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-            {
-                throw new NotFoundException($"User with id {userId} not found.");
-            }
-
-            user.KycStatus = kycStatusDto.KycStatus;
-            await _userRepository.Update(user);
-        }
 
         public async Task SetUserStateAsync(string userId, UserStateDTO userStateDto)
         {
@@ -102,7 +90,8 @@ namespace Dentizone.Application.Services
             await _userRepository.Update(user);
         }
 
-        public async Task<UserView> UpdateKyc(string userId, KycStatus status)
+
+        public async Task<UserView> SetKycStatusAsync(string userId, KycStatus status)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
@@ -111,11 +100,11 @@ namespace Dentizone.Application.Services
             }
 
             user.Status = status switch
-                          {
-                              KycStatus.APPROVED => UserState.Active,
-                              KycStatus.REJECTED => UserState.Banned,
-                              _ => user.Status
-                          };
+            {
+                KycStatus.APPROVED => UserState.Active,
+                KycStatus.REJECTED => UserState.Banned,
+                _ => user.Status
+            };
 
             user.KycStatus = status;
             var updatedUser = await _userRepository.Update(user);

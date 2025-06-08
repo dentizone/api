@@ -12,7 +12,10 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VerificationController(VerificationService verificationService, IUserService userService)
+    public class VerificationController(
+        VerificationService verificationService,
+        IUserService userService,
+        IAuthService authService)
         : ControllerBase
     {
         [HttpPost("create")]
@@ -48,10 +51,6 @@ namespace Dentizone.Presentaion.Controllers
         {
             // Assuming you have a method to get the verification status by sessionId
             var status = await verificationService.GetVerificationStatusAsync(sessionId);
-            if (status == null)
-            {
-                return NotFound("Verification session not found.");
-            }
 
             return Ok(status);
         }
@@ -94,7 +93,19 @@ namespace Dentizone.Presentaion.Controllers
                 var status = root.GetProperty("status").GetString();
                 var userId = root.GetProperty("vendor_data").ToString();
 
-                await verificationService.UpdateUserVerificationState(userId, status);
+                await verificationService.UpdateUserVerificationState(userId, status!);
+                switch (status.ToLower())
+                {
+                    case "approved":
+                        await authService.AlternateUserRoleAsync(UserRoles.VERIFIED, userId);
+                        break;
+                    case "declined":
+                        await authService.AlternateUserRoleAsync(UserRoles.BLACKLISTED, userId);
+                        break;
+
+                    default:
+                        break;
+                }
 
 
                 // TODO: Handle your logic here (e.g., upsertVerification(sessionId, status, vendorData, workflowId))

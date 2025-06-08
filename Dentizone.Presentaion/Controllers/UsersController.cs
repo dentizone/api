@@ -3,6 +3,7 @@ using Dentizone.Application.Interfaces.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Dentizone.Domain.Enums;
 
 namespace Dentizone.Presentaion.Controllers
 {
@@ -78,11 +79,11 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpPatch("{id}/kyc")]
-        public async Task<IActionResult> SetKycStatus(string id, [FromBody] KycStatusDTO kycStatusDto)
+        public async Task<IActionResult> SetKycStatus(string id, [FromBody] KycStatus status)
         {
             try
             {
-                await userService.SetKycStatusAsync(id, kycStatusDto);
+                await userService.SetKycStatusAsync(id, status);
                 return NoContent();
             }
             catch (Exception ex)

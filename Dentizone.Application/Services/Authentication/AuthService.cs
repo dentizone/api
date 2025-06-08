@@ -14,12 +14,14 @@ namespace Dentizone.Application.Services.Authentication
     public interface IAuthService
     {
         Task<LoggedInUser> LoginWithEmailAndPassword(string email, string password);
-        Task<string> RegisterWithEmailAndPassword(RegisterRequestDto userData);
+        Task<LoggedInUser> RegisterWithEmailAndPassword(RegisterRequestDto userData);
         Task<string> ConfirmEmail(string token, string userId);
         Task SendVerificationEmail(string email);
         Task<string> ResetPassword(string email, string token, string newPassword);
         Task SendForgetPasswordEmail(string email);
         Task<ApplicationUser> GetById(string userId);
+        Task AlternateUserRoleAsync(UserRoles newRole, ApplicationUser user);
+        Task AlternateUserRoleAsync(UserRoles newRole, string userId);
     }
 
     public class LoggedInUser
@@ -42,7 +44,13 @@ namespace Dentizone.Application.Services.Authentication
             return tokenService.GenerateToken(userId, email, role);
         }
 
-        private async Task AlternateUserRoleAsync(UserRoles newRole, ApplicationUser user)
+        public async Task AlternateUserRoleAsync(UserRoles newRole, string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId) ?? throw new NotFoundException("User not found");
+            await AlternateUserRoleAsync(newRole, user);
+        }
+
+        public async Task AlternateUserRoleAsync(UserRoles newRole, ApplicationUser user)
         {
             var currentRoles = await userManager.GetRolesAsync(user);
             if (currentRoles.Any())

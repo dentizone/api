@@ -21,6 +21,7 @@ namespace Dentizone.Application.Services.Authentication
         string GetWebhookSecret();
     }
 
+
     public class VerificationService : IVerificationService
     {
         private readonly IDiditApi _diditApi;
@@ -29,8 +30,19 @@ namespace Dentizone.Application.Services.Authentication
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
+
+        public static Dictionary<string, KycStatus> MapVerificationStatusToEnum()
+        {
+            return new Dictionary<string, KycStatus>
+            {
+                { "approved", KycStatus.APPROVED },
+                { "declined", KycStatus.REJECTED },
+                { "pending", KycStatus.PENDING }
+            };
+        }
+
         public VerificationService(IDiditApi diditApi, ISecretService secretService, IAuthService authService,
-                                   IUserService userService, IMapper mapper)
+            IUserService userService, IMapper mapper)
         {
             _diditApi = diditApi;
             _secretService = secretService;
@@ -86,7 +98,7 @@ namespace Dentizone.Application.Services.Authentication
                 _ => throw new ArgumentException("Invalid status provided.")
             };
 
-            var output = await _userService.UpdateKyc(userId, kycStatus);
+            var output = await _userService.SetKycStatusAsync(userId, kycStatus);
 
             return output;
         }
