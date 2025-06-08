@@ -15,3 +15,16 @@ public interface ITokenService
     string? ExtractTokenId(string token);
     ClaimsPrincipal? ExtractClaims(string token);
 }
+
+public class TokenValidationResult
+{
+    public bool IsValid { get; set; }
+    public string? ErrorMessage { get; set; }
+    public ClaimsPrincipal? Principal { get; set; }
+
+    public static TokenValidationResult Success(ClaimsPrincipal principal) =>
+        new() { IsValid = true, Principal = principal };
+
+    public static TokenValidationResult Failure(string errorMessage) =>
+        new() { IsValid = false, ErrorMessage = errorMessage };
+}

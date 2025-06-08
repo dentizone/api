@@ -4,6 +4,7 @@ using Dentizone.Application.Interfaces.User;
 using Dentizone.Application.Services;
 using Dentizone.Application.Services.Authentication;
 using Dentizone.Domain.Interfaces.Mail;
+using Dentizone.Infrastructure.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dentizone.Application.DI
@@ -12,6 +13,8 @@ namespace Dentizone.Application.DI
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped<ITokenService, TokenService>();
+
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();

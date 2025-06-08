@@ -6,22 +6,10 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
+using TokenValidationResult = Dentizone.Infrastructure.Identity.TokenValidationResult;
 
 namespace Dentizone.Application.Services.Authentication
 {
-    public class TokenValidationResult
-    {
-        public bool IsValid { get; set; }
-        public string? ErrorMessage { get; set; }
-        public ClaimsPrincipal? Principal { get; set; }
-
-        public static TokenValidationResult Success(ClaimsPrincipal principal) =>
-            new() { IsValid = true, Principal = principal };
-
-        public static TokenValidationResult Failure(string errorMessage) =>
-            new() { IsValid = false, ErrorMessage = errorMessage };
-    }
-
     public class TokenService : ITokenService
     {
         private readonly IRedisService _redis;

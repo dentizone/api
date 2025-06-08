@@ -1,6 +1,4 @@
-﻿using Dentizone.Domain.Interfaces;
-using Dentizone.Infrastructure.Cache;
-using Dentizone.Infrastructure.Identity;
+﻿using Dentizone.Infrastructure.Cache;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dentizone.Infrastructure.DependencyInjection
@@ -15,7 +13,6 @@ namespace Dentizone.Infrastructure.DependencyInjection
             services.AddAppIdentity();
             services.AddSecretManager();
             services.AddScoped<IRedisService, RedisService>();
-            services.AddScoped<ITokenService, TokenService>();
 
 
             return services;
