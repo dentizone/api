@@ -6,6 +6,8 @@ namespace Dentizone.Domain.Entity
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
+
+        public string IconUrl { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }

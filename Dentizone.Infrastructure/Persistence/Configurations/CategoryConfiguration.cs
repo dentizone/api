@@ -12,32 +12,36 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
 
             builder.Property(c => c.Id)
-                .IsRequired();
+                   .IsRequired();
 
 
             builder.Property(c => c.Name)
-                .HasMaxLength(255)
-                .IsRequired();
+                   .HasMaxLength(255)
+                   .IsRequired();
 
 
             builder.Property(c => c.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAdd()
-                .IsRequired();
+                   .HasDefaultValueSql("GETUTCDATE()")
+                   .ValueGeneratedOnAdd()
+                   .IsRequired();
+
+            builder.Property(c => c.IconUrl)
+                   .HasMaxLength(512)
+                   .IsRequired();
 
 
             builder.Property(c => c.UpdatedAt)
-                .IsRequired();
+                   .IsRequired();
 
             builder.Property(c => c.IsDeleted)
-                .IsRequired();
+                   .IsRequired();
 
 
             // One-to-Many: Category to SubCategories
             builder.HasMany(c => c.SubCategories)
-                .WithOne(sc => sc.Category)
-                .HasForeignKey(sc => sc.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                   .WithOne(sc => sc.Category)
+                   .HasForeignKey(sc => sc.CategoryId)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
