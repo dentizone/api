@@ -182,5 +182,35 @@ namespace Dentizone.Presentaion.Controllers
                 return StatusCode(500, new { message = "An error occurred during token refresh" });
             }
         }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequest request)
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return BadRequest(new { message = "Invalid user context" });
+                }
+
+
+                // Get Access Token from header
+                var fullToken = Request.Headers["Authorization"];
+                var token = fullToken.FirstOrDefault()?.Split(" ").Last();
+
+                await tokenService.BlacklistAccessTokenAsync(token);
+                await tokenService.BlacklistRefreshTokenAsync(request.RefreshToken);
+
+
+                return Ok(new { message = "Logged out successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred during logout" });
+            }
+        }
     }
 }

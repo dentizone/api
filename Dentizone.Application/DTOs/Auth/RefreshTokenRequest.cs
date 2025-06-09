@@ -1,4 +1,4 @@
-﻿namespace Dentizone.Presentaion.Controllers;
+﻿namespace Dentizone.Application.DTOs.Auth;
 
 public class RefreshTokenRequest
 {
