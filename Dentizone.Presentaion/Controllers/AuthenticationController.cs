@@ -28,7 +28,11 @@ namespace Dentizone.Presentaion.Controllers
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, loggedInUser.User.Email,
                                                          loggedInUser.role.ToString());
             var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);
-            return Ok(new { Token = token, RefreshToken = refreshToken });
+            return Ok(new RefreshTokenResponse()
+            {
+                AccessToken = token,
+                RefreshToken = refreshToken,
+            });
         }
 
         [HttpPost("register")]
@@ -49,7 +53,12 @@ namespace Dentizone.Presentaion.Controllers
             var userData = await userService.CreateAsync(userDataDto);
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, registerPayloadDto.Email,
                                                          loggedInUser.role.ToString());
-            return Ok(new { Token = token, userData });
+            var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);
+            return Ok(new RefreshTokenResponse()
+            {
+                AccessToken = token,
+                RefreshToken = refreshToken,
+            });
         }
 
         [HttpGet("confirm-email")]
@@ -162,18 +171,5 @@ namespace Dentizone.Presentaion.Controllers
                 return StatusCode(500, new { message = "An error occurred during token refresh" });
             }
         }
-    }
-
-    public class RefreshTokenResponse
-    {
-        public string AccessToken { get; set; } = string.Empty;
-        public string RefreshToken { get; set; } = string.Empty;
-    }
-
-    public class RefreshTokenRequest
-    {
-        public string RefreshToken { get; set; } = string.Empty;
-
-        public string? AccessToken { get; set; }
     }
 }
