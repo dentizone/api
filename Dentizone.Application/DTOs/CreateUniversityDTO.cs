@@ -12,5 +12,6 @@ namespace Dentizone.Application.DTOs
         public string Domain { get; set; }
     
 }
+
    
 }

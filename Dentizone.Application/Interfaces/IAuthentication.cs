@@ -14,6 +14,7 @@ namespace Dentizone.Application.Interfaces
         Task<string> LoginAsync(string academicEmail, string password);
         Task<bool> LogoutAsync();
         Task<bool> ResetPasswordAsync(string academicEmail, string newPassword);
+        Task<string> SendForgetPassword(string email);
     }
        
 }

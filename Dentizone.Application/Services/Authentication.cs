@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Dentizone.Application.DTOs;
 using Dentizone.Application.Interfaces;
+using Dentizone.Application.Interfaces.Mail;
 using Dentizone.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -19,13 +20,15 @@ namespace Dentizone.Application.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly TokenGeneration _tokenGenerator;
-        public Authentication(IMapper map,IAuthentication userAuthentication, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, TokenGeneration tokenGenerator)
+        private readonly IMailService mailService;
+        public Authentication(IMailService _mailService,IMapper map,IAuthentication userAuthentication, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, TokenGeneration tokenGenerator)
         {
             _mapper = map;
             _userAuthentication = userAuthentication;
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenGenerator = tokenGenerator;
+            mailService = _mailService;
 
 
         }
@@ -54,6 +57,16 @@ namespace Dentizone.Application.Services
         {
             await _signInManager.SignOutAsync();
             return true;
+        }
+
+        public async Task<string> SendForgetPassword(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                throw new Exception("User not found.");
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            mailService.Send(email, "Password Reset", $"Your password reset token is: {token}");
+            return token;
         }
 
        

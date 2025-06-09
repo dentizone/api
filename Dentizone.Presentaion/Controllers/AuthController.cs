@@ -9,7 +9,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController :ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IAuthentication _authService;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -23,7 +23,7 @@ namespace Dentizone.Presentaion.Controllers
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
-                return false; 
+                return false;
 
             return await _userManager.IsLockedOutAsync(user);
         }
@@ -51,7 +51,7 @@ namespace Dentizone.Presentaion.Controllers
                 return Unauthorized(ex.Message);
             }
         }
-       [ HttpPost("logout")]
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             var result = await _authService.LogoutAsync();
@@ -67,13 +67,28 @@ namespace Dentizone.Presentaion.Controllers
                 return Ok("Password reset successfully.");
             return BadRequest("Password reset failed.");
         }
+        [HttpPost("forget-password")]
+        public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordDTO dto)
+        {
+            try
+            {
+                var token = await _authService.SendForgetPassword(dto.AcademicEmail);
+                return Ok(token);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
 
 
 
 
         }
-
-
-
+    }
 }
+
+
+
+
 
