@@ -6,7 +6,7 @@ namespace Dentizone.Domain.Entity
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }
-        public bool IsSupported { get; set; }
+        public bool IsSupported { get; set; } = true;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string Domain { get; set; }

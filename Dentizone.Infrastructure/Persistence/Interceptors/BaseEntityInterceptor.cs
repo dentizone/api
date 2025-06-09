@@ -4,13 +4,26 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Dentizone.Infrastructure.Persistence.Interceptors;
 
-internal class BaseEntityInterceptor : SaveChangesInterceptor
+public class BaseEntityInterceptor : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
-        var context = eventData.Context;
+        UpdateEntities(eventData.Context);
+        return base.SavingChanges(eventData, result);
+    }
 
-        if (context == null) return base.SavingChanges(eventData, result);
+    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
+        DbContextEventData eventData,
+        InterceptionResult<int> result,
+        CancellationToken cancellationToken = default)
+    {
+        UpdateEntities(eventData.Context);
+        return await base.SavingChangesAsync(eventData, result, cancellationToken);
+    }
+
+    private static void UpdateEntities(DbContext? context)
+    {
+        if (context == null) return;
 
         var entries = context.ChangeTracker.Entries<IBaseEntity>();
         var now = DateTime.UtcNow;
@@ -20,43 +33,40 @@ internal class BaseEntityInterceptor : SaveChangesInterceptor
             switch (entry.State)
             {
                 case EntityState.Added:
-                {
-                    entry.Entity.CreatedAt = now;
+                    {
+                        entry.Entity.CreatedAt = now;
 
-                    if (entry.Entity is IUpdatable updatable)
-                        updatable.UpdatedAt = now;
+                        if (entry.Entity is IUpdatable updatable)
+                            updatable.UpdatedAt = now;
 
-                    if (string.IsNullOrEmpty(entry.Entity.Id))
-                        entry.Entity.Id = Guid.NewGuid().ToString();
+                        if (string.IsNullOrEmpty(entry.Entity.Id))
+                            entry.Entity.Id = Guid.NewGuid().ToString();
 
-                    if (entry.Entity is IDeletable deletable)
-                        deletable.IsDeleted = false;
+                        if (entry.Entity is IDeletable deletable)
+                            deletable.IsDeleted = false;
 
-                    break;
-                }
+                        break;
+                    }
                 case EntityState.Modified:
-                {
-                    if (entry.Entity is IUpdatable updatable)
-                        updatable.UpdatedAt = now;
-                    break;
-                }
-                case EntityState.Deleted:
-                {
-                    if (entry.Entity is IDeletable deletable)
                     {
-                        deletable.IsDeleted = true;
-                        entry.State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        context.Entry(entry.Entity).State = EntityState.Unchanged;
-                    }
+                        if (entry.Entity is IUpdatable updatable)
+                            updatable.UpdatedAt = now;
 
-                    break;
-                }
+                        break;
+                    }
+                case EntityState.Deleted:
+                    {
+                        if (entry.Entity is IDeletable deletable)
+                        {
+                            deletable.IsDeleted = true;
+                            if (deletable is IUpdatable updatableDeletable)
+                                updatableDeletable.UpdatedAt = now;
+                            entry.State = EntityState.Modified;
+                        }
+
+                        break;
+                    }
             }
         }
-
-        return base.SavingChanges(eventData, result);
     }
 }

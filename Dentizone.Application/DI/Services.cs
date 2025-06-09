@@ -14,6 +14,7 @@ namespace Dentizone.Application.DI
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMailService, MailService>();
+            services.AddScoped<IUniversityService, UniversityService>();
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserActivityService, UserActivityService>();
