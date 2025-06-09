@@ -1,7 +1,9 @@
 using Dentizone.Application.DI;
 using Dentizone.Application.Interfaces;
 using Dentizone.Infrastructure.DependencyInjection;
+using Dentizone.Infrastructure.Filters;
 using Dentizone.Infrastructure.Persistence.Seeder;
+using Dentizone.Presentaion.Context;
 using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
 
@@ -15,7 +17,7 @@ namespace Dentizone.Presentaion
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers((options) => options.Filters.Add<BlacklistAuthenticationFilter>());
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddInfrastructure();
@@ -29,26 +31,27 @@ namespace Dentizone.Presentaion
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     BearerFormat = "JWT",
-                    Description = "JWT Authorization header using the Bearer scheme.",
+                    Description =
+                                                            "JWT Authorization header using the Bearer scheme.",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
                     Scheme = "Bearer"
                 });
                 opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Id = "Bearer",
-                                Type = ReferenceType.SecurityScheme
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
+                                           {
+                                               {
+                                                   new OpenApiSecurityScheme
+                                                   {
+                                                       Reference = new OpenApiReference
+                                                                   {
+                                                                       Id = "Bearer",
+                                                                       Type = ReferenceType.SecurityScheme
+                                                                   }
+                                                   },
+                                                   Array.Empty<string>()
+                                               }
+                                           });
             });
 
             var app = builder.Build();

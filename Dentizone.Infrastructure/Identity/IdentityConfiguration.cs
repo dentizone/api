@@ -50,5 +50,22 @@ namespace Dentizone.Infrastructure.Identity
                                                                   ),
             };
         }
+
+        public static TokenValidationParameters GetTokenValidationParameters(string secret)
+        {
+            return new TokenValidationParameters
+            {
+                ClockSkew = TimeSpan.Zero,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+
+                IssuerSigningKey = new SymmetricSecurityKey(
+                                                                   Encoding.UTF8
+                                                                           .GetBytes(secret)
+                                                                  ),
+            };
+        }
     }
 }
