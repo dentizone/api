@@ -13,8 +13,7 @@ namespace Dentizone.Application.AutoMapper
     {
         public UniversityProfile()
         {
-            CreateMap<SupportedUniversitiesDTO, University>()
-                .ReverseMap();
+            CreateMap<SupportedUniversitiesDTO, University>().ReverseMap();
             CreateMap<DeleteUniversityDTO, University>().ReverseMap();
             CreateMap<CreateUniversityDTO, University>() .ReverseMap();
             CreateMap<CreateUniversityDTO,University>().ReverseMap();

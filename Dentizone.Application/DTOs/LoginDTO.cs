@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dentizone.Application.DTOs
 {
-    internal class CreateUniversityDTO
+    public class LoginDTO
     {
-        public string Name { get; set; }
-        public string Domain { get; set; }
-    
-}
-   
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
 }
