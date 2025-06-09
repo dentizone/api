@@ -1,6 +1,8 @@
 ﻿using Dentizone.Application.Interfaces;
 using DeviceDetectorNET.Parser;
 
+namespace Dentizone.Presentaion.Context;
+
 public class RequestContextService : IRequestContextService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;

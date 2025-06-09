@@ -1,12 +1,13 @@
-﻿using Dentizone.Domain.Interfaces.Secret;
-using Dentizone.Infrastructure.Cache;
+﻿using Dentizone.Domain.Exceptions;
+using Dentizone.Domain.Interfaces;
+using Dentizone.Domain.Interfaces.Secret;
 using Dentizone.Infrastructure.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
-using TokenValidationResult = Dentizone.Infrastructure.Identity.TokenValidationResult;
+using TokenValidationResult = Dentizone.Domain.Interfaces.TokenValidationResult;
 
 namespace Dentizone.Application.Services.Authentication
 {

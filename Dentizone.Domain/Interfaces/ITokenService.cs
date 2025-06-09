@@ -1,7 +1,6 @@
-﻿using Dentizone.Application.Services.Authentication;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
-namespace Dentizone.Infrastructure.Identity;
+namespace Dentizone.Domain.Interfaces;
 
 public interface ITokenService
 {

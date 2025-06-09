@@ -1,4 +1,5 @@
-﻿using Dentizone.Infrastructure.Cache;
+﻿using Dentizone.Domain.Interfaces;
+using Dentizone.Infrastructure.Cache;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dentizone.Infrastructure.DependencyInjection

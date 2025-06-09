@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Identity;
+﻿using Dentizone.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

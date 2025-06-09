@@ -1,4 +1,5 @@
-﻿using Dentizone.Domain.Interfaces.Secret;
+﻿using Dentizone.Domain.Interfaces;
+using Dentizone.Domain.Interfaces.Secret;
 using StackExchange.Redis;
 
 namespace Dentizone.Infrastructure.Cache

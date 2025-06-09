@@ -1,4 +1,4 @@
-﻿namespace Dentizone.Infrastructure.Identity;
+﻿namespace Dentizone.Domain.Exceptions;
 
 public class TokenConfigurationException : Exception
 {

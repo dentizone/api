@@ -3,6 +3,7 @@ using Dentizone.Application.Interfaces;
 using Dentizone.Infrastructure.DependencyInjection;
 using Dentizone.Infrastructure.Filters;
 using Dentizone.Infrastructure.Persistence.Seeder;
+using Dentizone.Presentaion.Context;
 using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
 

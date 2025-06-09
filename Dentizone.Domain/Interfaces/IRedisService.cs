@@ -1,4 +1,4 @@
-﻿namespace Dentizone.Infrastructure.Cache;
+﻿namespace Dentizone.Domain.Interfaces;
 
 public interface IRedisService
 {

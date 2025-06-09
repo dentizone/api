@@ -3,7 +3,7 @@ using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Domain.Enums;
-using Dentizone.Infrastructure.Identity;
+using Dentizone.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

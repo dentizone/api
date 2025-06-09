@@ -3,8 +3,8 @@ using Dentizone.Application.Interfaces.Cloudinary;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Application.Services;
 using Dentizone.Application.Services.Authentication;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Mail;
-using Dentizone.Infrastructure.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dentizone.Application.DI

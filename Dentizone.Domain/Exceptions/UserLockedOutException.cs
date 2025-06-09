@@ -1,3 +1,3 @@
-﻿namespace Dentizone.Application.Services.Authentication;
+﻿namespace Dentizone.Domain.Exceptions;
 
 public class UserLockedOutException(string message) : Exception(message);

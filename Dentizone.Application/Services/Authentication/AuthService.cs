@@ -3,6 +3,7 @@ using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
