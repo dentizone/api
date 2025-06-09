@@ -198,9 +198,14 @@ namespace Dentizone.Presentaion.Controllers
 
 
                 // Get Access Token from header
-                var fullToken = Request.Headers["Authorization"];
-                var token = fullToken.FirstOrDefault()?.Split(" ").Last();
+                var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+                if (string.IsNullOrEmpty(authHeader) ||
+                    !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                {
+                    return BadRequest(new { message = "Missing or invalid authorization header" });
+                }
 
+                var token = authHeader.Substring("Bearer ".Length).Trim();
                 await tokenService.BlacklistAccessTokenAsync(token);
                 await tokenService.BlacklistRefreshTokenAsync(request.RefreshToken);
 
