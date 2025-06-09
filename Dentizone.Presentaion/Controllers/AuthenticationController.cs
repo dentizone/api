@@ -137,10 +137,21 @@ namespace Dentizone.Presentaion.Controllers
                     return Unauthorized(new { message = "User not found" });
                 }
 
-                if (domainUser.Status != UserState.Active &&
-                    domainUser.Status != UserState.PendingVerification) // Assuming you have an IsActive property
+                switch (domainUser.Status)
                 {
-                    return Unauthorized(new { message = "User account is inactive" });
+                    case UserState.Active:
+                    case UserState.PendingVerification:
+                        break;
+                    case UserState.Inactive:
+                        return Unauthorized(new { message = "User account is inactive" });
+                    case UserState.Suspended:
+                        return Unauthorized(new { message = "User account is suspended" });
+                    case UserState.Deleted:
+                        return NotFound(new { message = "User account not found" });
+                    case UserState.Banned:
+                        return Unauthorized(new { message = "User account is banned" });
+                    default:
+                        return BadRequest(new { message = "Invalid user state" });
                 }
 
                 // Get Current User Role
