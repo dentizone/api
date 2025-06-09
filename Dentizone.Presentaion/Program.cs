@@ -1,5 +1,6 @@
 using Dentizone.Application.DI;
 using Dentizone.Application.Interfaces;
+using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.DependencyInjection;
 using Dentizone.Infrastructure.Filters;
 using Dentizone.Infrastructure.Persistence.Seeder;
@@ -72,6 +73,12 @@ namespace Dentizone.Presentaion
 
             app.MapControllers();
             RoleSeeder.SeedRolesAsync(app.Services).Wait();
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                CatalogSeeder.SeedCategoriesAndSubCategoriesAsync(dbContext).Wait();
+            }
+
             app.Run();
         }
     }

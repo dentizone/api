@@ -1,4 +1,5 @@
 ﻿using Dentizone.Application.Interfaces;
+using Dentizone.Application.Interfaces.Catalog;
 using Dentizone.Application.Interfaces.Cloudinary;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Application.Services;
@@ -21,9 +22,10 @@ namespace Dentizone.Application.DI
             services.AddScoped<ICloudinaryService, CloudinaryService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserActivityService, UserActivityService>();
+            services.AddScoped<ICatalogService, CatalogService>();
 
 
-            services.AddScoped<VerificationService, VerificationService>();
+            services.AddScoped<IVerificationService, VerificationService>();
 
             return services;
         }
