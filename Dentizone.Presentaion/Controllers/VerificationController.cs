@@ -33,7 +33,7 @@ namespace Dentizone.Presentaion.Controllers
             // Check if the user already verified
             var user = await userService.GetByIdAsync(userId);
 
-            if (user.KycStatus != KycStatus.PENDING)
+            if (user.KycStatus != KycStatus.PENDING.ToString())
             {
                 return BadRequest("Your Kyc is already started");
             }

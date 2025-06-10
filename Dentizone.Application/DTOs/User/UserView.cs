@@ -1,6 +1,4 @@
-﻿using Dentizone.Domain.Enums;
-
-namespace Dentizone.Application.DTOs.User
+﻿namespace Dentizone.Application.DTOs.User
 {
     public class UserView
     {
@@ -9,8 +7,8 @@ namespace Dentizone.Application.DTOs.User
         public string Username { get; set; }
         public int AcademicYear { get; set; }
         public long? NationalId { get; set; }
-        public KycStatus KycStatus { get; set; }
-        public UserState Status { get; set; }
+        public string KycStatus { get; set; }
+        public string Status { get; set; }
         public string UnversityName { get; set; }
     }
 }
