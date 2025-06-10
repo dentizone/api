@@ -195,7 +195,7 @@ namespace Dentizone.Application.Services.Authentication
 
             // 2. Generate token
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-            var verificationLink = $"https://dentizone.com/authverify-email?userId={user.Id}&token={token}";
+            var verificationLink = $"https://dentizone.vercel.app/auth/mail-verify?userId={user.Id}&token={token}";
             // 3. Send Verification Email
             await mailService.Send(email, "Dentizone: Verify your email",
                                    $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
