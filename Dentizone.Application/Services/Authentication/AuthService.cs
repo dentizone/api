@@ -82,7 +82,7 @@ namespace Dentizone.Application.Services.Authentication
             if (!isPasswordValid)
             {
                 await userManager.AccessFailedAsync(user);
-                throw new BadRequestException("Email or Password are not correct");
+                throw new BadActionException("Email or Password are not correct");
             }
 
 
@@ -99,7 +99,7 @@ namespace Dentizone.Application.Services.Authentication
 
             if (roles.Contains(UserRoles.BLACKLISTED.ToString()))
             {
-                throw new BadRequestException("You're banned from using our platform.");
+                throw new BadActionException("You're banned from using our platform.");
             }
 
             // 5. Generate token
@@ -131,8 +131,8 @@ namespace Dentizone.Application.Services.Authentication
             var result = await userManager.CreateAsync(user, userData.Password);
             if (!result.Succeeded)
             {
-                throw new BadRequestException("User creation failed: " +
-                                              string.Join(", ", result.Errors.Select(e => e.Description)));
+                throw new BadActionException("User creation failed: " +
+                                             string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
 
@@ -161,15 +161,15 @@ namespace Dentizone.Application.Services.Authentication
             // check if already confirmed
             if (user.EmailConfirmed)
             {
-                throw new BadRequestException("Email is already confirmed");
+                throw new BadActionException("Email is already confirmed");
             }
 
             // 3. Confirm email
             var result = await userManager.ConfirmEmailAsync(user, token);
             if (!result.Succeeded)
             {
-                throw new BadRequestException("Email confirmation failed: " +
-                                              string.Join(", ", result.Errors.Select(e => e.Description)));
+                throw new BadActionException("Email confirmation failed: " +
+                                             string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
             // 4. Assign verified role
@@ -190,7 +190,7 @@ namespace Dentizone.Application.Services.Authentication
 
             if (user.EmailConfirmed)
             {
-                throw new BadRequestException("Your Email is already confined");
+                throw new BadActionException("Your Email is already confined");
             }
 
             // 2. Generate token
@@ -236,8 +236,8 @@ namespace Dentizone.Application.Services.Authentication
             var result = await userManager.ResetPasswordAsync(user, token, newPassword);
             if (!result.Succeeded)
             {
-                throw new BadRequestException("Password reset failed: " +
-                                              string.Join(", ", result.Errors.Select(e => e.Description)));
+                throw new BadActionException("Password reset failed: " +
+                                             string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
             // Get user current role    

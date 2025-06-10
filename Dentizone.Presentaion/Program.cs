@@ -5,6 +5,7 @@ using Dentizone.Infrastructure.DependencyInjection;
 using Dentizone.Infrastructure.Filters;
 using Dentizone.Infrastructure.Persistence.Seeder;
 using Dentizone.Presentaion.Context;
+using Dentizone.Presentaion.Middlewares;
 using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
 
@@ -70,6 +71,7 @@ namespace Dentizone.Presentaion
             });
 
             app.UseHttpsRedirection();
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
