@@ -24,7 +24,10 @@ namespace Dentizone.Presentaion
             builder.Services.AddInfrastructure();
             builder.Services.AddAutoMapper(typeof(Application.AssemblyReference).Assembly);
             builder.Services.AddApplicationServices();
-
+            builder.Services.AddCors(c =>
+            {
+                c.AddDefaultPolicy(d => d.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IRequestContextService, RequestContextService>();
             builder.Services.AddSwaggerGen(opt =>
