@@ -59,6 +59,7 @@ namespace Dentizone.Presentaion
             });
 
             var app = builder.Build();
+            app.UseCors();
             // Configure the HTTP request pipeline.
             app.UseSwagger(opt => { opt.RouteTemplate = "openapi/{documentName}.json"; });
             app.MapScalarApiReference(opt =>
