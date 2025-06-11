@@ -137,7 +137,7 @@ namespace Dentizone.Presentaion.Controllers
                     return Unauthorized(new { message = "User not found" });
                 }
 
-                switch (domainUser.Status)
+                switch (Enum.Parse<UserState>(domainUser.Status))
                 {
                     case UserState.Active:
                     case UserState.PendingVerification:

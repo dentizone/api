@@ -12,7 +12,7 @@ namespace Dentizone.Infrastructure.DependencyInjection
         {
             DotEnv.Load();
 
-            services.AddScoped<InfisicalClient>(_ =>
+            services.AddSingleton<InfisicalClient>(_ =>
             {
                 var clientId = Environment.GetEnvironmentVariable("ClientId");
                 var clientSecret = Environment.GetEnvironmentVariable("ClientSecret");
@@ -36,7 +36,7 @@ namespace Dentizone.Infrastructure.DependencyInjection
                 return new InfisicalClient(settings);
             });
 
-            services.AddScoped<ISecretService, SecretService>();
+            services.AddSingleton<ISecretService, SecretService>();
 
             return services;
         }

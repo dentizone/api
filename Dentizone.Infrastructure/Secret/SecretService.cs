@@ -1,5 +1,6 @@
 ﻿using Dentizone.Domain.Interfaces.Secret;
 using Infisical.Sdk;
+using System.Collections.Concurrent;
 
 namespace Dentizone.Infrastructure.Secret
 {
@@ -17,6 +18,7 @@ namespace Dentizone.Infrastructure.Secret
     public class SecretService : ISecretService
     {
         private readonly InfisicalClient _infisicalClient;
+        private readonly ConcurrentDictionary<string, string> _cache = new();
 
         private GetSecret CreateSecret(string name)
         {
@@ -52,7 +54,11 @@ namespace Dentizone.Infrastructure.Secret
         {
             try
             {
-                return _infisicalClient.GetSecret(CreateSecret(name)).SecretValue;
+                if (_cache.TryGetValue(name, out var value))
+                    return value;
+                value = _infisicalClient.GetSecret(CreateSecret(name)).SecretValue;
+                _cache[name] = value;
+                return value;
             }
             catch (Exception ex)
             {
