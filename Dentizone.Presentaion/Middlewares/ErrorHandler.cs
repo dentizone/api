@@ -1,4 +1,5 @@
-﻿using Dentizone.Domain.Exceptions;
+﻿using Dentizone.Application.DTOs;
+using Dentizone.Domain.Exceptions;
 using System.Net;
 using System.Text.Json;
 
@@ -34,11 +35,11 @@ namespace Dentizone.Presentaion.Middlewares
             response.ContentType = "application/json";
 
             var errorResponse = new ErrorResponse
-                                {
-                                    Message = "An error occurred while processing your request.",
-                                    Details = exception.Message,
-                                    StatusCode = (int)HttpStatusCode.InternalServerError
-                                };
+            {
+                Message = "An error occurred while processing your request.",
+                Details = exception.Message,
+                StatusCode = (int)HttpStatusCode.InternalServerError
+            };
 
             // Map specific exceptions to custom status codes and messages
             switch (exception)

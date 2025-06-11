@@ -212,7 +212,7 @@ namespace Dentizone.Application.Services.Authentication
 
             // 2. Generate token
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = $"https://dentizone.com/auth/reset-password?userId={user.Id}&token={token}";
+            var resetLink = $"https://dentizone.vercel.app/auth/forgot-password?email={user.Email}&token={token}";
             // 3. Send Reset Password Email
             await mailService.Send(email, "Dentizone: Reset your password",
                                    $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
