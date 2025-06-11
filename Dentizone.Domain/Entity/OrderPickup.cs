@@ -6,8 +6,8 @@ namespace Dentizone.Domain.Entity
     {
         public string OrderId { get; set; }
         public Order Order { get; set; }
-        public string PickupId { get; set; }
-        public PickupInfo Pickup { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

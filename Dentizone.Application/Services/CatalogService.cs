@@ -11,15 +11,15 @@ namespace Dentizone.Application.Services
     public class CatalogService(
         ICategoryRepository categoryRepository,
         IMapper mapper,
-        ISubCategoryRepository subCategoryRepository,
-        IItemRepository itemRepository)
+        ISubCategoryRepository subCategoryRepository
+    )
         : ICatalogService
     {
-        public async Task<CreatedCategoryDTO> CreateCategory(CategoryDto createdCategoryDto)
+        public async Task<CategoryView> CreateCategory(CategoryDto createdCategoryDto)
         {
             var category = mapper.Map<Category>(createdCategoryDto);
             var createdCategory = await categoryRepository.CreateAsync(category);
-            return mapper.Map<CreatedCategoryDTO>(createdCategory);
+            return mapper.Map<CategoryView>(createdCategory);
         }
 
         public async Task<CategoryDto?> GetCategoryById(string id)
@@ -40,88 +40,79 @@ namespace Dentizone.Application.Services
             return mapper.Map<CategoryDto>(category);
         }
 
-        public async Task<CategoryDto> UpdateCategory(CategoryDto updatedCategoryDto)
+        public async Task<CategoryDto> UpdateCategory(string id, CategoryDto updatedCategoryDto)
         {
+            var existingCategory = await categoryRepository.GetByIdAsync(id);
+            if (existingCategory == null)
+                throw new NotFoundException($"Category with id {id} not found");
+
+
             var category = mapper.Map<Category>(updatedCategoryDto);
             var updatedCategory = await categoryRepository.Update(category);
             if (updatedCategory == null) throw new NotFoundException("Category not found");
             return mapper.Map<CategoryDto>(updatedCategory);
         }
 
-        public async Task<IEnumerable<CategoryDto>> GetAllCategories()
+        public async Task<IEnumerable<SingleCategory>> GetAllCategories()
         {
             var categories = await categoryRepository.GetAll();
-            var mapped = categories.Select(c => mapper.Map<CategoryDto>(c)).ToList();
-            return mapped;
+
+            return mapper.Map<IEnumerable<SingleCategory>>(categories);
         }
 
-        public async Task<IEnumerable<SubCategoryDTO>> GetSubCategoriesByCategoryId(string id)
+        public async Task<IEnumerable<SubCategoryView>> GetSubCategoriesByCategoryId(string id)
         {
-            var category = await categoryRepository.GetByIdAsync(id);
+            var category =
+                await categoryRepository.FindBy(c => c.Id == id && c.IsDeleted == false, [c => c.SubCategories]);
             if (category == null)
                 throw new NotFoundException("This category doesn't exist ");
 
             var relatedSubCategories = category.SubCategories;
-            return relatedSubCategories.Select(sc => mapper.Map<SubCategoryDTO>(sc));
+            return relatedSubCategories.Select(mapper.Map<SubCategoryView>);
         }
 
-        public async Task<CreatedSubCategoryDTO> CreateSubCategory(SubCategoryDTO createdSubCategoryDto)
+        public async Task<CreatedSubCategoryDTO> CreateSubCategory(SubCategoryDto createdSubCategoryDto)
         {
+            var category = await categoryRepository.GetByIdAsync(createdSubCategoryDto.CategoryId);
+            if (category == null)
+                throw new NotFoundException($"Category with id {createdSubCategoryDto.CategoryId} not found");
+
             var subCategory = mapper.Map<SubCategory>(createdSubCategoryDto);
             var createdSubCategory = await subCategoryRepository.CreateAsync(subCategory);
             return mapper.Map<CreatedSubCategoryDTO>(createdSubCategory);
         }
 
-        public async Task<SubCategoryDTO?> GetSubCategoryById(string id)
+        public async Task<SubCategoryDto?> GetSubCategoryById(string id)
         {
             var subCategory = await subCategoryRepository.GetByIdAsync(id);
             if (subCategory == null) throw new NotFoundException("There's no sub category with this id ");
-            return mapper.Map<SubCategoryDTO>(subCategory);
+            return mapper.Map<SubCategoryDto>(subCategory);
         }
 
-        public async Task<SubCategoryDTO> DeleteSubCategory(string id)
+        public async Task<SubCategoryDto> DeleteSubCategory(string id)
         {
             var subCategory = await subCategoryRepository.DeleteAsync(id);
             if (subCategory == null) throw new NotFoundException("There's no sub category with this id ");
-            return mapper.Map<SubCategoryDTO>(subCategory);
+            return mapper.Map<SubCategoryDto>(subCategory);
         }
 
-        public async Task<SubCategoryDTO> UpdateSubCategory(SubCategoryDTO updatedSubCategoryDto)
+        public async Task<SubCategoryDto> UpdateSubCategory(SubCategoryDto updatedSubCategoryDto)
         {
+            var category = await categoryRepository.GetByIdAsync(updatedSubCategoryDto.CategoryId);
+            if (category == null)
+                throw new NotFoundException($"Category with id {updatedSubCategoryDto.CategoryId} not found");
+
             var subCategory = mapper.Map<SubCategory>(updatedSubCategoryDto);
             var updatedSubCategory = await subCategoryRepository.Update(subCategory);
             if (updatedSubCategory == null) throw new NotFoundException("SubCategory not found");
-            return mapper.Map<SubCategoryDTO>(updatedSubCategory);
+            return mapper.Map<SubCategoryDto>(updatedSubCategory);
         }
 
-        public async Task<IEnumerable<SubCategoryDTO>> GetAllSubCategories()
+        public async Task<IEnumerable<SubCategoryDto>> GetAllSubCategories()
         {
             var subCategories = await subCategoryRepository.GetAll();
-            var mapped = subCategories.Select(mapper.Map<SubCategoryDTO>).ToList();
+            var mapped = subCategories.Select(mapper.Map<SubCategoryDto>).ToList();
             return mapped;
-        }
-
-        public async Task<CreatedItemDTO> CreateItem(ItemDTO createdItemDto)
-        {
-            //TODO: Check if both category and sub is really exists 
-
-            var item = mapper.Map<Item>(createdItemDto);
-            var createdItem = await itemRepository.CreateAsync(item);
-            return mapper.Map<CreatedItemDTO>(createdItem);
-        }
-
-        public async Task<ItemViewDTO?> GetItemById(string id)
-        {
-            var item = await itemRepository.GetByIdAsync(id);
-            if (item == null) throw new NotFoundException("Item with this id is not found");
-            return mapper.Map<ItemViewDTO>(item);
-        }
-
-        public async Task<ItemViewDTO> DeleteItem(string id)
-        {
-            var item = await itemRepository.DeleteAsync(id);
-            if (item == null) throw new NotFoundException("Item with this id is not found");
-            return mapper.Map<ItemViewDTO>(item);
         }
     }
 }

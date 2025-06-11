@@ -3,7 +3,7 @@ using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Domain.Entity
 {
-    public class AppUser :  IBaseEntity, IUpdatable, IDeletable
+    public class AppUser : IBaseEntity, IUpdatable, IDeletable
     {
         public string FullName { get; set; }
         public string Username { get; set; }
@@ -23,7 +23,6 @@ namespace Dentizone.Domain.Entity
         public ICollection<Post> Posts { get; set; }
         public ICollection<Question> Questions { get; set; }
         public ICollection<ShipInfo> ShippingAddresses { get; set; }
-        public ICollection<PickupInfo> PickupInfos { get; set; }
         public ICollection<Cart> Carts { get; set; }
         public ICollection<Order> Orders { get; set; }
         public ICollection<Payment> Payments { get; set; }
