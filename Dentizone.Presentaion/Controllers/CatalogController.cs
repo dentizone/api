@@ -1,6 +1,5 @@
 ﻿using Dentizone.Application.DTOs.Catalog;
 using Dentizone.Application.Interfaces.Catalog;
-using Dentizone.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers
@@ -34,49 +33,29 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> CreateCategory([FromBody] CategoryDto categoryDto)
         {
             var createdCategory = await catalogService.CreateCategory(categoryDto);
-            return CreatedAtAction(nameof(GetCategoryById), new { categoryId = createdCategory.Id }, createdCategory);
+            return Ok(createdCategory);
         }
 
         [HttpPut("categories")]
-        public async Task<IActionResult> UpdateCategory([FromBody] CategoryDto categoryDto)
+        public async Task<IActionResult> UpdateCategory([FromQuery] string categoryId,
+                                                        [FromBody] CategoryDto categoryDto)
         {
-            try
-            {
-                var updatedCategory = await catalogService.UpdateCategory(categoryDto);
-                return Ok(updatedCategory);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var updatedCategory = await catalogService.UpdateCategory(categoryId, categoryDto);
+            return Ok(updatedCategory);
         }
 
         [HttpDelete("categories/{categoryId}")]
         public async Task<IActionResult> DeleteCategory(string categoryId)
         {
-            try
-            {
-                var deletedCategory = await catalogService.DeleteCategory(categoryId);
-                return Ok(deletedCategory);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var deletedCategory = await catalogService.DeleteCategory(categoryId);
+            return Ok(deletedCategory);
         }
 
         [HttpGet("categories/{categoryId}/subcategories")]
         public async Task<IActionResult> GetSubCategoriesByCategoryId(string categoryId)
         {
-            try
-            {
-                var subCategories = await catalogService.GetSubCategoriesByCategoryId(categoryId);
-                return Ok(subCategories);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var subCategories = await catalogService.GetSubCategoriesByCategoryId(categoryId);
+            return Ok(subCategories);
         }
 
         [HttpGet("subcategories")]
@@ -89,19 +68,12 @@ namespace Dentizone.Presentaion.Controllers
         [HttpGet("subcategories/{subCategoryId}")]
         public async Task<IActionResult> GetSubCategoryById(string subCategoryId)
         {
-            try
-            {
-                var subCategory = await catalogService.GetSubCategoryById(subCategoryId);
-                return Ok(subCategory);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var subCategory = await catalogService.GetSubCategoryById(subCategoryId);
+            return Ok(subCategory);
         }
 
         [HttpPost("subcategories")]
-        public async Task<IActionResult> CreateSubCategory([FromBody] SubCategoryDTO subCategoryDto)
+        public async Task<IActionResult> CreateSubCategory([FromBody] SubCategoryDto subCategoryDto)
         {
             var createdSubCategory = await catalogService.CreateSubCategory(subCategoryDto);
             return CreatedAtAction(nameof(GetSubCategoryById), new { subCategoryId = createdSubCategory.Id },
@@ -109,66 +81,17 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpPut("subcategories")]
-        public async Task<IActionResult> UpdateSubCategory([FromBody] SubCategoryDTO subCategoryDto)
+        public async Task<IActionResult> UpdateSubCategory([FromBody] SubCategoryDto subCategoryDto)
         {
-            try
-            {
-                var updatedSubCategory = await catalogService.UpdateSubCategory(subCategoryDto);
-                return Ok(updatedSubCategory);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var updatedSubCategory = await catalogService.UpdateSubCategory(subCategoryDto);
+            return Ok(updatedSubCategory);
         }
 
         [HttpDelete("subcategories/{subCategoryId}")]
         public async Task<IActionResult> DeleteSubCategory(string subCategoryId)
         {
-            try
-            {
-                var deletedSubCategory = await catalogService.DeleteSubCategory(subCategoryId);
-                return Ok(deletedSubCategory);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
-        [HttpGet("items/{itemsId}")]
-        public async Task<IActionResult> GetItemById(string itemsId)
-        {
-            try
-            {
-                var item = await catalogService.GetItemById(itemsId);
-                return Ok(item);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
-        [HttpPost("items")]
-        public async Task<IActionResult> CreateItem([FromBody] ItemDTO createdItemDto)
-        {
-            var createdItem = await catalogService.CreateItem(createdItemDto);
-            return CreatedAtAction(nameof(GetItemById), new { id = createdItem.Id }, createdItem);
-        }
-
-        [HttpDelete("items/{itemId}")]
-        public async Task<IActionResult> DeleteItem(string itemId)
-        {
-            try
-            {
-                var deletedItem = await catalogService.DeleteItem(itemId);
-                return Ok(deletedItem);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var deletedSubCategory = await catalogService.DeleteSubCategory(subCategoryId);
+            return Ok(deletedSubCategory);
         }
     }
 }

@@ -51,6 +51,7 @@ namespace Dentizone.Infrastructure.Repositories
             }
 
             dbContext.SubCategories.Remove(toBeDeleted);
+            await dbContext.SaveChangesAsync();
 
             return toBeDeleted;
         }

@@ -15,8 +15,5 @@ namespace Dentizone.Domain.Entity
         // Relationship: Many SubCategories to One Category
         public virtual Category Category { get; set; }
         public string CategoryId { get; set; } // Foreign Key for Category
-
-        // Relationship: One SubCategory to Many Items
-        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
     }
 }

@@ -19,13 +19,20 @@ namespace Dentizone.Domain.Entity
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-        public virtual PickupInfo Pickupinfo { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
 
         public virtual AppUser Seller { get; set; }
         public virtual ICollection<Favourite> Favourites { get; set; }
         public virtual ICollection<PostAsset> PostAssets { get; set; } = new List<PostAsset>();
         public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
-        public virtual Item Item { get; set; }
+        public string CategoryId { set; get; }
+        public string SubCategoryId { set; get; }
+
+
+        public virtual Category Category { get; set; }
+        public virtual SubCategory SubCategory { get; set; }
+
 
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
     }

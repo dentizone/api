@@ -14,13 +14,11 @@ namespace Dentizone.Infrastructure
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Favourite> Favourites { get; set; }
-        public DbSet<Item> Items { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OrderPickup> OrderPickups { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<Payment> Payments { get; set; }
-        public DbSet<PickupInfo> PickupInfos { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostAsset> PostAssets { get; set; }
         public DbSet<Question> Questions { get; set; }

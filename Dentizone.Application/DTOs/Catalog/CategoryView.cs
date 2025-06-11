@@ -7,12 +7,13 @@ using FluentValidation;
 
 namespace Dentizone.Application.DTOs.Catalog
 {
-    public class CreatedCategoryDTO
+    public class CategoryView
     {
         public string Id { get; set; }
         public string Name { get; set; }
     }
-    public class CreatedCategoryDTOValidator : AbstractValidator<CreatedCategoryDTO>
+
+    public class CreatedCategoryDTOValidator : AbstractValidator<CategoryView>
     {
         public CreatedCategoryDTOValidator()
         {

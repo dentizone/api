@@ -12,8 +12,6 @@ namespace Dentizone.Domain.Entity
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
-
         public virtual ICollection<SubCategory> SubCategories { get; set; } = new List<SubCategory>();
     }
 }
