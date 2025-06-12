@@ -11,5 +11,6 @@ namespace Dentizone.Application.Interfaces
     public interface IUploadService
     {
         public Task<AssetDto> UploadImageAsync(IFormFile file,string FileName);
+        public Task<bool> getAssetById(string id);
     }
 }

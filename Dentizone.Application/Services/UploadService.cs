@@ -26,6 +26,16 @@ namespace Dentizone.Application.Services
             _mapper = mapper;
         }
 
+        public  async Task<bool> getAssetById(string id)
+        {
+            var Uploaded_image = await  _assetService.GetAssetByIdAsync(id);
+            if (Uploaded_image == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<AssetDto> UploadImageAsync(IFormFile file,string FileName)
         {
             var stream = file.OpenReadStream();
@@ -40,6 +50,7 @@ namespace Dentizone.Application.Services
 
             return  added_image_to_our_DB;
         }
+
 
 
       
