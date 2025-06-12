@@ -5,6 +5,7 @@ namespace Dentizone.Domain.Interfaces.Repositories
 {
     public interface IPostRepository : IBaseRepo<Post>
     {
+
         Task<Post> UpdateAsync(Post entity);
         Task<Post?> DeleteAsync(string id);
 
