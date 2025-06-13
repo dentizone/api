@@ -1,8 +1,6 @@
 ﻿using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Exceptions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Dentizone.Presentaion.Controllers
 {
@@ -11,7 +9,7 @@ namespace Dentizone.Presentaion.Controllers
     public class UploadController(IUploadService uploadService) : ControllerBase
     {
         [HttpPost("image")]
-        [Authorize]
+        // [Authorize]
         public async Task<IActionResult> UploadImageAsync(IFormFile file)
         {
             var permittedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
@@ -28,7 +26,8 @@ namespace Dentizone.Presentaion.Controllers
 
                 throw new BadActionException("File exceeded the file limit");
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId =
+                "000"; // "000" is a placeholder for the user ID, replace it with actual user ID retrieval logic after frontend
 
 
             var asset = await uploadService.UploadImageAsync(file, userId);
