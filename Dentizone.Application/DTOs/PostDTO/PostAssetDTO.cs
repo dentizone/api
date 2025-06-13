@@ -7,14 +7,15 @@ using FluentValidation;
 
 namespace Dentizone.Application.DTOs.PostDTO
 {
-    public class PostAssetDTO
+    public class PostAssetDto
     {
         public string Id { get; set; }
         public string Url { get; set; }
     }
-    public class PostAssetDTOValidator : AbstractValidator<PostAssetDTO>
+
+    public class PostAssetDtoValidator : AbstractValidator<PostAssetDto>
     {
-        public PostAssetDTOValidator()
+        public PostAssetDtoValidator()
         {
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage("Asset ID is required.");

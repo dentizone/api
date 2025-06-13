@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Dentizone.Application.DTOs.PostDTO;
 using Dentizone.Application.Interfaces.Post;
+using Dentizone.Domain.Entity;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
 
@@ -15,61 +11,67 @@ namespace Dentizone.Application.Services
     {
         private readonly IMapper _mapper;
         private readonly IPostRepository _repo;
+
         public PostService(IMapper mapper, IPostRepository repo)
         {
             _mapper = mapper;
             _repo = repo;
         }
-        public async Task<PostViewDTO> CreatePost(CreatePostDTO createPostDTO)
+
+        public async Task<PostViewDto> CreatePost(CreatePostDto createPostDto)
         {
-           var post = _mapper.Map<Domain.Entity.Post>(createPostDTO);
-           var createdPost = await _repo.CreateAsync(post);
-           return _mapper.Map<PostViewDTO>(createdPost);
+            var post = _mapper.Map<Post>(createPostDto);
+            var createdPost = await _repo.CreateAsync(post);
+            return _mapper.Map<PostViewDto>(createdPost);
         }
 
-        public async Task<PostViewDTO> DeletePost(string postId)
+        public async Task<PostViewDto> DeletePost(string postId)
         {
             var deletedPost = await _repo.DeleteAsync(postId);
             if (deletedPost == null)
             {
                 throw new NotFoundException("Post not found");
             }
-            return _mapper.Map<PostViewDTO>(deletedPost);
+
+            return _mapper.Map<PostViewDto>(deletedPost);
         }
 
-        public async Task<List<PostViewDTO>> GetAllPosts(int page)
+        public async Task<List<PostViewDto>> GetAllPosts(int page)
         {
             var posts = await _repo.GetAllAsync(page, p => !p.IsDeleted, p => p.CreatedAt);
             if (!posts.Any())
             {
                 throw new NotFoundException("No posts found");
             }
-            return _mapper.Map<List<PostViewDTO>>(posts);
-        } 
 
-        public async Task<PostViewDTO> GetPostById(string postId)
+            return _mapper.Map<List<PostViewDto>>(posts);
+        }
+
+        public async Task<PostViewDto> GetPostById(string postId)
         {
             var post = await _repo.GetByIdAsync(postId);
             if (post == null)
             {
                 throw new NotFoundException("Post not found");
             }
-            return _mapper.Map<PostViewDTO>(post);
+
+            return _mapper.Map<PostViewDto>(post);
         }
 
-        public async Task<List<PostViewDTO>> GetPostsBySellerId(string sellerId, int page)
+        public async Task<List<PostViewDto>> GetPostsBySellerId(string sellerId, int page)
         {
             var post = await _repo.GetAllAsync(page, p => !p.IsDeleted && p.SellerId == sellerId, p => p.CreatedAt);
             if (!post.Any())
             {
                 throw new NotFoundException("No posts found for this seller");
             }
-            return _mapper.Map<List<PostViewDTO>>(post);
+
+            return _mapper.Map<List<PostViewDto>>(post);
         }
 
-        public async Task<PostViewDTO> UpdatePost(string postId, UpdatePostDTO updatePostDTO)
+        public async Task<PostViewDto> UpdatePost(string postId, UpdatePostDto updatePostDto)
         {
-            var post = _mapper.Map<Domain.Entity.Post>(updatePostDTO);
+            var post = _mapper.Map<Domain.Entity.Post>(updatePostDto);
             post.Id = postId;
             var updatedPost = await _repo.UpdateAsync(post);
 
@@ -77,7 +79,8 @@ namespace Dentizone.Application.Services
             {
                 throw new NotFoundException("Post not found");
             }
-            return _mapper.Map<PostViewDTO>(updatedPost);
+
+            return _mapper.Map<PostViewDto>(updatedPost);
         }
     }
 }

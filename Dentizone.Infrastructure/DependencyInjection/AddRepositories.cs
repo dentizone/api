@@ -13,6 +13,7 @@ namespace Dentizone.Infrastructure.DependencyInjection
             services.AddScoped<IUniversityRepository, UniversityRepository>();
             services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
 
             return services;
         }

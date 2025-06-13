@@ -7,7 +7,7 @@ using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.DTOs.PostDTO
 {
-    public class UpdatePostDTO
+    public class UpdatePostDto
     {
         public string Title { get; set; }
         public string Description { get; set; }
@@ -16,6 +16,5 @@ namespace Dentizone.Application.DTOs.PostDTO
         public string Street { get; set; }
         public string City { get; set; }
         public DateTime? ExpireDate { get; set; }
-
     }
 }

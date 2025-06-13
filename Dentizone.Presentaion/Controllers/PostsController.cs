@@ -10,10 +10,12 @@ namespace Dentizone.Presentaion.Controllers
     public class PostsController : ControllerBase
     {
         private readonly IPostService _postService;
+
         public PostsController(IPostService postService)
         {
             _postService = postService;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllPosts(int page = 1)
         {
@@ -25,9 +27,9 @@ namespace Dentizone.Presentaion.Controllers
             catch (Exception ex)
             {
                 return NotFound($"Error : {ex.Message}");
-
             }
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPostById(string id)
         {
@@ -41,6 +43,7 @@ namespace Dentizone.Presentaion.Controllers
                 return NotFound($"Error : {ex.Message}");
             }
         }
+
         [HttpGet("users/{sellerId}/posts")]
         public async Task<IActionResult> GetPostsBySellerId(string sellerId, int page = 1)
         {
@@ -54,12 +57,13 @@ namespace Dentizone.Presentaion.Controllers
                 return BadRequest($"Error : {ex.Message}");
             }
         }
+
         [HttpPost]
-        public async Task<IActionResult> CreatePost([FromBody] CreatePostDTO createPostDTO)
+        public async Task<IActionResult> CreatePost([FromBody] CreatePostDto createPostDto)
         {
             try
             {
-                var createdPost = await _postService.CreatePost(createPostDTO);
+                var createdPost = await _postService.CreatePost(createPostDto);
                 return CreatedAtAction(nameof(GetPostById), new { id = createdPost.Id }, createdPost);
             }
             catch (Exception ex)
@@ -67,6 +71,7 @@ namespace Dentizone.Presentaion.Controllers
                 return BadRequest($"Error : {ex.Message}");
             }
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(string id)
         {
@@ -80,18 +85,19 @@ namespace Dentizone.Presentaion.Controllers
                 return NotFound($"Error : {ex.Message}");
             }
         }
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePost(string id, [FromBody] UpdatePostDTO updatePostDTO)
+        public async Task<IActionResult> UpdatePost(string id, [FromBody] UpdatePostDto updatePostDto)
         {
             try
             {
-                var updatedPost = await _postService.UpdatePost(id, updatePostDTO);
+                var updatedPost = await _postService.UpdatePost(id, updatePostDto);
                 return Ok(updatedPost);
             }
             catch (Exception ex)
             {
                 return BadRequest($"Error : {ex.Message}");
-            }   
+            }
         }
     }
 }

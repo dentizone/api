@@ -8,7 +8,7 @@ using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.DTOs.PostDTO
 {
-    public class PostViewDTO
+    public class PostViewDto
     {
         public string Id { get; set; }
         public string Title { get; set; }
@@ -18,7 +18,7 @@ namespace Dentizone.Application.DTOs.PostDTO
         public PostItemCondition Condition { get; set; }
         public PostStatus Status { get; set; }
         public UserView Seller { get; set; }
-        public List<PostAssetDTO> Assets { get; set; }
+        public List<PostAssetDto> Assets { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
