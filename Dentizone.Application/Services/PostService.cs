@@ -40,10 +40,10 @@ namespace Dentizone.Application.Services
             await ValidateAssetNotUsed(assetId, postIdToExclude);
 
             var postAsset = new PostAsset
-                            {
-                                PostId = postId,
-                                AssetId = assetId
-                            };
+            {
+                PostId = postId,
+                AssetId = assetId
+            };
 
             await postAssetRepository.CreateAsync(postAsset);
             return postAsset;
@@ -66,7 +66,6 @@ namespace Dentizone.Application.Services
                     {
                         var postAsset = await AssociatePostWithAsset(post.Id, assetId);
 
-                        await postAssetRepository.CreateAsync(postAsset);
                         post.PostAssets.Add(postAsset);
                     }
                 }
