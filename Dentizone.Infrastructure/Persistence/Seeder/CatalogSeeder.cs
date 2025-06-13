@@ -8,10 +8,6 @@ public static class CatalogSeeder
     public static async Task SeedCategoriesAndSubCategoriesAsync(AppDbContext context, int categoryCount = 10,
                                                                  int subCategoryPerCategory = 5)
     {
-        // Remove all SubCategories and Categories
-        await context.Database.ExecuteSqlRawAsync("DELETE FROM [SubCategories]");
-        await context.Database.ExecuteSqlRawAsync("DELETE FROM [Categories]");
-
         if (await context.Categories.AnyAsync())
             return; // Already seeded
 
