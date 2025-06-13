@@ -12,28 +12,21 @@ namespace Dentizone.Domain.Entity
         public decimal Price { get; set; }
         public DateTime? ExpireDate { get; set; }
         public PostItemCondition Condition { get; set; }
-        public PostStatus Status { get; set; }
-        public string ItemId { get; set; }
+        public PostStatus Status { get; set; } = PostStatus.Pending;
         public string Slug { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
-
         public string Street { get; set; }
         public string City { get; set; }
-
         public virtual AppUser Seller { get; set; }
         public virtual ICollection<Favourite> Favourites { get; set; }
         public virtual ICollection<PostAsset> PostAssets { get; set; } = new List<PostAsset>();
         public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
         public string CategoryId { set; get; }
         public string SubCategoryId { set; get; }
-
-
         public virtual Category Category { get; set; }
         public virtual SubCategory SubCategory { get; set; }
-
-
         public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
     }
 }

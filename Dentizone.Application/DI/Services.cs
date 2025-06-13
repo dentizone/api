@@ -2,6 +2,7 @@
 using Dentizone.Application.Interfaces.Asset;
 using Dentizone.Application.Interfaces.Catalog;
 using Dentizone.Application.Interfaces.Cloudinary;
+using Dentizone.Application.Interfaces.Post;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Application.Services;
 using Dentizone.Application.Services.Authentication;
@@ -16,6 +17,7 @@ namespace Dentizone.Application.DI
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IPostService, PostService>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMailService, MailService>();

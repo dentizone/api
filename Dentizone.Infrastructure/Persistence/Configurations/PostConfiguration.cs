@@ -30,11 +30,11 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
 
                      builder.Property(p => p.Status)
-                            .IsRequired();
+                            .IsRequired()
+                            .HasConversion<string>();
                      builder.Property(p => p.SellerId)
                             .IsRequired();
-                     builder.Property(p => p.ItemId)
-                            .IsRequired();
+
                      builder.Property(p => p.Slug)
                             .HasMaxLength(255)
                             .IsRequired();
