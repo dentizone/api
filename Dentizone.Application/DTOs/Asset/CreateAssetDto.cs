@@ -8,6 +8,8 @@ public class CreateAssetDto
     public string Url { get; set; }
     public long Size { get; set; }
     public AssetType Type { get; set; }
+
+    public string UserId { get; set; }
 }
 
 public class CreateAssetDtoValidator : AbstractValidator<CreateAssetDto>
@@ -21,5 +23,9 @@ public class CreateAssetDtoValidator : AbstractValidator<CreateAssetDto>
             .GreaterThan(0).WithMessage("Asset size must be greater than zero.");
         RuleFor(x => x.Type)
             .IsInEnum().WithMessage("Invalid asset type.");
+
+        RuleFor(x => x.UserId)
+            .NotEmpty().WithMessage("User ID is required.")
+            .MaximumLength(50).WithMessage("User ID cannot exceed 50 characters.");
     }
 }

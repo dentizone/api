@@ -26,6 +26,7 @@ namespace Dentizone.Application.DI
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserActivityService, UserActivityService>();
             services.AddScoped<ICatalogService, CatalogService>();
+            services.AddScoped<IUploadService, UploadService>();
             services.AddScoped<IAssetService, AssetService>();
 
 

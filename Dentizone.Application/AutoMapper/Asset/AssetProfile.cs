@@ -15,6 +15,7 @@ namespace Dentizone.Application.AutoMapper.Asset
                 .ReverseMap();
 
             CreateMap<AssetDto, Domain.Entity.Asset>().ReverseMap();
+            CreateMap<Dentizone.Domain.Entity.Asset, CreateAssetDto>().ReverseMap();
         }
     }
 }

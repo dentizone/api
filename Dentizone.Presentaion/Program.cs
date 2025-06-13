@@ -82,7 +82,7 @@ namespace Dentizone.Presentaion
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                CatalogSeeder.SeedCategoriesAndSubCategoriesAsync(dbContext).Wait();
+                // CatalogSeeder.SeedCategoriesAndSubCategoriesAsync(dbContext).Wait();
             }
 
             app.Run();
