@@ -1,58 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using CloudinaryDotNet;
-using Dentizone.Application.DTOs.Asset;
+﻿using Dentizone.Application.DTOs.Asset;
 using Dentizone.Application.Interfaces;
 using Dentizone.Application.Interfaces.Asset;
 using Dentizone.Application.Interfaces.Cloudinary;
+using Dentizone.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace Dentizone.Application.Services
 {
-  public class UploadService:IUploadService
+    public class UploadService(ICloudinaryService cloudinaryService, IAssetService assetService)
+        : IUploadService
     {
-        private readonly ICloudinaryService _cloudinaryService;
-        private readonly IAssetService _assetService;
-        private readonly IMapper _mapper;
-
-        public UploadService(ICloudinaryService cloudinaryService, IAssetService assetService,IMapper mapper)
+        public async Task<AssetDto> FindAssetById(string id)
         {
-            _cloudinaryService = cloudinaryService;
-            _assetService = assetService;
-            _mapper = mapper;
+            var uploadedImage = await assetService.GetAssetByIdAsync(id);
+            return uploadedImage;
         }
 
-        public  async Task<bool> getAssetById(string id)
+        public async Task<AssetDto> UploadImageAsync(IFormFile file, string userId)
         {
-            var Uploaded_image = await  _assetService.GetAssetByIdAsync(id);
-            if (Uploaded_image == null)
+            await using var stream = file.OpenReadStream();
+            var url = cloudinaryService.Upload(stream, file.FileName);
+            var image = await assetService.CreateAssetAsync(new CreateAssetDto
             {
-                return false;
-            }
-            return true;
+                Size = file.Length,
+                Url = url,
+                Type = AssetType.Image,
+                UserId = userId
+            });
+
+            return image;
         }
-
-        public async Task<AssetDto> UploadImageAsync(IFormFile file,string FileName)
-        {
-            var stream = file.OpenReadStream();
-            string URL = _cloudinaryService.Upload(stream, FileName);
-           var added_image_to_our_DB= await _assetService.CreateAssetAsync(new CreateAssetDto
-           {
-               Size = file.Length,
-               Url = URL,
-              Type = Domain.Enums.AssetType.Image
-              
-           });
-
-            return  added_image_to_our_DB;
-        }
-
-
-
-      
     }
-    }
+}

@@ -1,51 +1,48 @@
 ﻿using Dentizone.Application.Interfaces;
-using Microsoft.AspNetCore.Http;
+using Dentizone.Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UploadController : ControllerBase
+    public class UploadController(IUploadService uploadService) : ControllerBase
     {
-        private readonly IUploadService _uploadService;
-        public UploadController(IUploadService uploadService)
-        {
-            _uploadService = uploadService;
-        }
-        [HttpPost("upload-image")]
+        [HttpPost("image")]
+        [Authorize]
         public async Task<IActionResult> UploadImageAsync(IFormFile file)
         {
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("No file uploaded.");
-            }
-            try
-            {
-                var url = await _uploadService.UploadImageAsync(file, file.FileName);
-                return Ok(new { Url = url });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var permittedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            var extension = Path.GetExtension(file.FileName).ToLower();
+
+            if (string.IsNullOrEmpty(extension) || !permittedExtensions.Contains(extension))
+                throw new BadActionException("Why you upload non image man?");
+
+            if (!file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+                throw new BadActionException("Why you upload non image man?");
+
+
+            if (file.Length > 10 * 1024 * 1024) // 10 MB limit
+
+                throw new BadActionException("File exceeded the file limit");
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+
+            var asset = await uploadService.UploadImageAsync(file, userId);
+
+
+            return Ok(asset);
         }
-        [HttpGet("get-asset-by-id/{id}")]
+
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetAssetById(string id)
         {
-            try
-            {
-                var exists = await _uploadService.getAssetById(id);
-                if (!exists)
-                {
-                    return NotFound($"Asset with id {id} not found.");
-                }
-                return Ok(new { Message = "Asset exists." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var asset = await uploadService.FindAssetById(id);
+
+            return Ok(asset);
         }
     }
 }
