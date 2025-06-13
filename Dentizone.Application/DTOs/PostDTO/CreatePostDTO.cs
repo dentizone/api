@@ -14,7 +14,6 @@ namespace Dentizone.Application.DTOs.PostDTO
         public string CategoryId { get; set; }
         public string SubCategoryId { get; set; }
 
-        public string SellerId { get; set; }
         public DateTime? ExpireDate { get; set; }
         public List<string> AssetIds { get; set; }
     }

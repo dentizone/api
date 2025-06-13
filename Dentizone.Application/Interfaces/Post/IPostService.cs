@@ -9,7 +9,7 @@ namespace Dentizone.Application.Interfaces.Post
 {
     public interface IPostService
     {
-        Task<PostViewDto> CreatePost(CreatePostDto createPostDto);
+        Task<PostViewDto> CreatePost(CreatePostDto createPostDto, string userId);
         Task<PostViewDto> GetPostById(string postId);
         Task<List<PostViewDto>> GetPostsBySellerId(string sellerId, int page);
         Task<List<PostViewDto>> GetAllPosts(int page);

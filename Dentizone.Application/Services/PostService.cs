@@ -18,9 +18,12 @@ namespace Dentizone.Application.Services
             _repo = repo;
         }
 
-        public async Task<PostViewDto> CreatePost(CreatePostDto createPostDto)
+        public async Task<PostViewDto> CreatePost(CreatePostDto createPostDto, string userId)
         {
             var post = _mapper.Map<Post>(createPostDto);
+            post.SellerId = userId;
+            post.Slug = $"{post.Title.ToLower().Replace(" ", "-")}-{Guid.NewGuid().ToString()[..5]}";
+
             var createdPost = await _repo.CreateAsync(post);
             return _mapper.Map<PostViewDto>(createdPost);
         }

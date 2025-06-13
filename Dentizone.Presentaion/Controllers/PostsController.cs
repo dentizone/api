@@ -1,75 +1,55 @@
 ﻿using Dentizone.Application.DTOs.PostDTO;
 using Dentizone.Application.Interfaces.Post;
-using Microsoft.AspNetCore.Http;
+using Dentizone.Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PostsController : ControllerBase
+    public class PostsController(IPostService postService) : ControllerBase
     {
-        private readonly IPostService _postService;
-
-        public PostsController(IPostService postService)
-        {
-            _postService = postService;
-        }
-
         [HttpGet]
         public async Task<IActionResult> GetAllPosts(int page = 1)
         {
-            try
-            {
-                var posts = await _postService.GetAllPosts(page);
-                return Ok(posts);
-            }
-            catch (Exception ex)
-            {
-                return NotFound($"Error : {ex.Message}");
-            }
+            var posts = await postService.GetAllPosts(page);
+            return Ok(posts);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPostById(string id)
         {
-            try
-            {
-                var post = await _postService.GetPostById(id);
-                return Ok(post);
-            }
-            catch (Exception ex)
-            {
-                return NotFound($"Error : {ex.Message}");
-            }
+            var post = await postService.GetPostById(id);
+            return Ok(post);
         }
 
+        [Authorize]
         [HttpGet("users/{sellerId}/posts")]
         public async Task<IActionResult> GetPostsBySellerId(string sellerId, int page = 1)
         {
-            try
-            {
-                var posts = await _postService.GetPostsBySellerId(sellerId, page);
-                return Ok(posts);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error : {ex.Message}");
-            }
+            var posts = await postService.GetPostsBySellerId(sellerId, page);
+            return Ok(posts);
         }
 
         [HttpPost]
+        [Authorize]
+
+        //TODO: Require a Claims
         public async Task<IActionResult> CreatePost([FromBody] CreatePostDto createPostDto)
         {
-            try
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
             {
-                var createdPost = await _postService.CreatePost(createPostDto);
-                return CreatedAtAction(nameof(GetPostById), new { id = createdPost.Id }, createdPost);
+                throw new BadActionException("How in the hell you reached here!");
             }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error : {ex.Message}");
-            }
+
+
+            var createdPost = await postService.CreatePost(createPostDto, userId);
+            ;
+            return CreatedAtAction(nameof(GetPostById), new { id = createdPost.Id }, createdPost);
         }
 
         [HttpDelete("{id}")]
@@ -77,7 +57,7 @@ namespace Dentizone.Presentaion.Controllers
         {
             try
             {
-                var deletedPost = await _postService.DeletePost(id);
+                var deletedPost = await postService.DeletePost(id);
                 return Ok(deletedPost);
             }
             catch (Exception ex)
@@ -91,7 +71,7 @@ namespace Dentizone.Presentaion.Controllers
         {
             try
             {
-                var updatedPost = await _postService.UpdatePost(id, updatePostDto);
+                var updatedPost = await postService.UpdatePost(id, updatePostDto);
                 return Ok(updatedPost);
             }
             catch (Exception ex)
