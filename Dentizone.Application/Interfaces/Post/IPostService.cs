@@ -11,8 +11,8 @@ namespace Dentizone.Application.Interfaces.Post
     {
         Task<PostViewDTO>CreatePost(CreatePostDTO createPostDTO);
         Task<PostViewDTO> GetPostById(string postId);
-        Task<List<PostViewDTO>> GetPostsBySellerId(string sellerId);
-        Task<List<PostViewDTO>> GetAllPosts(int page, int pageSize);
+        Task<List<PostViewDTO>> GetPostsBySellerId(string sellerId, int page);
+        Task<List<PostViewDTO>> GetAllPosts(int page);
         Task<PostViewDTO> UpdatePost(string postId, UpdatePostDTO updatePostDTO);
         Task<PostViewDTO> DeletePost(string postId);
 

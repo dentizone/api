@@ -45,7 +45,7 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException("No posts found");
             }
             return _mapper.Map<List<PostViewDTO>>(posts);
-        }
+        } 
 
         public async Task<PostViewDTO> GetPostById(string postId)
         {
