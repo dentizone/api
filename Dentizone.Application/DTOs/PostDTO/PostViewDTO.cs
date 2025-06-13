@@ -18,7 +18,7 @@ namespace Dentizone.Application.DTOs.PostDTO
         public PostItemCondition Condition { get; set; }
         public PostStatus Status { get; set; }
         public UserView Seller { get; set; }
-        public List<PostAssetDto> Assets { get; set; }
+        public List<PostAssetView> Assets { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
