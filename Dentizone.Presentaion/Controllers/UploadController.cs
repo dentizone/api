@@ -27,7 +27,7 @@ namespace Dentizone.Presentaion.Controllers
                 throw new BadActionException("File exceeded the file limit");
 
             var userId =
-                "000"; // "000" is a placeholder for the user ID, replace it with actual user ID retrieval logic after frontend
+                "f862c6eb-8ebe-4e7c-b21c-8013703ad3fe"; // "000" is a placeholder for the user ID, replace it with actual user ID retrieval logic after frontend
 
 
             var asset = await uploadService.UploadImageAsync(file, userId);
