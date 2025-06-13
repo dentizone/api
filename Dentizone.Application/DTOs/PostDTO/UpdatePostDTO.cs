@@ -15,6 +15,10 @@ namespace Dentizone.Application.DTOs.PostDTO
         public PostItemCondition Condition { get; set; }
         public string Street { get; set; }
         public string City { get; set; }
+        public PostStatus Status { get; set; }
+        public List<string> AssetIds { get; set; } = new();
+
+
         public DateTime? ExpireDate { get; set; }
     }
 }

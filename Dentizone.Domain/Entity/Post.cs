@@ -12,7 +12,7 @@ namespace Dentizone.Domain.Entity
         public decimal Price { get; set; }
         public DateTime? ExpireDate { get; set; }
         public PostItemCondition Condition { get; set; }
-        public PostStatus Status { get; set; }
+        public PostStatus Status { get; set; } = PostStatus.Pending;
         public string Slug { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

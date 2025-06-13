@@ -1,4 +1,5 @@
 ﻿using Dentizone.Application.Interfaces;
+using Dentizone.Application.Interfaces.Asset;
 using Dentizone.Application.Interfaces.Catalog;
 using Dentizone.Application.Interfaces.Cloudinary;
 using Dentizone.Application.Interfaces.Post;
@@ -25,6 +26,7 @@ namespace Dentizone.Application.DI
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserActivityService, UserActivityService>();
             services.AddScoped<ICatalogService, CatalogService>();
+            services.AddScoped<IAssetService, AssetService>();
 
 
             services.AddScoped<IVerificationService, VerificationService>();
