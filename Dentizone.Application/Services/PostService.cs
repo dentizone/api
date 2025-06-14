@@ -219,6 +219,12 @@ namespace Dentizone.Application.Services
             };
 
 
+            // if the sidebarFilterResults is null, we will not cache it
+            if (sidebarFilterResults.Cities.Count == 0 && sidebarFilterResults.Categories.Count == 0)
+            {
+                return sidebarFilterResults;
+            }
+
             var valueAsJson = JsonConvert.SerializeObject(sidebarFilterResults);
             await redisService.SetValue(cacheKey, valueAsJson, TimeSpan.FromHours(6));
 
