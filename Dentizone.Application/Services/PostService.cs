@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.PostDTO;
+using Dentizone.Application.DTOs.PostFilterDTO;
 using Dentizone.Application.Interfaces.Asset;
 using Dentizone.Application.Interfaces.Post;
 using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Dentizone.Application.Services
 {
@@ -15,7 +19,8 @@ namespace Dentizone.Application.Services
         IPostRepository repo,
         IPostAssetRepository postAssetRepository,
         IAssetService assetService,
-        AppDbContext dbContext)
+        AppDbContext dbContext,
+        IRedisService redisService)
         : IPostService
     {
         private async Task ValidateAssetNotUsed(string assetId, string? postIdToExclude = null)
@@ -149,6 +154,61 @@ namespace Dentizone.Application.Services
             }
 
             return mapper.Map<PostViewDto>(updatedPost);
+        }
+
+        public async Task<SidebarFilterDTO> GetSidebarFilterAsync(int page)
+        {
+            var cached = await redisService.GetValue("sidebar_filter");
+            if (!string.IsNullOrEmpty(cached))
+            {
+                return JsonConvert.DeserializeObject<SidebarFilterDTO>(cached);
+            }
+
+            var availablePosts = await repo.GetAllAsync(page, p => !p.IsDeleted && p.Status == PostStatus.Active, p => p.CreatedAt);
+
+            var cities = availablePosts
+                .Select(p => p.City)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToList();
+
+            var prices = availablePosts
+                .Select(p => p.Price)
+                .ToList();
+
+            decimal minPrice = 0;
+            decimal maxPrice = 0;
+            if (prices.Any())
+            {
+                minPrice = prices.Min();
+                maxPrice = prices.Max();
+            }
+
+            var categories = availablePosts
+               .GroupBy(p => p.Category.Name)  
+               .Select(g => new CategoryFilterDTO
+               {
+                   CategoryName = g.Key,
+                   Subcategories = (List<string>)g
+                       .Select(p => p.SubCategory?.Name)   
+                       .Distinct()
+                       .OrderBy(s => s)
+               })
+               .OrderBy(c => c.CategoryName)
+               .ToList();
+
+            var sidebarFilterResults = new SidebarFilterDTO
+            {
+                Cities = cities,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
+                Categories = categories
+            };
+
+            var json = JsonConvert.SerializeObject(sidebarFilterResults);
+            await redisService.SetValue("sidebar_filter", json, TimeSpan.FromHours(6));
+
+            return sidebarFilterResults;
         }
     }
 }

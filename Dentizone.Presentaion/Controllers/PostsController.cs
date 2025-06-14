@@ -79,5 +79,13 @@ namespace Dentizone.Presentaion.Controllers
                 return BadRequest($"Error : {ex.Message}");
             }
         }
+
+        [HttpGet("sidebar")]
+        public async Task<IActionResult> GetSidebarFilter(int page = 1)
+        {
+            var sidebarFilter = await postService.GetSidebarFilterAsync(page);
+            return Ok(sidebarFilter);
+
+        }
     }
 }
