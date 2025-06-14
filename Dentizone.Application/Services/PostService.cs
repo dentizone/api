@@ -14,6 +14,8 @@ namespace Dentizone.Application.Services
         IMapper mapper,
         IPostRepository repo,
         IPostAssetRepository postAssetRepository,
+        ICategoryRepository categoryRepository,
+        ISubCategoryRepository subCategoryRepository,
         IAssetService assetService,
         AppDbContext dbContext)
         : IPostService
@@ -21,17 +23,35 @@ namespace Dentizone.Application.Services
         private async Task ValidateAssetNotUsed(string assetId, string? postIdToExclude = null)
         {
             var isExist = await postAssetRepository.FindBy(p =>
-                                                               !p.IsDeleted &&
-                                                               p.AssetId == assetId &&
-                                                               (postIdToExclude == null || p.PostId != postIdToExclude)
-                                                          );
+                !p.IsDeleted &&
+                p.AssetId == assetId &&
+                (postIdToExclude == null || p.PostId != postIdToExclude)
+            );
 
             if (isExist != null)
                 throw new BadActionException("This photo is already used before");
         }
 
+
+        private async Task ValidateCategoryAndSubCategory(string categoryId, string subCategoryId)
+        {
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                var category = await categoryRepository.GetByIdAsync(categoryId);
+                if (category == null)
+                    throw new NotFoundException($"Category with ID {categoryId} not found");
+            }
+
+            if (!string.IsNullOrEmpty(subCategoryId))
+            {
+                var subCategory = await subCategoryRepository.GetByIdAsync(subCategoryId);
+                if (subCategory == null)
+                    throw new NotFoundException($"SubCategory with ID {subCategoryId} not found");
+            }
+        }
+
         private async Task<PostAsset> AssociatePostWithAsset(string postId, string assetId,
-                                                             string? postIdToExclude = null)
+            string? postIdToExclude = null)
         {
             var asset = await assetService.GetAssetByIdAsync(assetId);
             if (asset == null)
@@ -69,10 +89,9 @@ namespace Dentizone.Application.Services
                         post.PostAssets.Add(postAsset);
                     }
                 }
-                else
-                {
-                    throw new BadHttpRequestException("I Don't know how you reached there, but i handled it :D");
-                }
+
+                await ValidateCategoryAndSubCategory(post.CategoryId, post.SubCategoryId);
+
 
                 await repo.UpdateAsync(post);
                 await transaction.CommitAsync();
@@ -136,9 +155,6 @@ namespace Dentizone.Application.Services
             var existingPost = await repo.GetByIdAsync(postId);
 
             var post = mapper.Map(updatePostDto, existingPost);
-
-
-            // Logic to handle asset updates
 
 
             var updatedPost = await repo.UpdateAsync(post);

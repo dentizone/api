@@ -2,6 +2,7 @@
 using Dentizone.Domain.Exceptions;
 using System.Net;
 using System.Text.Json;
+using Microsoft.Data.SqlClient;
 
 namespace Dentizone.Presentaion.Middlewares
 {
@@ -63,6 +64,13 @@ namespace Dentizone.Presentaion.Middlewares
                     errorResponse.Message = userAlreadyExistsException.Message;
                     errorResponse.StatusCode = (int)HttpStatusCode.Conflict;
                     break;
+
+                case SqlException expSqlException:
+                    errorResponse.Message = "A database error occurred. Please try again later.";
+                    errorResponse.Details = expSqlException.Message;
+                    errorResponse.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    break;
+
 
                 default:
                     errorResponse.Message = "An unexpected error occurred.";
