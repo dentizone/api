@@ -10,6 +10,7 @@ using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace Dentizone.Application.Services
@@ -209,6 +210,30 @@ namespace Dentizone.Application.Services
             await redisService.SetValue("sidebar_filter", json, TimeSpan.FromHours(6));
 
             return sidebarFilterResults;
+        }
+
+        public async Task<List<PostViewDto>> Search(UserPreferenceDTO userPreferenceDTO)
+        {
+            var cacheKey = "search_posts_" + JsonConvert.SerializeObject(userPreferenceDTO);
+            var cached = await redisService.GetValue(cacheKey);
+            if (!string.IsNullOrEmpty(cached))
+                return JsonConvert.DeserializeObject<List<PostViewDto>>(cached);
+
+            var postsQuery = await repo.SearchAsync(
+                userPreferenceDTO.Keyword, userPreferenceDTO.City, userPreferenceDTO.Category, userPreferenceDTO.SubCategory,
+                userPreferenceDTO.Condition, userPreferenceDTO.MinPrice, userPreferenceDTO.MaxPrice,
+                userPreferenceDTO.SortBy, userPreferenceDTO.SortDirection, userPreferenceDTO.PageNumber
+            );
+
+            var postsWithIncludes = postsQuery
+                .Include(p => p.PostAssets).ThenInclude(pa => pa.Asset)
+                .Include(p => p.Seller)
+                .ToListAsync();
+
+            var mappedPosts = mapper.Map<List<PostViewDto>>(postsWithIncludes);
+
+            await redisService.SetValue(cacheKey, JsonConvert.SerializeObject(mappedPosts), TimeSpan.FromMinutes(10));
+            return mappedPosts;
         }
     }
 }

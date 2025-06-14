@@ -1,7 +1,9 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Dentizone.Infrastructure.Repositories
 {
@@ -94,6 +96,46 @@ namespace Dentizone.Infrastructure.Repositories
             dbContext.Posts.Update(entity);
             await dbContext.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task<IQueryable<Post>> SearchAsync(string? keyword, string? city, string? category, string? subcategory, PostItemCondition? condition, decimal? minPrice, decimal? maxPrice, string? sortBy, bool SortDirection, int page)
+        {
+            var posts = dbContext.Posts
+                .Where(p => !p.IsDeleted && p.Status == PostStatus.Active)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                var kw = keyword.Trim().ToLower();
+                posts = posts.Where(p =>
+                    p.Title.ToLower().Contains(kw) ||
+                    p.Description.ToLower().Contains(kw));
+            }
+
+            if (!string.IsNullOrWhiteSpace(city))
+                posts = posts.Where(p => p.City == city);
+            if (!string.IsNullOrWhiteSpace(category))
+                posts = posts.Where(p => p.Category.Name == category);
+            if (!string.IsNullOrWhiteSpace(subcategory))
+                posts = posts.Where(p => p.SubCategory.Name == subcategory);
+            if (condition.HasValue)
+                posts = posts.Where(p => p.Condition == condition.Value);
+            if (minPrice.HasValue)
+                posts = posts.Where(p => p.Price >= minPrice.Value);
+            if (maxPrice.HasValue)
+                posts = posts.Where(p => p.Price <= maxPrice.Value);
+
+            if (sortBy?.ToLower() == "price")
+            {
+                posts = SortDirection ? posts.OrderBy(p => p.Price) : posts.OrderByDescending(p => p.Price);
+            }
+            else
+            {
+                posts = SortDirection ? posts.OrderBy(p => p.CreatedAt) : posts.OrderByDescending(p => p.CreatedAt);
+            }
+
+            var skippedPages = CalculatePagination(page);
+            return posts.Skip(skippedPages).Take(DefaultPageSize);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Dentizone.Application.DTOs.PostDTO;
+using Dentizone.Application.DTOs.PostFilterDTO;
 using Dentizone.Application.Interfaces.Post;
 using Dentizone.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -85,7 +86,12 @@ namespace Dentizone.Presentaion.Controllers
         {
             var sidebarFilter = await postService.GetSidebarFilterAsync(page);
             return Ok(sidebarFilter);
-
+        }
+        [HttpPost("search")]
+        public async Task<IActionResult> Search([FromQuery] UserPreferenceDTO userPreferenceDTO)
+        {
+            var searchResult = await postService.Search(userPreferenceDTO);
+            return Ok(searchResult);
         }
     }
 }
