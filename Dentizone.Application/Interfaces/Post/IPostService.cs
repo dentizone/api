@@ -18,6 +18,6 @@ namespace Dentizone.Application.Interfaces.Post
         Task<PostViewDto> DeletePost(string postId);
         Task<SidebarFilterDTO> GetSidebarFilterAsync(int page);
 
-        Task<PostViewDto> Search(UserPreferenceDTO userPreferenceDTO);
+        Task<List<PostViewDto>> Search(UserPreferenceDTO userPreferenceDTO);
     }
 }
