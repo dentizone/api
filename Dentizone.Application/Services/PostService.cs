@@ -194,13 +194,14 @@ namespace Dentizone.Application.Services
                              .GroupBy(p => p.Category.Name)
                              .Select(g => new CategoryFilterDto
                              {
+                                 Id = g.First().Category.Id,
                                  CategoryName = g.Key,
-                                 Subcategories = (List<string>)g
-                                                                            .Select(p => p.SubCategory?.Name)
-                                                                            .Distinct()
-                                                                            .OrderBy(s => s).ToList()
+                                 Subcategories = g.Select(p => p.SubCategory.Name)
+                                                               .Distinct()
+                                                               .OrderBy(s => s).ToList()
                              })
                              .OrderBy(c => c.CategoryName)
+                             .Distinct()
                              .ToList();
 
             var sidebarFilterResults = new SidebarFilterDto
