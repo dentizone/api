@@ -9,6 +9,7 @@ using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
+using Dentizone.Infrastructure.Cache;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -157,20 +158,26 @@ namespace Dentizone.Application.Services
             return mapper.Map<PostViewDto>(updatedPost);
         }
 
-        public async Task<SidebarFilterDto> GetSidebarFilterAsync(int page)
+        public async Task<SidebarFilterDto> GetSidebarFilterAsync()
         {
-            var cached = await redisService.GetValue("sidebar_filter");
-            if (!string.IsNullOrEmpty(cached))
+            var cacheKey = CacheHelper.GenerateCacheKey("SidebarFilter");
+
+            var cachedValue = await redisService.GetValue(cacheKey);
+            if (!string.IsNullOrEmpty(cachedValue))
             {
-                return JsonConvert.DeserializeObject<SidebarFilterDto>(cached);
+                var deserializedValue = JsonConvert.DeserializeObject<SidebarFilterDto>(cachedValue);
+                if (deserializedValue != null)
+                {
+                    return deserializedValue;
+                }
             }
 
-            var availablePosts = await repo.GetAllAsync(page, p => !p.IsDeleted && p.Status == PostStatus.Active,
-                                                        p => p.CreatedAt, includes:
-                                                        [
-                                                            p => p.Category,
-                                                            p => p.SubCategory,
-                                                        ]);
+            var availablePosts = repo.GetAllAsync(p => !p.IsDeleted && p.Status == PostStatus.Active,
+                                                  p => p.CreatedAt, includes:
+                                                  [
+                                                      p => p.Category,
+                                                      p => p.SubCategory,
+                                                  ]);
 
             var cities = availablePosts
                          .Select(p => p.City)
@@ -212,8 +219,9 @@ namespace Dentizone.Application.Services
                 Categories = categories
             };
 
-            var json = JsonConvert.SerializeObject(sidebarFilterResults);
-            await redisService.SetValue("sidebar_filter", json, TimeSpan.FromHours(6));
+
+            var valueAsJson = JsonConvert.SerializeObject(sidebarFilterResults);
+            await redisService.SetValue(cacheKey, valueAsJson, TimeSpan.FromHours(6));
 
             return sidebarFilterResults;
         }

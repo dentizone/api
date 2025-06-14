@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.DTOs.PostDTO;
+﻿using Dentizone.Application.DTOs.PostDTO;
 using Dentizone.Application.DTOs.PostFilterDTO;
 
 namespace Dentizone.Application.Interfaces.Post
@@ -14,10 +9,10 @@ namespace Dentizone.Application.Interfaces.Post
         Task<PostViewDto> GetPostById(string postId);
         Task<List<PostViewDto>> GetPostsBySellerId(string sellerId, int page);
         Task<List<PostViewDto>> GetAllPosts(int page);
+        Task<SidebarFilterDto> GetSidebarFilterAsync();
         Task<PostViewDto> UpdatePost(string postId, UpdatePostDto updatePostDto);
         Task<PostViewDto> DeletePost(string postId);
-        Task<SidebarFilterDto> GetSidebarFilterAsync(int page);
 
-        Task<List<PostViewDto>> Search(UserPreferenceDto userPreferenceDTO);
+        Task<List<PostViewDto>> Search(UserPreferenceDto userPreferenceDto);
     }
 }

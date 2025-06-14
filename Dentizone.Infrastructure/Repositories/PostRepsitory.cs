@@ -85,6 +85,32 @@ namespace Dentizone.Infrastructure.Repositories
             return await query.Skip(skippedPages).Take(DefaultPageSize).ToListAsync();
         }
 
+        public IQueryable<Post> GetAllAsync(Expression<Func<Post, bool>>? filter,
+                                            Expression<Func<Post, object>>? orderBy,
+                                            Expression<Func<Post, object>>[]? includes = null)
+        {
+            IQueryable<Post> query = dbContext.Posts;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            if (orderBy != null)
+            {
+                query = query.OrderBy(orderBy);
+            }
+
+            return query;
+        }
+
         public async Task<Post?> GetByIdAsync(string id)
         {
             return await dbContext.Posts.FindAsync(id);

@@ -82,9 +82,9 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet("sidebar")]
-        public async Task<IActionResult> GetSidebarFilter(int page = 1)
+        public async Task<IActionResult> GetSidebarFilter()
         {
-            var sidebarFilter = await postService.GetSidebarFilterAsync(page);
+            var sidebarFilter = await postService.GetSidebarFilterAsync();
             return Ok(sidebarFilter);
         }
 
