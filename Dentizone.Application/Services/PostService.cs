@@ -157,12 +157,12 @@ namespace Dentizone.Application.Services
             return mapper.Map<PostViewDto>(updatedPost);
         }
 
-        public async Task<SidebarFilterDTO> GetSidebarFilterAsync(int page)
+        public async Task<SidebarFilterDto> GetSidebarFilterAsync(int page)
         {
             var cached = await redisService.GetValue("sidebar_filter");
             if (!string.IsNullOrEmpty(cached))
             {
-                return JsonConvert.DeserializeObject<SidebarFilterDTO>(cached);
+                return JsonConvert.DeserializeObject<SidebarFilterDto>(cached);
             }
 
             var availablePosts = await repo.GetAllAsync(page, p => !p.IsDeleted && p.Status == PostStatus.Active,
@@ -192,7 +192,7 @@ namespace Dentizone.Application.Services
 
             var categories = availablePosts
                              .GroupBy(p => p.Category.Name)
-                             .Select(g => new CategoryFilterDTO
+                             .Select(g => new CategoryFilterDto
                              {
                                  CategoryName = g.Key,
                                  Subcategories = (List<string>)g
@@ -203,7 +203,7 @@ namespace Dentizone.Application.Services
                              .OrderBy(c => c.CategoryName)
                              .ToList();
 
-            var sidebarFilterResults = new SidebarFilterDTO
+            var sidebarFilterResults = new SidebarFilterDto
             {
                 Cities = cities,
                 MinPrice = minPrice,
@@ -217,7 +217,7 @@ namespace Dentizone.Application.Services
             return sidebarFilterResults;
         }
 
-        public async Task<List<PostViewDto>> Search(UserPreferenceDTO userPreferenceDTO)
+        public async Task<List<PostViewDto>> Search(UserPreferenceDto userPreferenceDTO)
         {
             var cacheKey = "search_posts_" + JsonConvert.SerializeObject(userPreferenceDTO);
             var cached = await redisService.GetValue(cacheKey);
