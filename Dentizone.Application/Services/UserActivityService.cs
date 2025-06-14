@@ -13,29 +13,29 @@ namespace Dentizone.Application.Services
     {
         private readonly IUserActivityRepository _userActivityRepository;
         private readonly IMapper _mapper;
-        private readonly IRequestContextService requestContextService;
+        private readonly IRequestContextService _requestContextService;
 
         public UserActivityService(IUserActivityRepository userActivityRepository, IMapper mapper,
                                    IRequestContextService requestContextService)
         {
             _userActivityRepository = userActivityRepository;
             _mapper = mapper;
-            this.requestContextService = requestContextService;
+            this._requestContextService = requestContextService;
         }
 
         public async Task<CreatedUserActivityDto> CreateAsync(UserActivities activity,
-                                                              DateTime? DetectedAt = null, string? userId = null)
+                                                              DateTime? detectedAt = null, string? userId = null)
         {
             var userActivity = new UserActivity
-            {
-                FingerprintToken = requestContextService.GetFingerprint(),
-                IpAddress = requestContextService.GetIpAddress(),
-                UserAgent = requestContextService.GetUserAgent(),
-                Device = requestContextService.GetDeviceType(),
-                ActivityType = activity,
-                UserId = requestContextService.GetUserId() ?? userId,
-                DetectedAt = DetectedAt ?? DateTime.UtcNow
-            };
+                               {
+                                   FingerprintToken = _requestContextService.GetFingerprint(),
+                                   IpAddress = _requestContextService.GetIpAddress(),
+                                   UserAgent = _requestContextService.GetUserAgent(),
+                                   Device = _requestContextService.GetDeviceType(),
+                                   ActivityType = activity,
+                                   UserId = _requestContextService.GetUserId() ?? userId,
+                                   DetectedAt = detectedAt ?? DateTime.UtcNow
+                               };
 
             var newUserActivity = await _userActivityRepository.CreateAsync(userActivity);
             return _mapper.Map<CreatedUserActivityDto>(newUserActivity);

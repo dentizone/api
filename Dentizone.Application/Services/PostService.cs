@@ -231,20 +231,20 @@ namespace Dentizone.Application.Services
             return sidebarFilterResults;
         }
 
-        public async Task<List<PostViewDto>> Search(UserPreferenceDto userPreferenceDTO)
+        public async Task<List<PostViewDto>> Search(UserPreferenceDto userPreferenceDto)
         {
-            var cacheKey = "search_posts_" + JsonConvert.SerializeObject(userPreferenceDTO);
+            var cacheKey = "search_posts_" + JsonConvert.SerializeObject(userPreferenceDto);
             var cached = await redisService.GetValue(cacheKey);
             if (!string.IsNullOrEmpty(cached))
                 return JsonConvert.DeserializeObject<List<PostViewDto>>(cached);
 
             var postsQuery = await repo.SearchAsync(
-                                                    userPreferenceDTO.Keyword, userPreferenceDTO.City,
-                                                    userPreferenceDTO.Category, userPreferenceDTO.SubCategory,
-                                                    userPreferenceDTO.Condition, userPreferenceDTO.MinPrice,
-                                                    userPreferenceDTO.MaxPrice,
-                                                    userPreferenceDTO.SortBy, userPreferenceDTO.SortDirection,
-                                                    userPreferenceDTO.PageNumber
+                                                    userPreferenceDto.Keyword, userPreferenceDto.City,
+                                                    userPreferenceDto.Category, userPreferenceDto.SubCategory,
+                                                    userPreferenceDto.Condition, userPreferenceDto.MinPrice,
+                                                    userPreferenceDto.MaxPrice,
+                                                    userPreferenceDto.SortBy, userPreferenceDto.SortDirection,
+                                                    userPreferenceDto.PageNumber
                                                    );
 
             var postsWithIncludes = postsQuery
