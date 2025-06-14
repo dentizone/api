@@ -208,7 +208,6 @@ namespace Dentizone.Application.Services
                                                                .OrderBy(s => s).ToList()
                              })
                              .OrderBy(c => c.CategoryName)
-                             .Distinct()
                              .ToList();
 
             var sidebarFilterResults = new SidebarFilterDto
