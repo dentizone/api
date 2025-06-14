@@ -165,17 +165,22 @@ namespace Dentizone.Application.Services
                 return JsonConvert.DeserializeObject<SidebarFilterDTO>(cached);
             }
 
-            var availablePosts = await repo.GetAllAsync(page, p => !p.IsDeleted && p.Status == PostStatus.Active, p => p.CreatedAt);
+            var availablePosts = await repo.GetAllAsync(page, p => !p.IsDeleted && p.Status == PostStatus.Active,
+                                                        p => p.CreatedAt, includes:
+                                                        [
+                                                            p => p.Category,
+                                                            p => p.SubCategory,
+                                                        ]);
 
             var cities = availablePosts
-                .Select(p => p.City)
-                .Distinct()
-                .OrderBy(c => c)
-                .ToList();
+                         .Select(p => p.City)
+                         .Distinct()
+                         .OrderBy(c => c)
+                         .ToList();
 
             var prices = availablePosts
-                .Select(p => p.Price)
-                .ToList();
+                         .Select(p => p.Price)
+                         .ToList();
 
             decimal minPrice = 0;
             decimal maxPrice = 0;
@@ -186,17 +191,17 @@ namespace Dentizone.Application.Services
             }
 
             var categories = availablePosts
-               .GroupBy(p => p.Category.Name)  
-               .Select(g => new CategoryFilterDTO
-               {
-                   CategoryName = g.Key,
-                   Subcategories = (List<string>)g
-                       .Select(p => p.SubCategory?.Name)   
-                       .Distinct()
-                       .OrderBy(s => s)
-               })
-               .OrderBy(c => c.CategoryName)
-               .ToList();
+                             .GroupBy(p => p.Category.Name)
+                             .Select(g => new CategoryFilterDTO
+                             {
+                                 CategoryName = g.Key,
+                                 Subcategories = (List<string>)g
+                                                                            .Select(p => p.SubCategory?.Name)
+                                                                            .Distinct()
+                                                                            .OrderBy(s => s).ToList()
+                             })
+                             .OrderBy(c => c.CategoryName)
+                             .ToList();
 
             var sidebarFilterResults = new SidebarFilterDTO
             {
@@ -220,15 +225,18 @@ namespace Dentizone.Application.Services
                 return JsonConvert.DeserializeObject<List<PostViewDto>>(cached);
 
             var postsQuery = await repo.SearchAsync(
-                userPreferenceDTO.Keyword, userPreferenceDTO.City, userPreferenceDTO.Category, userPreferenceDTO.SubCategory,
-                userPreferenceDTO.Condition, userPreferenceDTO.MinPrice, userPreferenceDTO.MaxPrice,
-                userPreferenceDTO.SortBy, userPreferenceDTO.SortDirection, userPreferenceDTO.PageNumber
-            );
+                                                    userPreferenceDTO.Keyword, userPreferenceDTO.City,
+                                                    userPreferenceDTO.Category, userPreferenceDTO.SubCategory,
+                                                    userPreferenceDTO.Condition, userPreferenceDTO.MinPrice,
+                                                    userPreferenceDTO.MaxPrice,
+                                                    userPreferenceDTO.SortBy, userPreferenceDTO.SortDirection,
+                                                    userPreferenceDTO.PageNumber
+                                                   );
 
             var postsWithIncludes = postsQuery
-                .Include(p => p.PostAssets).ThenInclude(pa => pa.Asset)
-                .Include(p => p.Seller)
-                .ToListAsync();
+                                    .Include(p => p.PostAssets).ThenInclude(pa => pa.Asset)
+                                    .Include(p => p.Seller)
+                                    .ToListAsync();
 
             var mappedPosts = mapper.Map<List<PostViewDto>>(postsWithIncludes);
 

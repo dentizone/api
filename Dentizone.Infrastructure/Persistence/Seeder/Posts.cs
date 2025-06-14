@@ -14,10 +14,10 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
             Randomizer.Seed = new Random(8675309);
 
             // Check if data already exists to prevent re-seeding
-            if (await context.Users.AnyAsync() || await context.Posts.AnyAsync())
-            {
-                return; // DB has been seeded
-            }
+            // if (await context.Users.AnyAsync() || await context.Posts.AnyAsync())
+            // {
+            //     return; // DB has been seeded
+            // }
 
             // --- PRE-REQUISITES: Fetch existing data for relationships ---
             var universities = await context.Universities.ToListAsync();
@@ -41,7 +41,7 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
                                     .RuleFor(u => u.UserName,
                                              f => f.Internet.Email(f.Name.FirstName(), f.Name.LastName()))
                                     .RuleFor(u => u.Email, (f, u) => u.UserName)
-                                    .RuleFor(u => u.EmailConfirmed, true);
+                                    .RuleFor(u => u.EmailConfirmed, false);
 
             var generatedUsers = identityUserFaker.Generate(10);
             foreach (var user in generatedUsers)
@@ -52,7 +52,13 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
                     await userManager.AddToRoleAsync(user, UserRoles.GHOST.ToString());
                     identityUsersToCreate.Add(user);
                 }
+                else
+                {
+                    // Handle errors if user creation fails
+                    Console.WriteLine($"Failed to create user {user.UserName}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                }
             }
+
 
             // --- 2. SEED DOMAIN USERS (AppUser) ---
             var appUserFaker = new Faker<AppUser>()
@@ -61,7 +67,7 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
                     Id = identityUsersToCreate[f.IndexFaker].Id,
 
                     FullName = f.Name.FullName(),
-
+                    Username = f.Name.FullName(),
 
                     IsDeleted = false,
                     CreatedAt = f.Date.Past(2),
@@ -71,6 +77,8 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
             var appUsers = appUserFaker.Generate(identityUsersToCreate.Count);
             await context.AppUsers.AddRangeAsync(appUsers);
 
+            await context.SaveChangesAsync(); // Save AppUsers to get IDs
+
             var userIds = identityUsersToCreate.Select(u => u.Id).ToList();
 
             // --- 3. SEED ASSETS ---
@@ -78,7 +86,9 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
                              .RuleFor(a => a.Url, f => f.Image.PicsumUrl())
                              .RuleFor(a => a.Type, AssetType.Image)
                              .RuleFor(a => a.Status, AssetStatus.Active)
-                             .RuleFor(a => a.IsDeleted, false);
+                             .RuleFor(a => a.IsDeleted, false)
+                             .RuleFor(a => a.UserId, f => f.PickRandom(userIds));
+
 
             var assets = assetFaker.Generate(50);
             await context.Assets.AddRangeAsync(assets);
@@ -93,6 +103,12 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
                             .RuleFor(p => p.Condition, f => f.PickRandom<PostItemCondition>())
                             .RuleFor(p => p.Status, PostStatus.Active)
                             .RuleFor(p => p.IsDeleted, false)
+                            .RuleFor(p => p.City, f => f.Address.City())
+                            .RuleFor(p => p.Street, f => f.Address.StreetAddress())
+                            .RuleFor(p => p.CreatedAt, f => f.Date.Past(1))
+                            .RuleFor(p => p.UpdatedAt, f => f.Date.Recent())
+                            .RuleFor(p => p.ExpireDate, f => f.Date.Future(30))
+                            .RuleFor(p => p.Slug, (f, p) => f.Lorem.Slug())
                             .FinishWith((f, p) =>
                             {
                                 var randomCategory = f.PickRandom(categoriesWithSubcategories);
@@ -123,6 +139,7 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
             }
 
             await context.PostAssets.AddRangeAsync(postAssets);
+
 
             await context.SaveChangesAsync();
         }
