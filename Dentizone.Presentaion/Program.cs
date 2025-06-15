@@ -5,9 +5,9 @@ using Dentizone.Infrastructure.DependencyInjection;
 using Dentizone.Infrastructure.Filters;
 using Dentizone.Infrastructure.Identity;
 using Dentizone.Presentaion.Context;
+using Dentizone.Presentaion.Extensions;
 using Dentizone.Presentaion.Middlewares;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
 
 namespace Dentizone.Presentaion
@@ -32,33 +32,8 @@ namespace Dentizone.Presentaion
             });
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IRequestContextService, RequestContextService>();
-            builder.Services.AddSwaggerGen(opt =>
-            {
-                opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    BearerFormat = "JWT",
-                    Description =
-                                                            "JWT Authorization header using the Bearer scheme.",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "Bearer"
-                });
-                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-                                           {
-                                               {
-                                                   new OpenApiSecurityScheme
-                                                   {
-                                                       Reference = new OpenApiReference
-                                                                   {
-                                                                       Id = "Bearer",
-                                                                       Type = ReferenceType.SecurityScheme
-                                                                   }
-                                                   },
-                                                   Array.Empty<string>()
-                                               }
-                                           });
-            });
+            builder.Services.AddSwaggerWithJwt();
+
 
             var app = builder.Build();
             app.UseCors();
@@ -68,7 +43,13 @@ namespace Dentizone.Presentaion
             {
                 opt.Title = "Dentizone API";
                 opt.Theme = ScalarTheme.Mars;
-                opt.DefaultHttpClient = new(ScalarTarget.Http, ScalarClient.Http11);
+                opt.DefaultHttpClient = new(ScalarTarget.JavaScript, ScalarClient.Fetch);
+            });
+
+            app.MapGet("/", context =>
+            {
+                context.Response.Redirect("/scalar", permanent: false);
+                return Task.CompletedTask;
             });
 
             app.UseHttpsRedirection();
