@@ -177,7 +177,7 @@ namespace Dentizone.Presentaion.Controllers
                     RefreshToken = newRefreshToken,
                 });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, new { message = "An error occurred during token refresh" });
             }
@@ -212,7 +212,7 @@ namespace Dentizone.Presentaion.Controllers
 
                 return Ok(new { message = "Logged out successfully" });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, new { message = "An error occurred during logout" });
             }
