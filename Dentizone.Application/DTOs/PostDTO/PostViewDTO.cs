@@ -1,5 +1,4 @@
 ﻿using Dentizone.Application.DTOs.User;
-using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.DTOs.PostDTO
 {
@@ -10,8 +9,8 @@ namespace Dentizone.Application.DTOs.PostDTO
         public string Description { get; set; }
         public decimal Price { get; set; }
         public DateTime? ExpireDate { get; set; }
-        public PostItemCondition Condition { get; set; }
-        public PostStatus Status { get; set; }
+        public string Condition { get; set; }
+        public string Status { get; set; }
         public UserView Seller { get; set; }
         public List<PostAssetView> Assets { get; set; }
         public DateTime CreatedAt { get; set; }
