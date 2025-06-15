@@ -96,19 +96,19 @@ namespace Dentizone.Application.Services
             }
 
             user.Status = status switch
-            {
-                KycStatus.APPROVED => UserState.Active,
-                KycStatus.REJECTED => UserState.Banned,
-                KycStatus.NOT_SUBMITTED => UserState.PendingVerification,
-                _ => user.Status
-            };
+                          {
+                              KycStatus.APPROVED => UserState.Active,
+                              KycStatus.REJECTED => UserState.Banned,
+                              KycStatus.NOT_SUBMITTED => UserState.PendingVerification,
+                              _ => user.Status
+                          };
 
             user.KycStatus = status;
             var updatedUser = await _userRepository.Update(user);
             return _mapper.Map<UserView>(updatedUser);
         }
 
-        public async Task<UserView> SetNationalId(string userId, string NationalId)
+        public async Task<UserView> SetNationalId(string userId, string nationalId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
@@ -116,7 +116,7 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException($"User with id {userId} not found.");
             }
 
-            user.NationalId = long.Parse(NationalId);
+            user.NationalId = long.Parse(nationalId);
             var updated = await _userRepository.Update(user);
 
             return _mapper.Map<UserView>(updated);
