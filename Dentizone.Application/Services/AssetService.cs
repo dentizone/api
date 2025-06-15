@@ -35,9 +35,9 @@ namespace Dentizone.Application.Services
             return mapper.Map<AssetDto>(updatedAsset);
         }
 
-        public async Task DeleteAssetAsync(AssetDto assetDtp)
+        public async Task DeleteAssetAsync(AssetDto assetDto)
         {
-            var asset = mapper.Map<Asset>(assetDtp);
+            var asset = mapper.Map<Asset>(assetDto);
 
             await assetRepository.DeleteAsync(asset);
         }
