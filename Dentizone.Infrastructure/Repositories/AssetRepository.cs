@@ -32,9 +32,16 @@ namespace Dentizone.Infrastructure.Repositories
                 .FirstOrDefaultAsync(condition);
         }
 
-        public async Task DeleteAsync(Asset asset)
+        public async Task DeleteByIdAsync(string assetId)
         {
+            var asset = await GetByIdAsync(assetId);
+            if (asset == null)
+            {
+                return;
+            }
+
             dbContext.Assets.Remove(asset);
+
             await dbContext.SaveChangesAsync();
         }
 

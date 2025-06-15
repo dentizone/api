@@ -46,7 +46,7 @@ namespace Dentizone.Application.Services
                 throw new UnauthorizedAccessException("You are not authorized to delete this asset");
             }
 
-            await assetService.DeleteAssetAsync(asset);
+            await assetService.DeleteAssetAsync(asset.Id);
             return asset;
         }
     }
