@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.PostDTO;
 using Dentizone.Application.DTOs.PostFilterDTO;
-using Dentizone.Application.Interfaces.Asset;
+using Dentizone.Application.Interfaces.Assets;
 using Dentizone.Application.Interfaces.Post;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
@@ -10,7 +10,6 @@ using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.Cache;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -30,10 +29,10 @@ namespace Dentizone.Application.Services
         private async Task ValidateAssetNotUsed(string assetId, string? postIdToExclude = null)
         {
             var isExist = await postAssetRepository.FindBy(p =>
-                !p.IsDeleted &&
-                p.AssetId == assetId &&
-                (postIdToExclude == null || p.PostId != postIdToExclude)
-            );
+                                                               !p.IsDeleted &&
+                                                               p.AssetId == assetId &&
+                                                               (postIdToExclude == null || p.PostId != postIdToExclude)
+                                                          );
 
             if (isExist != null)
                 throw new BadActionException("This photo is already used before");
@@ -58,7 +57,7 @@ namespace Dentizone.Application.Services
         }
 
         private async Task<PostAsset> AssociatePostWithAsset(string postId, string assetId,
-            string? postIdToExclude = null)
+                                                             string? postIdToExclude = null)
         {
             var asset = await assetService.GetAssetByIdAsync(assetId);
             if (asset == null)

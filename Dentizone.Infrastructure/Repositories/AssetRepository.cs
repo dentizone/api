@@ -5,12 +5,8 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class AssetRepository : AbstractRepository, IAssetRepository
+    internal class AssetRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IAssetRepository
     {
-        public AssetRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<Asset> CreateAsync(Asset entity)
         {
             await dbContext.Assets.AddAsync(entity);
@@ -19,7 +15,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<Asset?> FindBy(Expression<Func<Asset, bool>> condition,
-                                         Expression<Func<Asset, object>>[]? includes)
+                                         Expression<Func<Asset, object>>[]? includes = null)
         {
             var query = dbContext.Assets.AsQueryable();
             if (includes == null)
@@ -36,12 +32,10 @@ namespace Dentizone.Infrastructure.Repositories
                 .FirstOrDefaultAsync(condition);
         }
 
-        public async Task<Asset?> DeleteAsync(string id)
+        public async Task DeleteAsync(Asset asset)
         {
-            var asset = await GetByIdAsync(id);
             dbContext.Assets.Remove(asset);
             await dbContext.SaveChangesAsync();
-            return asset;
         }
 
 

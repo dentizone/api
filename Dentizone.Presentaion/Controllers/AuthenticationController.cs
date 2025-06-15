@@ -24,6 +24,9 @@ namespace Dentizone.Presentaion.Controllers
             var loggedInUser =
                 await authenticationService.LoginWithEmailAndPassword(loginPayload.Email, loginPayload.Password);
 
+            if (loggedInUser?.User.Email == null)
+                throw new UnauthorizedAccessException("Invalid email or password");
+
 
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, loggedInUser.User.Email,
                                                          loggedInUser.role.ToString());
@@ -65,7 +68,7 @@ namespace Dentizone.Presentaion.Controllers
         [Authorize]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string token)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
 
             var result = await authenticationService.ConfirmEmail(token, userId);
@@ -76,7 +79,7 @@ namespace Dentizone.Presentaion.Controllers
         [Authorize]
         public async Task<IActionResult> SendVerificationEmail()
         {
-            var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var email = User.Claims.First(c => c.Type == ClaimTypes.Email).Value;
 
             await authenticationService.SendVerificationEmail(email);
             return Ok(new { Message = "Verification email sent successfully." });
@@ -132,7 +135,7 @@ namespace Dentizone.Presentaion.Controllers
                 // This ensures that if user roles/permissions changed, the new token reflects that
                 var user = await authenticationService.GetById(userId);
                 var domainUser = await userService.GetByIdAsync(userId);
-                if (user == null)
+                if (user.Email == null)
                 {
                     return Unauthorized(new { message = "User not found" });
                 }

@@ -49,7 +49,7 @@ namespace Dentizone.Infrastructure.Repositories
             return post;
         }
 
-        public async Task<IEnumerable<Post>> GetAllAsync(int page = 1)
+        public async Task<IEnumerable<Post>> GetAllAsync(int page)
         {
             int skippedPages = CalculatePagination(page);
             return await dbContext.Posts

@@ -1,4 +1,4 @@
-﻿using Dentizone.Application.DTOs.Asset;
+﻿using Dentizone.Application.DTOs.Assets;
 using Microsoft.AspNetCore.Http;
 
 namespace Dentizone.Application.Interfaces
@@ -7,5 +7,7 @@ namespace Dentizone.Application.Interfaces
     {
         public Task<AssetDto> UploadImageAsync(IFormFile file, string userId);
         public Task<AssetDto> FindAssetById(string id);
+
+        public Task<AssetDto> DeleteAssetById(string id, string userId);
     }
 }
