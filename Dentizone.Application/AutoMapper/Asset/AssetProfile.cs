@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Dentizone.Application.DTOs.Asset;
+using Dentizone.Application.DTOs.Assets;
 
 namespace Dentizone.Application.AutoMapper.Asset
 {

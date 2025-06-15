@@ -1,8 +1,10 @@
-﻿namespace Dentizone.Domain.Interfaces.Repositories
+﻿using Dentizone.Domain.Entity;
+
+namespace Dentizone.Domain.Interfaces.Repositories
 {
-    public interface IAssetRepository : IBaseRepo<Entity.Asset>
+    public interface IAssetRepository : IBaseRepo<Asset>
     {
-        Task<Entity.Asset> UpdateAsync(Entity.Asset entity);
-        Task<Entity.Asset?> DeleteAsync(string id);
+        Task<Asset> UpdateAsync(Asset entity);
+        Task DeleteAsync(string assetId);
     }
 }

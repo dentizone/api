@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Dentizone.Application.DTOs.Asset;
-using Dentizone.Application.Interfaces.Asset;
+using Dentizone.Application.DTOs.Assets;
+using Dentizone.Application.Interfaces.Assets;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
@@ -45,10 +45,9 @@ namespace Dentizone.Application.Services
             return _mapper.Map<AssetDto>(updatedAsset);
         }
 
-        public async Task<AssetDto> DeleteAssetAsync(string id)
+        public async Task DeleteAssetAsync(string assetId)
         {
-            var deletedAsset = await _assetRepository.DeleteAsync(id);
-            return _mapper.Map<AssetDto>(deletedAsset);
+            await _assetRepository.DeleteAsync(assetId);
         }
     }
 }
