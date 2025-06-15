@@ -7,5 +7,5 @@ public interface IAssetService
     Task<AssetDto> CreateAssetAsync(CreateAssetDto assetDto);
     Task<AssetDto> GetAssetByIdAsync(string id);
     Task<AssetDto> UpdateAssetAsync(string id, UpdateAssetDto assetDto);
-    Task DeleteAssetAsync(AssetDto asset);
+    Task DeleteAssetAsync(string assetId);
 }
