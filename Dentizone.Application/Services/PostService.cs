@@ -107,7 +107,12 @@ namespace Dentizone.Application.Services
 
         public async Task<List<PostViewDto>> GetAllPosts(int page)
         {
-            var posts = await repo.GetAllAsync(page, p => !p.IsDeleted, p => p.CreatedAt);
+            var posts = await repo.GetAllAsync(page, p => !p.IsDeleted, p => p.CreatedAt, includes:
+            [
+                p => p.Category,
+                p => p.SubCategory,
+                p => p.Seller
+            ]);
             if (!posts.Any())
             {
                 throw new NotFoundException("No posts found");
