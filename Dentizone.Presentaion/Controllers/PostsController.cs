@@ -50,7 +50,7 @@ namespace Dentizone.Presentaion.Controllers
 
             var createdPost = await postService.CreatePost(createPostDto, userId);
             ;
-            return CreatedAtAction(nameof(GetPostById), new { id = createdPost.Id }, createdPost);
+            return Ok(createdPost);
         }
 
         [HttpDelete("{id}")]

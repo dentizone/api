@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.DTOs.User;
+﻿using Dentizone.Application.DTOs.User;
 using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.DTOs.PostDTO

@@ -90,9 +90,7 @@ namespace Dentizone.Application.Services
                 {
                     foreach (var assetId in createPostDto.AssetIds)
                     {
-                        var postAsset = await AssociatePostWithAsset(post.Id, assetId);
-
-                        post.PostAssets.Add(postAsset);
+                        await AssociatePostWithAsset(post.Id, assetId);
                     }
                 }
 
