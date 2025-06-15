@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Azure.Core;
+using Dentizone.Application.DTOs.Cart;
 using Dentizone.Application.Interfaces.Cart;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces.Repositories;
@@ -39,25 +40,25 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Addcart([FromBody] string postId)
+        public async Task<IActionResult> Addcart([FromBody] AddToCartDTO request)
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
                 return BadRequest("User ID not found in token.");
             }
-            var post = await postRepository.GetByIdAsync(postId);
+            var post = await postRepository.GetByIdAsync(request.PostId);
             if (post == null || post.Status != PostStatus.Active)
             {
                 return NotFound("Post not found or inactive");
 
             }
-            var existingCart = await cartRepository.FindBy(c => c.UserId == userId && c.PostId == postId && !c.IsDeleted);
+            var existingCart = await cartRepository.FindBy(c => c.UserId == userId && c.PostId == request.PostId && !c.IsDeleted);
             if (existingCart != null)
             {
                 return BadRequest("item already in cart");
             }
-            var cartItem = await _cartService.AddToCartAsync(userId, postId);
+            var cartItem = await _cartService.AddToCartAsync(userId, request.PostId);
             return Created(string.Empty, cartItem);
 
 

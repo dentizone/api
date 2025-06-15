@@ -78,7 +78,7 @@ namespace Dentizone.Presentaion
 
 
             app.MapControllers();
-            RoleSeeder.SeedRolesAsync(app.Services).Wait();
+            //RoleSeeder.SeedRolesAsync(app.Services).Wait();
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();

@@ -14,6 +14,7 @@ namespace Dentizone.Application.AutoMapper.Carts
         public CartProfile()
         {
             CreateMap<CartItemDTO, Cart>().ReverseMap();
+            CreateMap<AddToCartDTO, Cart>().ReverseMap();
         }
     }
 }
