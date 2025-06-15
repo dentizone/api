@@ -88,7 +88,7 @@ namespace Dentizone.Presentaion.Controllers
             return Ok(sidebarFilter);
         }
 
-        [HttpPost("search")]
+        [HttpGet("search")]
         public async Task<IActionResult> Search([FromQuery] UserPreferenceDto userPreferenceDTO)
         {
             var searchResult = await postService.Search(userPreferenceDTO);

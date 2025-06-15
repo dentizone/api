@@ -266,6 +266,7 @@ namespace Dentizone.Application.Services
 
             var mappedPosts = mapper.Map<List<PostViewDto>>(postsWithIncludes);
 
+
             await redisService.SetValue(cacheKey, JsonConvert.SerializeObject(mappedPosts), TimeSpan.FromMinutes(1));
             return mappedPosts;
         }
