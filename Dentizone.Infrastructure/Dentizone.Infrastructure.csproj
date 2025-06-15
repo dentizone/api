@@ -8,8 +8,11 @@
 
   <ItemGroup>
     <Compile Remove="NewFolder\**" />
+    <Compile Remove="Persistence\NewFolder\**" />
     <EmbeddedResource Remove="NewFolder\**" />
+    <EmbeddedResource Remove="Persistence\NewFolder\**" />
     <None Remove="NewFolder\**" />
+    <None Remove="Persistence\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,10 +42,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dentizone.Domain\Dentizone.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Persistence\NewFolder\" />
   </ItemGroup>
 
 </Project>
