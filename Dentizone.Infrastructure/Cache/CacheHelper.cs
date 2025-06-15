@@ -23,11 +23,25 @@ namespace Dentizone.Infrastructure.Cache
             return sb.ToString();
         }
 
+        // Convert Dto to a cache key
+        private static string GenerateCacheKey<T>(string prefix, T dto)
+        {
+            var sb = new StringBuilder(prefix);
+            sb.Append($":{typeof(T).Name}");
+            foreach (var prop in typeof(T).GetProperties())
+            {
+                var value = prop.GetValue(dto);
+                sb.Append($":{prop.Name}:{value}");
+            }
 
-        public static string GenerateCacheKeyHash(string prefix, params object[] args)
+            return sb.ToString();
+        }
+
+
+        public static string GenerateCacheKeyHash<T>(string prefix, T dto)
         {
             using var md5 = System.Security.Cryptography.MD5.Create();
-            var input = GenerateCacheKey(prefix, args);
+            var input = GenerateCacheKey(prefix, dto);
             var hashBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(input));
             return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
         }

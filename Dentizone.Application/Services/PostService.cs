@@ -233,10 +233,17 @@ namespace Dentizone.Application.Services
 
         public async Task<List<PostViewDto>> Search(UserPreferenceDto userPreferenceDto)
         {
-            var cacheKey = "search_posts_" + JsonConvert.SerializeObject(userPreferenceDto);
-            var cached = await redisService.GetValue(cacheKey);
-            if (!string.IsNullOrEmpty(cached))
-                return JsonConvert.DeserializeObject<List<PostViewDto>>(cached);
+            var cacheKey = CacheHelper.GenerateCacheKeyHash("SearchPosts",
+                                                            userPreferenceDto);
+            var cachedValue = await redisService.GetValue(cacheKey);
+            if (!string.IsNullOrEmpty(cachedValue))
+            {
+                var deserializedValue = JsonConvert.DeserializeObject<List<PostViewDto>>(cachedValue);
+                if (deserializedValue != null)
+                {
+                    return deserializedValue;
+                }
+            }
 
             var postsQuery = await repo.SearchAsync(
                                                     userPreferenceDto.Keyword, userPreferenceDto.City,
@@ -247,14 +254,14 @@ namespace Dentizone.Application.Services
                                                     userPreferenceDto.PageNumber
                                                    );
 
-            var postsWithIncludes = postsQuery
-                                    .Include(p => p.PostAssets).ThenInclude(pa => pa.Asset)
-                                    .Include(p => p.Seller)
-                                    .ToListAsync();
+            var postsWithIncludes = await postsQuery
+                                          .Include(p => p.PostAssets).ThenInclude(pa => pa.Asset)
+                                          .Include(p => p.Seller)
+                                          .ToListAsync();
 
             var mappedPosts = mapper.Map<List<PostViewDto>>(postsWithIncludes);
 
-            await redisService.SetValue(cacheKey, JsonConvert.SerializeObject(mappedPosts), TimeSpan.FromMinutes(10));
+            await redisService.SetValue(cacheKey, JsonConvert.SerializeObject(mappedPosts), TimeSpan.FromMinutes(1));
             return mappedPosts;
         }
     }
