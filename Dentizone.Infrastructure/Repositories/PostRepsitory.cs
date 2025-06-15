@@ -6,12 +6,8 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class PostRepository : AbstractRepository, IPostRepository
+    internal class PostRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IPostRepository
     {
-        public PostRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<Post> CreateAsync(Post entity)
         {
             await dbContext.Posts.AddAsync(entity);
@@ -113,7 +109,12 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<Post?> GetByIdAsync(string id)
         {
-            return await dbContext.Posts.FindAsync(id);
+            return await dbContext.Posts
+                                  .Include(p => p.Seller)
+                                  .Include(p => p.PostAssets)
+                                  .ThenInclude(p => p.Asset)
+                                  .ThenInclude(p => p.User.University)
+                                  .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<Post> UpdateAsync(Post entity)

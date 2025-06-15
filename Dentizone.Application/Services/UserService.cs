@@ -58,7 +58,7 @@ namespace Dentizone.Application.Services
             return _mapper.Map<ICollection<UserView>>(users);
         }
 
-        public async Task<UserView> GetByIdAsync(string id)
+        public async Task<DomainUserView> GetByIdAsync(string id)
         {
             var user = await _userRepository.FindBy(u => u.Id == id,
                                                     [
@@ -70,7 +70,7 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException($"User with id {id} not found.");
             }
 
-            return _mapper.Map<UserView>(user);
+            return _mapper.Map<DomainUserView>(user);
         }
 
 
@@ -96,12 +96,12 @@ namespace Dentizone.Application.Services
             }
 
             user.Status = status switch
-                          {
-                              KycStatus.APPROVED => UserState.Active,
-                              KycStatus.REJECTED => UserState.Banned,
-                              KycStatus.NOT_SUBMITTED => UserState.PendingVerification,
-                              _ => user.Status
-                          };
+            {
+                KycStatus.APPROVED => UserState.Active,
+                KycStatus.REJECTED => UserState.Banned,
+                KycStatus.NOT_SUBMITTED => UserState.PendingVerification,
+                _ => user.Status
+            };
 
             user.KycStatus = status;
             var updatedUser = await _userRepository.Update(user);

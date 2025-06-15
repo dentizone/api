@@ -83,6 +83,7 @@ namespace Dentizone.Application.Services
             {
                 var post = mapper.Map<Post>(createPostDto);
                 post.SellerId = userId;
+                post.Status = PostStatus.Active; // ALERT: FOR DEVELOPMENT PURPOSES, SETTING STATUS TO ACTIVE
                 post.Slug = $"{post.Title.ToLower().Replace(" ", "-")}-{Guid.NewGuid().ToString()[..5]}";
                 await repo.CreateAsync(post);
 
@@ -90,9 +91,7 @@ namespace Dentizone.Application.Services
                 {
                     foreach (var assetId in createPostDto.AssetIds)
                     {
-                        var postAsset = await AssociatePostWithAsset(post.Id, assetId);
-
-                        post.PostAssets.Add(postAsset);
+                        await AssociatePostWithAsset(post.Id, assetId);
                     }
                 }
 
@@ -277,6 +276,7 @@ namespace Dentizone.Application.Services
             var postsWithIncludes = await postsQuery
                                           .Include(p => p.PostAssets).ThenInclude(pa => pa.Asset)
                                           .Include(p => p.Seller)
+                                          .ThenInclude(p => p.University)
                                           .ToListAsync();
 
             var mappedPosts = mapper.Map<List<PostViewDto>>(postsWithIncludes);
