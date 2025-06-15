@@ -49,3 +49,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           no-cache-filters: true 
+          
+      - name: Trigger Coolify Deploy + NTFY
+        uses: gitnasr/coolify-trigger-deploy@v1.0.0
+        with:
+          docker_image: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+          ntfy_topic: ${{ secrets.NTFY_TOPIC }}
+          ntfy_token: ${{ secrets.NTFY_TOKEN }}
+          
