@@ -50,5 +50,20 @@ namespace Dentizone.Infrastructure.Repositories
             await dbContext.SaveChangesAsync();
             return cart;
         }
+
+        public async Task<IEnumerable<Cart>> FindAllBy(Expression<Func<Cart, bool>> condition, Expression<Func<Cart, object>>[]? includes = null)
+        {
+            IQueryable<Cart> query = dbContext.Carts;
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.Where(condition).ToListAsync();
+        }
     }
 }
