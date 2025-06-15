@@ -6,26 +6,17 @@ using Microsoft.Data.SqlClient;
 
 namespace Dentizone.Presentaion.Middlewares
 {
-    public class ExceptionMiddleware
+    public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionMiddleware> _logger;
-
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
-        {
-            _next = next;
-            _logger = logger;
-        }
-
         public async Task InvokeAsync(HttpContext context)
         {
             try
             {
-                await _next(context);
+                await next(context);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unhandled exception occurred.");
+                logger.LogError(ex, "An unhandled exception occurred.");
                 await HandleExceptionAsync(context, ex);
             }
         }
@@ -36,11 +27,11 @@ namespace Dentizone.Presentaion.Middlewares
             response.ContentType = "application/json";
 
             var errorResponse = new ErrorResponse
-            {
-                Message = "An error occurred while processing your request.",
-                Details = exception.Message,
-                StatusCode = (int)HttpStatusCode.InternalServerError
-            };
+                                {
+                                    Message = "An error occurred while processing your request.",
+                                    Details = exception.Message,
+                                    StatusCode = (int)HttpStatusCode.InternalServerError
+                                };
 
             // Map specific exceptions to custom status codes and messages
             switch (exception)
