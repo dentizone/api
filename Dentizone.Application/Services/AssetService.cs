@@ -7,47 +7,39 @@ using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Application.Services
 {
-    public class AssetService : IAssetService
+    public class AssetService(IAssetRepository assetRepository, IMapper mapper) : IAssetService
     {
-        private readonly IAssetRepository _assetRepository;
-        private readonly IMapper _mapper;
-
-        public AssetService(IAssetRepository assetRepository, IMapper mapper)
-        {
-            _assetRepository = assetRepository;
-            _mapper = mapper;
-        }
-
-
         public async Task<AssetDto> CreateAssetAsync(CreateAssetDto assetDto)
         {
-            var asset = _mapper.Map<Asset>(assetDto);
+            var asset = mapper.Map<Asset>(assetDto);
 
-            var createdAsset = await _assetRepository.CreateAsync(asset);
+            var createdAsset = await assetRepository.CreateAsync(asset);
 
 
-            return _mapper.Map<AssetDto>(createdAsset);
+            return mapper.Map<AssetDto>(createdAsset);
         }
 
         public async Task<AssetDto> GetAssetByIdAsync(string id)
         {
-            var asset = await _assetRepository.GetByIdAsync(id) ??
+            var asset = await assetRepository.GetByIdAsync(id) ??
                         throw new NotFoundException($"Asset with id {id} not found");
-            return _mapper.Map<AssetDto>(asset);
+            return mapper.Map<AssetDto>(asset);
         }
 
         public async Task<AssetDto> UpdateAssetAsync(string id, UpdateAssetDto assetDto)
         {
-            var existingAsset = await _assetRepository.GetByIdAsync(id) ??
+            var existingAsset = await assetRepository.GetByIdAsync(id) ??
                                 throw new NotFoundException($"Asset with id {id} not found");
-            var u = _mapper.Map(assetDto, existingAsset);
-            var updatedAsset = await _assetRepository.UpdateAsync(u);
-            return _mapper.Map<AssetDto>(updatedAsset);
+            var u = mapper.Map(assetDto, existingAsset);
+            var updatedAsset = await assetRepository.UpdateAsync(u);
+            return mapper.Map<AssetDto>(updatedAsset);
         }
 
-        public async Task DeleteAssetAsync(string assetId)
+        public async Task DeleteAssetAsync(AssetDto assetDtp)
         {
-            await _assetRepository.DeleteAsync(assetId);
+            var asset = mapper.Map<Asset>(assetDtp);
+
+            await assetRepository.DeleteAsync(asset);
         }
     }
 }
