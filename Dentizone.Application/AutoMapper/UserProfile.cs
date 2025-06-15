@@ -26,6 +26,10 @@ namespace Dentizone.Application.AutoMapper
             CreateMap<UserView, AppUser>()
                 .ForPath(dest => dest.University.Name, opt => opt.MapFrom(src => src.UnversityName))
                 .ReverseMap();
+
+            CreateMap<DomainUserView, AppUser>()
+                .ForPath(dest => dest.University.Name, opt => opt.MapFrom(src => src.UnversityName))
+                .ReverseMap();
         }
     }
 }
