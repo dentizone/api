@@ -16,10 +16,10 @@ namespace Dentizone.Application.Services.Authentication
         private readonly IRedisService _redis;
         private readonly ISecretService _secretService;
         private readonly ILogger<TokenService> _logger;
-        private readonly int AccessTokenDurationInMinutes = 60 * 2;
+        private readonly int _accessTokenDurationInMinutes = 60 * 2;
 
-        private readonly int RefreshTokenDurationInMinutes = 60
-                                                             * 6;
+        private readonly int _refreshTokenDurationInMinutes = 60
+                                                              * 6;
 
         private readonly string _accessSecretKey;
         private readonly string _refreshSecretKey;
@@ -137,7 +137,7 @@ namespace Dentizone.Application.Services.Authentication
                                       {
                                           Subject = new ClaimsIdentity(BuildAccessTokenClaims(userId, email, role)),
                                           Expires =
-                                              DateTime.UtcNow.AddMinutes(AccessTokenDurationInMinutes),
+                                              DateTime.UtcNow.AddMinutes(_accessTokenDurationInMinutes),
                                           SigningCredentials = _accessTokenCredentials,
                                           Issuer = _secretService.GetSecret("JwtIssuer"),
                                           Audience = _secretService.GetSecret("JwtAudience")
@@ -164,7 +164,7 @@ namespace Dentizone.Application.Services.Authentication
                                       {
                                           Subject = new ClaimsIdentity(BuildRefreshTokenClaims(userId)),
                                           Expires = DateTime.UtcNow.AddMinutes(
-                                                                               RefreshTokenDurationInMinutes),
+                                                                               _refreshTokenDurationInMinutes),
                                           SigningCredentials = _refreshTokenCredentials,
                                       };
 

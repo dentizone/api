@@ -1,4 +1,5 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
 using System.Linq.Expressions;
 
 namespace Dentizone.Domain.Interfaces.Repositories
@@ -15,5 +16,14 @@ namespace Dentizone.Domain.Interfaces.Repositories
                                             Expression<Func<Post, object>>? orderBy,
                                             Expression<Func<Post, object>>[]? includes = null
         );
+
+        IQueryable<Post> GetAllAsync(Expression<Func<Post, bool>>? filter,
+                                     Expression<Func<Post, object>>? orderBy,
+                                     Expression<Func<Post, object>>[]? includes = null);
+
+
+        Task<IQueryable<Post>> SearchAsync(string? keyword, string? city, string? category, string? subcategory,
+                                           PostItemCondition? condition, decimal? minPrice, decimal? maxPrice,
+                                           string? sortBy, bool SortDirection, int page);
     }
 }
