@@ -2,12 +2,6 @@
 
 namespace Dentizone.Application.DTOs.Order
 {
-    public class ShipInfoDto
-    {
-        public string Address { get; set; }
-        public string City { get; set; }
-    }
-
     public class CreateOrderDto
     {
         public List<string> PostIds { get; set; } = new List<string>();

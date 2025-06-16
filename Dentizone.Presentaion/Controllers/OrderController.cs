@@ -1,11 +1,7 @@
-﻿using Dentizone.Application.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Dentizone.Application.DTOs.Order;
+﻿using Dentizone.Application.DTOs.Order;
 using Dentizone.Application.Interfaces.Order;
-using Dentizone.Presentaion.Controllers;
-using Dentizone.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 
@@ -44,10 +40,10 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet("my-orders")]
-        public async Task<IActionResult> GetMyOrders([FromQuery] int page = 1)
+        public async Task<IActionResult> GetMyOrders()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var orders = await _orderService.GetOrdersByBuyerAsync(userId, page);
+            var orders = await _orderService.GetOrdersByBuyerAsync(userId);
             return Ok(orders);
         }
 

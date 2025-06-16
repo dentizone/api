@@ -18,23 +18,23 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.Property(o => o.CreatedAt).IsRequired();
 
             builder.Property(o => o.IsDeleted)
-                .IsRequired()
-                .HasDefaultValue(false);
+                   .IsRequired()
+                   .HasDefaultValue(false);
 
             builder.HasOne(o => o.ShipInfo)
-                .WithOne(si => si.Order)
-                .HasForeignKey<ShipInfo>(o => o.OrderId);
+                   .WithOne(si => si.Order)
+                   .HasForeignKey<ShipInfo>(o => o.OrderId);
 
             builder.Property(p => p.CompletedAt).IsRequired(false);
 
 
             builder.HasOne(o => o.Buyer)
-                .WithMany(u => u.Orders)
-                .HasForeignKey(o => o.BuyerId);
+                   .WithMany(u => u.Orders)
+                   .HasForeignKey(o => o.BuyerId);
 
             builder.HasMany(o => o.OrderPickups)
-                .WithOne(op => op.Order)
-                .HasForeignKey(op => op.OrderId);
+                   .WithOne(op => op.Order)
+                   .HasForeignKey(op => op.OrderId);
         }
     }
 }

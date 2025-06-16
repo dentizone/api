@@ -1,7 +1,7 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Infrastructure.Repositories
 {
@@ -43,8 +43,8 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Order>> GetAllAsync(int page, Expression<Func<Order, bool>> filter,
-                                                          Expression<Func<Order, object>> orderBy,
-                                                          Expression<Func<Order, object>>[] includes = null)
+                                                          Expression<Func<Order, object>>? orderBy = null,
+                                                          Expression<Func<Order, object>>[]? includes = null)
         {
             IQueryable<Order> query = dbContext.Orders.Where(filter);
             if (includes != null)
@@ -55,8 +55,35 @@ namespace Dentizone.Infrastructure.Repositories
                 }
             }
 
-            query = query.OrderBy(orderBy).Skip(CalculatePagination(page)).Take(DefaultPageSize);
+            query = query.OrderByDescending(orderBy).Skip(CalculatePagination(page)).Take(DefaultPageSize);
             return await query.ToListAsync();
+        }
+
+        public async Task<Order?> GetOrderDetails(string orderId, string buyerId)
+        {
+            var query = dbContext.Orders
+                                 .AsNoTracking()
+                                 .Where(o => o.Id == orderId && o.BuyerId == buyerId)
+                                 .Include(o => o.Buyer)
+                                 .Include(o => o.OrderItems)
+                                 .ThenInclude(p => p.Post)
+                                 .Include(o => o.ShipInfo)
+                                 .Include(o => o.OrderStatuses);
+            return await query.FirstOrDefaultAsync();
+        }
+
+        public async Task<IReadOnlyCollection<Order>> GetOrdersWithDetails(string buyerId)
+        {
+            return await dbContext.Orders
+                                  .AsNoTracking()
+                                  .Where(o => o.BuyerId == buyerId)
+                                  .Include(o => o.Buyer)
+                                  .Include(o => o.OrderItems)
+                                  .ThenInclude(p => p.Post)
+                                  .Include(o => o.ShipInfo)
+                                  .Include(o => o.OrderStatuses)
+                                  .OrderByDescending(o => o.CreatedAt)
+                                  .ToListAsync();
         }
     }
 }

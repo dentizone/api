@@ -7,8 +7,6 @@ using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
-using Dentizone.Infrastructure.Repositories;
-using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services
 {
@@ -64,7 +62,6 @@ namespace Dentizone.Application.Services
                 var order = new Order
                 {
                     BuyerId = buyerId,
-                    Posts = posts,
                     CommissionAmount = 0.2m,
                     TotalAmount = posts.Sum(p => p.Price) * 1.2m,
                 };
@@ -134,18 +131,9 @@ namespace Dentizone.Application.Services
             return mapper.Map<OrderViewDto>(order);
         }
 
-        public async Task<List<OrderViewDto>> GetOrdersByBuyerAsync(string buyerId, int page)
+        public async Task<List<OrderViewDto>> GetOrdersByBuyerAsync(string buyerId)
         {
-            Expression<Func<Domain.Entity.Order, bool>> filter = o => o.BuyerId == buyerId && !o.IsDeleted;
-
-            Expression<Func<Domain.Entity.Order, object>>[] includes =
-            {
-                o => o.Posts,
-                o => o.OrderItems,
-                o => o.OrderStatuses
-            };
-
-            var orders = await orderRepository.GetAllAsync(page, filter, o => o.CreatedAt, includes);
+            var orders = await orderRepository.GetOrdersWithDetails(buyerId);
 
             return mapper.Map<List<OrderViewDto>>(orders);
         }

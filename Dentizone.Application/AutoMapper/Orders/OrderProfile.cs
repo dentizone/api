@@ -1,25 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using Dentizone.Application.AutoMapper.Posts;
+﻿using AutoMapper;
 using Dentizone.Application.DTOs.Order;
-using Dentizone.Application.DTOs.PostDTO;
 using Dentizone.Domain.Entity;
-using StackExchange.Redis;
 
-namespace Dentizone.Application.AutoMapper.Orders
+internal class OrderProfile : Profile
 {
-    internal class OrderProfile : Profile
+    public OrderProfile()
     {
-        public OrderProfile()
-        {
-            CreateMap<OrderViewDto, Domain.Entity.Order>()
-                .ReverseMap();
-            CreateMap<CreateOrderDto, Domain.Entity.Order>()
-                .ReverseMap();
-        }
+        CreateMap<OrderStatus, OrderStatusTimeline>()
+            .ForMember(dest => dest.Timestamp, opt => opt.MapFrom(src => src.CreatedAt));
+
+        CreateMap<OrderItem, OrderItemDto>()
+            .ForMember(dest => dest.PostTitle, opt => opt.MapFrom(src => src.Post.Title))
+            .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.Post.Id))
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Post.Price));
+
+        CreateMap<ShipInfo, OrderShipInfoDto>();
+
+        CreateMap<Order, OrderViewDto>()
+            .ForMember(dest => dest.BuyerName, opt => opt.MapFrom(src => src.Buyer.FullName))
+            .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
+            .ForMember(dest => dest.StatusTimeline, opt => opt.MapFrom(src => src.OrderStatuses))
+            .ForMember(dest => dest.OrderShipmentAddress, opt => opt.MapFrom(src => src.ShipInfo));
     }
 }
