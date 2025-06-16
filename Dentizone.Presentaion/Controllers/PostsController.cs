@@ -1,4 +1,5 @@
 ﻿using Dentizone.Application.DTOs.PostDTO;
+using Dentizone.Application.DTOs.PostFilterDTO;
 using Dentizone.Application.Interfaces.Post;
 using Dentizone.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -49,7 +50,7 @@ namespace Dentizone.Presentaion.Controllers
 
             var createdPost = await postService.CreatePost(createPostDto, userId);
             ;
-            return CreatedAtAction(nameof(GetPostById), new { id = createdPost.Id }, createdPost);
+            return Ok(createdPost);
         }
 
         [HttpDelete("{id}")]
@@ -78,6 +79,20 @@ namespace Dentizone.Presentaion.Controllers
             {
                 return BadRequest($"Error : {ex.Message}");
             }
+        }
+
+        [HttpGet("sidebar")]
+        public async Task<IActionResult> GetSidebarFilter()
+        {
+            var sidebarFilter = await postService.GetSidebarFilterAsync();
+            return Ok(sidebarFilter);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] UserPreferenceDto userPreferenceDTO)
+        {
+            var searchResult = await postService.Search(userPreferenceDTO);
+            return Ok(searchResult);
         }
     }
 }

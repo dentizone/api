@@ -1,5 +1,6 @@
 ﻿using Dentizone.Application.Interfaces;
-using Dentizone.Application.Interfaces.Asset;
+using Dentizone.Application.Interfaces.Assets;
+using Dentizone.Application.Interfaces.Cart;
 using Dentizone.Application.Interfaces.Catalog;
 using Dentizone.Application.Interfaces.Cloudinary;
 using Dentizone.Application.Interfaces.Order;
@@ -30,6 +31,7 @@ namespace Dentizone.Application.DI
             services.AddScoped<IUploadService, UploadService>();
             services.AddScoped<IAssetService, AssetService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ICartService, CartService>();
 
 
             services.AddScoped<IVerificationService, VerificationService>();

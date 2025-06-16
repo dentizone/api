@@ -1,6 +1,6 @@
 ﻿using Dentizone.Domain.Enums;
 
-namespace Dentizone.Application.DTOs.Asset;
+namespace Dentizone.Application.DTOs.Assets;
 
 public class UpdateAssetDto
 {

@@ -1,15 +1,15 @@
 ﻿using Dentizone.Domain.Enums;
 using FluentValidation;
 
-namespace Dentizone.Application.DTOs.Asset;
+namespace Dentizone.Application.DTOs.Assets;
 
 public class CreateAssetDto
 {
-    public string Url { get; set; }
-    public long Size { get; set; }
-    public AssetType Type { get; set; }
+    public required string Url { get; set; }
+    public required long Size { get; set; }
+    public required AssetType Type { get; set; }
 
-    public string UserId { get; set; }
+    public required string UserId { get; set; }
 }
 
 public class CreateAssetDtoValidator : AbstractValidator<CreateAssetDto>
