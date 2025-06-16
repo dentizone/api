@@ -4,7 +4,7 @@ using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.AutoMapper
 {
-    internal class UniversityProfile : Profile
+    public class UniversityProfile : Profile
     {
         public UniversityProfile()
         {

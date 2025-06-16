@@ -4,7 +4,7 @@ using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.AutoMapper;
 
-internal class OrderProfile : Profile
+public class OrderProfile : Profile
 {
     public OrderProfile()
     {
