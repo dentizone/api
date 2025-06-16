@@ -1,8 +1,7 @@
-﻿using Dentizone.Domain.Entity;
-using Dentizone.Domain.Interfaces.Repositories;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using Dentizone.Domain.Entity;
 
-namespace Dentizone.Infrastructure.Repositories;
+namespace Dentizone.Domain.Interfaces.Repositories;
 
 public interface IOrderRepository : IBaseRepo<Order>
 {
