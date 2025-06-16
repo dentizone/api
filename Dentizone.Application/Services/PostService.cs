@@ -26,6 +26,24 @@ namespace Dentizone.Application.Services
         IRedisService redisService)
         : IPostService
     {
+        public async Task<List<Post>> ValidatePosts(List<string> postIds)
+        {
+            var posts = await repo.GetAllAsync(p => postIds.Contains(p.Id) && !p.IsDeleted &&
+                                                    p.Status == PostStatus.Active).ToListAsync();
+
+            if (posts.Count != postIds.Count)
+            {
+                throw new BadActionException("Some of theses posts are not available ");
+            }
+
+            if (posts.Count == 0)
+            {
+                throw new NotFoundException("No posts found");
+            }
+
+            return posts;
+        }
+
         private async Task ValidateAssetNotUsed(string assetId, string? postIdToExclude = null)
         {
             var isExist = await postAssetRepository.FindBy(p =>
@@ -174,6 +192,19 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException("Post not found");
             }
 
+            return mapper.Map<PostViewDto>(updatedPost);
+        }
+
+        public async Task<PostViewDto> UpdatePostStatus(string postId, PostStatus status)
+        {
+            var post = await repo.GetByIdAsync(postId);
+            if (post == null)
+            {
+                throw new NotFoundException("Post not found");
+            }
+
+            post.Status = status;
+            var updatedPost = await repo.UpdateAsync(post);
             return mapper.Map<PostViewDto>(updatedPost);
         }
 

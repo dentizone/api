@@ -1,5 +1,6 @@
 ﻿using Dentizone.Application.DTOs.PostDTO;
 using Dentizone.Application.DTOs.PostFilterDTO;
+using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.Interfaces.Post
 {
@@ -14,5 +15,7 @@ namespace Dentizone.Application.Interfaces.Post
         Task<PostViewDto> DeletePost(string postId);
 
         Task<List<PostViewDto>> Search(UserPreferenceDto userPreferenceDto);
+        Task<List<Domain.Entity.Post>> ValidatePosts(List<string> postIds);
+        Task<PostViewDto> UpdatePostStatus(string postId, PostStatus status);
     }
 }

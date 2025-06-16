@@ -1,10 +1,10 @@
+using AutoMapper;
 using Dentizone.Application.DI;
 using Dentizone.Application.Interfaces;
 using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.DependencyInjection;
 using Dentizone.Infrastructure.Filters;
 using Dentizone.Infrastructure.Identity;
-using Dentizone.Infrastructure.Persistence.Seeder;
 using Dentizone.Presentaion.Context;
 using Dentizone.Presentaion.Extensions;
 using Dentizone.Presentaion.Middlewares;
@@ -26,6 +26,7 @@ namespace Dentizone.Presentaion
             builder.Services.AddOpenApi();
             builder.Services.AddInfrastructure();
             builder.Services.AddAutoMapper(typeof(Application.AssemblyReference).Assembly);
+
             builder.Services.AddApplicationServices();
             builder.Services.AddCors(c =>
             {
@@ -62,6 +63,7 @@ namespace Dentizone.Presentaion
 
             app.MapControllers();
             //RoleSeeder.SeedRolesAsync(app.Services).Wait();
+
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();

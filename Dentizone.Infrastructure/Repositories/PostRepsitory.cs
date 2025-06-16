@@ -82,7 +82,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public IQueryable<Post> GetAllAsync(Expression<Func<Post, bool>>? filter,
-                                            Expression<Func<Post, object>>? orderBy,
+                                            Expression<Func<Post, object>>? orderBy = null,
                                             Expression<Func<Post, object>>[]? includes = null)
         {
             IQueryable<Post> query = dbContext.Posts;
@@ -122,6 +122,19 @@ namespace Dentizone.Infrastructure.Repositories
             dbContext.Posts.Update(entity);
             await dbContext.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task UpdatePostStatus(string postId, PostStatus status)
+        {
+            var post = await GetByIdAsync(postId);
+            if (post == null)
+            {
+                throw new KeyNotFoundException($"Post with ID {postId} not found.");
+            }
+
+            post.Status = status;
+            dbContext.Posts.Update(post);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<IQueryable<Post>> SearchAsync(string? keyword, string? city, string? category,
