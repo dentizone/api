@@ -3,9 +3,11 @@ using Dentizone.Application.Interfaces;
 using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.DependencyInjection;
 using Dentizone.Infrastructure.Filters;
+using Dentizone.Infrastructure.Identity;
 using Dentizone.Infrastructure.Persistence.Seeder;
 using Dentizone.Presentaion.Context;
 using Dentizone.Presentaion.Middlewares;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
 
@@ -78,12 +80,13 @@ namespace Dentizone.Presentaion
 
 
             app.MapControllers();
-            RoleSeeder.SeedRolesAsync(app.Services).Wait();
-            using (var scope = app.Services.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                // CatalogSeeder.SeedCategoriesAndSubCategoriesAsync(dbContext).Wait();
-            }
+            //RoleSeeder.SeedRolesAsync(app.Services).Wait();
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            //    CatalogSeeder.SeedCategoriesAndSubCategoriesAsync(dbContext).Wait();
+            //    DataSeeder.SeedAsync(dbContext, scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>()).Wait();
+            //}
 
             app.Run();
         }
