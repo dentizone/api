@@ -74,5 +74,23 @@ namespace Dentizone.Infrastructure.Repositories
             await dbContext.SaveChangesAsync();
             return entity;
         }
+
+        public async Task<int> GetCountOfUsersAsync()
+        {
+            var count = await dbContext.AppUsers.Where(u => !u.IsDeleted).CountAsync();
+            return count;
+
+        }
+        public async Task<int> GetCount7DaysAsync()
+        {
+            var count = await dbContext.AppUsers.Where(u => !u.IsDeleted && u.CreatedAt >= DateTime.UtcNow.AddDays(-7)).CountAsync();
+            return count;
+        }
+        public async Task<int> GetCount30DaysAsync()
+        {
+            var count = await dbContext.AppUsers.Where(u => !u.IsDeleted && u.CreatedAt >= DateTime.UtcNow.AddDays(-30)).CountAsync();
+            return count;
+
+        }
     }
 }
