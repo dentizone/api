@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Dentizone.Application.DTOs.Cart
 {
-    public class AddToCartDTO
+    public class AddToCartDto
     {
-        public string PostId { get; set; }
-    }
-    public class AddToCartDTOValidation : AbstractValidator<AddToCartDTO>
-    {
-        public AddToCartDTOValidation() 
-        {
-            RuleFor(x => x.PostId)
-                .NotEmpty().WithMessage("Post ID is required.");
-        }
+        public required string PostId { get; set; }
     }
 
+    public class AddToCartDtoValidation : AbstractValidator<AddToCartDto>
+    {
+        public AddToCartDtoValidation()
+        {
+            RuleFor(x => x.PostId)
+                .NotEmpty().WithMessage("Post ID is required.")
+                .NotNull().WithMessage("Post ID cannot be null.");
+        }
+    }
 }
