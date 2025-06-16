@@ -1,15 +1,17 @@
 ﻿using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UploadController(IUploadService uploadService) : ControllerBase
     {
         [HttpPost("image")]
-        // [Authorize]
         public async Task<IActionResult> UploadImageAsync(IFormFile file)
         {
             var permittedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
@@ -26,8 +28,7 @@ namespace Dentizone.Presentaion.Controllers
 
                 throw new BadActionException("File exceeded the file limit");
 
-            var userId =
-                "f862c6eb-8ebe-4e7c-b21c-8013703ad3fe"; // "000" is a placeholder for the user ID, replace it with actual user ID retrieval logic after frontend
+            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
 
             var asset = await uploadService.UploadImageAsync(file, userId);
@@ -42,6 +43,21 @@ namespace Dentizone.Presentaion.Controllers
             var asset = await uploadService.FindAssetById(id);
 
             return Ok(asset);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAssetById(string id)
+        {
+            var asset = await uploadService.FindAssetById(id);
+            if (asset == null)
+            {
+                throw new NotFoundException("Asset not found");
+            }
+
+            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+
+            await uploadService.DeleteAssetById(id, userId);
+            return NoContent();
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Dentizone.Application.Services
             return _mapper.Map<ICollection<UserView>>(users);
         }
 
-        public async Task<UserView> GetByIdAsync(string id)
+        public async Task<DomainUserView> GetByIdAsync(string id)
         {
             var user = await _userRepository.FindBy(u => u.Id == id,
                                                     [
@@ -70,7 +70,7 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException($"User with id {id} not found.");
             }
 
-            return _mapper.Map<UserView>(user);
+            return _mapper.Map<DomainUserView>(user);
         }
 
 
@@ -108,7 +108,7 @@ namespace Dentizone.Application.Services
             return _mapper.Map<UserView>(updatedUser);
         }
 
-        public async Task<UserView> SetNationalId(string userId, string NationalId)
+        public async Task<UserView> SetNationalId(string userId, string nationalId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
@@ -116,7 +116,7 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException($"User with id {userId} not found.");
             }
 
-            user.NationalId = long.Parse(NationalId);
+            user.NationalId = long.Parse(nationalId);
             var updated = await _userRepository.Update(user);
 
             return _mapper.Map<UserView>(updated);

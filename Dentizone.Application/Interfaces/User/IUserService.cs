@@ -8,7 +8,7 @@ namespace Dentizone.Application.Interfaces.User
     public interface IUserService
     {
         Task<UserView> CreateAsync(CreateAppUser userDto);
-        Task<UserView> GetByIdAsync(string id);
+        Task<DomainUserView> GetByIdAsync(string id);
 
         Task<ICollection<UserView>> GetAllAsync(int page, string? searchByName = null,
                                                 Expression<Func<AppUser, bool>>? filterExpression = null);

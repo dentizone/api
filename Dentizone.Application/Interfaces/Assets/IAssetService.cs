@@ -1,11 +1,11 @@
-﻿using Dentizone.Application.DTOs.Asset;
+﻿using Dentizone.Application.DTOs.Assets;
 
-namespace Dentizone.Application.Interfaces.Asset;
+namespace Dentizone.Application.Interfaces.Assets;
 
 public interface IAssetService
 {
     Task<AssetDto> CreateAssetAsync(CreateAssetDto assetDto);
     Task<AssetDto> GetAssetByIdAsync(string id);
     Task<AssetDto> UpdateAssetAsync(string id, UpdateAssetDto assetDto);
-    Task<AssetDto> DeleteAssetAsync(string id);
+    Task DeleteAssetAsync(string assetId);
 }
