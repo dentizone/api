@@ -1,135 +1,153 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using Dentizone.Application.DTOs.Catalog;
+﻿using AutoMapper;
 using Dentizone.Application.DTOs.Order;
 using Dentizone.Application.Interfaces.Order;
+using Dentizone.Application.Interfaces.Post;
 using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
+using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.Repositories;
-using StackExchange.Redis;
-using static StackExchange.Redis.Role;
+using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services
 {
-    internal class OrderService:IOrderService
+    internal class OrderService(
+        IMapper mapper,
+        IOrderRepository orderRepository,
+        IOrderItemRepository orderItemRepository,
+        IOrderStatusRepository orderStatusRepository,
+        IPostService postService,
+        IShipInfoRepository shipInfoRepository,
+        AppDbContext dbContext)
+        : IOrderService
     {
-        IMapper _mapper;
-        IOrderItemRepository _orderItemRepository;
-        IOrderRepository _orderRepository;
-        IOrderStatusRepository _orderStatusRepository;
-
-        public OrderService(IMapper mapper, IOrderRepository orderRepository, IOrderItemRepository orderItemRepository, IOrderStatusRepository orderStatusRepository) 
+        public async Task<OrderViewDto?> CancelOrderAsync(string orderId, string userId)
         {
-            _mapper = mapper;
-            _orderRepository = orderRepository;
-            _orderItemRepository = orderItemRepository;
-            _orderStatusRepository = orderStatusRepository;
-
-        }
-
-      
-            public async Task<List<OrderViewDTO>> CancelOrderAsync(string orderId, string userId)
-        {
-            
-            Expression<Func<Domain.Entity.Order, bool>> condition = o => o.Id == orderId && !o.IsDeleted;
-            Expression<Func<Domain.Entity.Order, object>>[] includes = { o => o.Posts, o => o.OrderItems };
-
-            var order = await _orderRepository.FindBy(condition, includes);
+            var order = await orderRepository.FindBy(o => o.Id == orderId, [o => o.OrderStatuses]);
 
             if (order == null)
             {
-                throw new Exception("Order not found.");
+                throw new NotFoundException("Order not found.");
             }
+
             if (order.BuyerId != userId)
             {
                 throw new UnauthorizedAccessException("You are not allowed to cancel this order.");
             }
-            if (order.OrderStatuses.Any(os => os.Status == Domain.Enums.OrderStatues.Cancelled))
+
+            if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Cancelled))
             {
-                throw new Exception("Order is already canceled.");
+                throw new BadActionException("Order is already canceled.");
             }
 
             var orderStatus = new OrderStatus
             {
                 OrderId = order.Id,
-                Status = Domain.Enums.OrderStatues.Cancelled,
-
+                Status = OrderStatues.Cancelled,
             };
-            await _orderStatusRepository.CreateAsync(orderStatus);
-    
-            var dto = _mapper.Map<OrderViewDTO>(order);
-            return new List<OrderViewDTO> { dto };
+            await orderStatusRepository.CreateAsync(orderStatus);
+
+            var dto = mapper.Map<OrderViewDto>(order);
+            return dto;
         }
 
-   
-        
 
-   
-        public async Task<string> CreateOrderAsync(CreateOrderDTO createOrderDTO, string buyerId)
+        public async Task<string> CreateOrderAsync(CreateOrderDto createOrderDto, string buyerId)
         {
-            var posts = await _orderRepository.GetPostsByIdsAsync(createOrderDTO.PostIds);
-            if(posts.Count!= createOrderDTO.PostIds.Count)
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+
+            try
             {
-                throw new Exception("some post IDs are invalid");
+                var posts = await postService.ValidatePosts(createOrderDto.PostIds);
+
+                var order = new Order
+                {
+                    BuyerId = buyerId,
+                    Posts = posts,
+                    CommissionAmount = 0.2m,
+                    TotalAmount = posts.Sum(p => p.Price) * 1.2m,
+                };
+
+                var result = await orderRepository.CreateAsync(order);
+                if (result == null)
+                {
+                    throw new BadActionException("Failed Order");
+                }
+
+                var orderStatus = new OrderStatus
+                {
+                    OrderId = result.Id,
+                    Status = OrderStatues.Placed,
+                };
+                await orderStatusRepository.CreateAsync(orderStatus);
+
+                // Create Order Items
+
+                foreach (var post in posts)
+                {
+                    var orderItem = new OrderItem
+                    {
+                        OrderId = result.Id,
+                        PostId = post.Id,
+                    };
+                    await orderItemRepository.CreateAsync(orderItem);
+                }
+
+                // Create Ship Info 
+
+                var shipInfo = new ShipInfo
+                {
+                    OrderId = result.Id,
+                    Street = createOrderDto.ShipInfo.Address,
+                    City = createOrderDto.ShipInfo.City,
+                    UserId = buyerId
+                };
+                await shipInfoRepository.CreateAsync(shipInfo);
+
+                // Mark the post as Sold
+                foreach (var post in posts)
+                {
+                    await postService.UpdatePostStatus(post.Id, PostStatus.Sold);
+                }
+
+
+                await transaction.CommitAsync();
+                return result.Id;
             }
-
-            var order = new Domain.Entity.Order
+            catch (Exception)
             {
-                BuyerId = buyerId,
-                Posts = posts,
-                CreatedAt = DateTime.UtcNow
-            };
+                await transaction.RollbackAsync();
 
-            var result = await _orderRepository.CreateAsync(order);
-            if(result==null)
-            {
-                throw new Exception("Failed Order");
+                throw;
             }
-
-            var orderStatus = new OrderStatus
-            {
-                OrderId = result.Id,
-                Status = Domain.Enums.OrderStatues.Placed,
-              
-            };
-            await _orderStatusRepository.CreateAsync(orderStatus);
-            return order.Id;
-
         }
 
-        public async Task<OrderViewDTO> GetOrderByIdAsync(string orderId)
+        public async Task<OrderViewDto> GetOrderByIdAsync(string orderId)
         {
-            var order = await _orderRepository.GetByIdAsync(orderId);
+            var order = await orderRepository.GetByIdAsync(orderId);
             if (order == null)
             {
                 throw new Exception("Order not Found");
             }
 
-            return _mapper.Map<OrderViewDTO>(order);
+            return mapper.Map<OrderViewDto>(order);
         }
 
-        public async Task<List<OrderViewDTO>> GetOrdersByBuyerAsync(string buyerId, int page)
+        public async Task<List<OrderViewDto>> GetOrdersByBuyerAsync(string buyerId, int page)
         {
             Expression<Func<Domain.Entity.Order, bool>> filter = o => o.BuyerId == buyerId && !o.IsDeleted;
 
             Expression<Func<Domain.Entity.Order, object>>[] includes =
             {
-        o => o.Posts,
-        o => o.OrderItems,
-        o => o.OrderStatuses
-    };
+                o => o.Posts,
+                o => o.OrderItems,
+                o => o.OrderStatuses
+            };
 
-            var orders = await _orderRepository.GetAllAsync(page, filter, o => o.CreatedAt, includes);
+            var orders = await orderRepository.GetAllAsync(page, filter, o => o.CreatedAt, includes);
 
-            return _mapper.Map<List<OrderViewDTO>>(orders);
+            return mapper.Map<List<OrderViewDto>>(orders);
         }
-
-       
     }
 }

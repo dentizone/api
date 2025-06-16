@@ -57,12 +57,5 @@ namespace Dentizone.Infrastructure.Repositories
             query = query.OrderBy(orderBy).Skip(CalculatePagination(page)).Take(DefaultPageSize);
             return await query.ToListAsync();
         }
-        public async Task<List<Post>> GetPostsByIdsAsync(List<string> postIds)
-        {
-            return await dbContext.Posts
-                .Where(p => postIds.Contains(p.Id) && !p.IsDeleted)
-                .ToListAsync();
-        }
-
     }
 }

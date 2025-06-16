@@ -5,12 +5,8 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories;
 
-public class OrderItemRepository : AbstractRepository, IOrderItemRepository
+public class OrderItemRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IOrderItemRepository
 {
-    public OrderItemRepository(AppDbContext dbContext) : base(dbContext)
-    {
-    }
-
     public async Task<OrderItem?> GetByIdAsync(string id)
     {
         return

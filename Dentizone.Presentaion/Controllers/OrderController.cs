@@ -27,12 +27,16 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> GetOrderById(string orderId)
         {
             var result = await _orderService.GetOrderByIdAsync(orderId);
-            if(result == null) { return NotFound("Order not found"); }
+            if (result == null)
+            {
+                return NotFound("Order not found");
+            }
+
             return Ok(result);
         }
 
-         [HttpPost]
-        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDTO createOrderDto)
+        [HttpPost]
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto createOrderDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _orderService.CreateOrderAsync(createOrderDto, userId);
@@ -54,6 +58,5 @@ namespace Dentizone.Presentaion.Controllers
             var result = await _orderService.CancelOrderAsync(orderId, userId);
             return Ok(result);
         }
-
     }
 }

@@ -12,13 +12,13 @@ using StackExchange.Redis;
 
 namespace Dentizone.Application.AutoMapper.Orders
 {
-    internal class OrderProfile:Profile
+    internal class OrderProfile : Profile
     {
         public OrderProfile()
         {
-            CreateMap<OrderViewDTO, Domain.Entity.Order>()
+            CreateMap<OrderViewDto, Domain.Entity.Order>()
                 .ReverseMap();
-            CreateMap<CreateOrderDTO, Domain.Entity.Order>()
+            CreateMap<CreateOrderDto, Domain.Entity.Order>()
                 .ReverseMap();
         }
     }
