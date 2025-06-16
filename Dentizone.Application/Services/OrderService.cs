@@ -125,7 +125,7 @@ namespace Dentizone.Application.Services
             var order = await orderRepository.GetOrderDetails(orderId, buyerId);
             if (order == null)
             {
-                throw new Exception("Order not Found");
+                throw new NotFoundException("Order not Found");
             }
 
             return mapper.Map<OrderViewDto>(order);
