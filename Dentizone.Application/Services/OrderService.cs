@@ -120,9 +120,9 @@ namespace Dentizone.Application.Services
             }
         }
 
-        public async Task<OrderViewDto> GetOrderByIdAsync(string orderId)
+        public async Task<OrderViewDto> GetOrderByIdAsync(string orderId, string buyerId)
         {
-            var order = await orderRepository.GetByIdAsync(orderId);
+            var order = await orderRepository.GetOrderDetails(orderId, buyerId);
             if (order == null)
             {
                 throw new Exception("Order not Found");

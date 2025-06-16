@@ -10,23 +10,13 @@ namespace Dentizone.Presentaion.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController : ControllerBase
+    public class OrderController(IOrderService orderService) : ControllerBase
     {
-        private readonly IOrderService _orderService;
-
-        public OrderController(IOrderService orderService)
-        {
-            _orderService = orderService;
-        }
-
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetOrderById(string orderId)
         {
-            var result = await _orderService.GetOrderByIdAsync(orderId);
-            if (result == null)
-            {
-                return NotFound("Order not found");
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await orderService.GetOrderByIdAsync(orderId, userId);
 
             return Ok(result);
         }
@@ -35,7 +25,7 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto createOrderDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _orderService.CreateOrderAsync(createOrderDto, userId);
+            await orderService.CreateOrderAsync(createOrderDto, userId);
             return Ok(new { message = "Order created successfully." });
         }
 
@@ -43,7 +33,7 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> GetMyOrders()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var orders = await _orderService.GetOrdersByBuyerAsync(userId);
+            var orders = await orderService.GetOrdersByBuyerAsync(userId);
             return Ok(orders);
         }
 
@@ -51,7 +41,7 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> CancelOrder(string orderId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = await _orderService.CancelOrderAsync(orderId, userId);
+            var result = await orderService.CancelOrderAsync(orderId, userId);
             return Ok(result);
         }
     }
