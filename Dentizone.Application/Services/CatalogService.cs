@@ -48,6 +48,7 @@ namespace Dentizone.Application.Services
 
 
             var category = mapper.Map<Category>(updatedCategoryDto);
+            category.Id = id;
             var updatedCategory = await categoryRepository.Update(category);
             if (updatedCategory == null) throw new NotFoundException("Category not found");
             return mapper.Map<CategoryDto>(updatedCategory);
@@ -103,6 +104,11 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException($"Category with id {updatedSubCategoryDto.CategoryId} not found");
 
             var subCategory = mapper.Map<SubCategory>(updatedSubCategoryDto);
+            var existingSubCategory = await subCategoryRepository.GetByIdAsync(subCategory.Id);
+            if (existingSubCategory == null)
+                throw new NotFoundException($"SubCategory with id {subCategory.Id} not found");
+
+
             var updatedSubCategory = await subCategoryRepository.Update(subCategory);
             if (updatedSubCategory == null) throw new NotFoundException("SubCategory not found");
             return mapper.Map<SubCategoryDto>(updatedSubCategory);
