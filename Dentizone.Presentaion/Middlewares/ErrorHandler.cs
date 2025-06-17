@@ -1,8 +1,8 @@
 ﻿using Dentizone.Application.DTOs;
 using Dentizone.Domain.Exceptions;
+using Microsoft.Data.SqlClient;
 using System.Net;
 using System.Text.Json;
-using Microsoft.Data.SqlClient;
 
 namespace Dentizone.Presentaion.Middlewares
 {
@@ -23,15 +23,17 @@ namespace Dentizone.Presentaion.Middlewares
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            var env = context.RequestServices.GetRequiredService<IHostEnvironment>();
+
             var response = context.Response;
             response.ContentType = "application/json";
 
             var errorResponse = new ErrorResponse
-                                {
-                                    Message = "An error occurred while processing your request.",
-                                    Details = exception.Message,
-                                    StatusCode = (int)HttpStatusCode.InternalServerError
-                                };
+            {
+                Message = "An error occurred while processing your request.",
+                Details = env.IsDevelopment() ? exception.Message : null,
+                StatusCode = (int)HttpStatusCode.InternalServerError
+            };
 
             // Map specific exceptions to custom status codes and messages
             switch (exception)
