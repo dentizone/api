@@ -15,6 +15,6 @@ namespace Dentizone.Application.DTOs.Analytics
       
         public Dictionary<string, int> UsersByUniversity { get; set; } = new Dictionary<string, int>();
     }
-   // 7sa msh logic ani a3ml validation 
+
     
 }

@@ -28,5 +28,6 @@ namespace Dentizone.Domain.Interfaces.Repositories
         Task UpdatePostStatus(string postId, PostStatus status);
         Task<int> TotalNumberPostsAsync();
         Task<decimal> AveragePostsPriceAsync();
+        Task<Dictionary<string, int>> GetPostCountPerCategoryAsync();
     }
 }

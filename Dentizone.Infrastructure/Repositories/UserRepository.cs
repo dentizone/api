@@ -93,9 +93,18 @@ namespace Dentizone.Infrastructure.Repositories
             return count;
 
         }
+        public async Task<Dictionary<string, int>> GetStudentCountPerUniversityAsync()
+        {
+            var result = await dbContext.AppUsers
+       .Where(a => !a.IsDeleted && a.University != null)
+       .GroupBy(a => a.University.Name)
+       .ToDictionaryAsync(g => g.Key, g => g.Count());
 
-      
-      
+            return result;
+        }
+
+
+
 
 
     }

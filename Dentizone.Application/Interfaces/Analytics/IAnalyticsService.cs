@@ -12,5 +12,6 @@ namespace Dentizone.Application.Interfaces.Analytics
         public Task<UserAnalyticsDTO> GetUserAnalyticsAsync();
         public Task<PostAnalyticsDTO> GetPostAnalyticsAsync();
         public Task<SalesAnalyticsDTO> GetSalesAnalyticsAsync();
+        
     }
 }

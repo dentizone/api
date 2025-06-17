@@ -25,10 +25,13 @@ namespace Dentizone.Application.Services
         {
             var numberOfPosts = await _postRepository.TotalNumberPostsAsync();
             var AverageValueOfOrders = await _postRepository.AveragePostsPriceAsync();
+            var countofpostsperCategory = await _postRepository.GetPostCountPerCategoryAsync();
             var returnedDTO = new PostAnalyticsDTO
             {
                 TotalPosts = numberOfPosts,
                 AveragePostPrice =AverageValueOfOrders,
+                PostsByCategory = countofpostsperCategory
+
             };
             return returnedDTO;
         }
@@ -50,15 +53,18 @@ namespace Dentizone.Application.Services
             var AllUsers=await _userRepository.GetCountOfUsersAsync();
             var allUsersLast7Days = await _userRepository.GetCount7DaysAsync();
             var allUsersLast30Days = await _userRepository.GetCount30DaysAsync();
+            var allUsersPerUniversity = await _userRepository.GetStudentCountPerUniversityAsync();
             var returnedDTO=new UserAnalyticsDTO
             {
                 TotalUsers = AllUsers,
                 NewUsersLast7Days = allUsersLast7Days,
-                NewUsersLast30Days = allUsersLast30Days
+                NewUsersLast30Days = allUsersLast30Days,
+                UsersByUniversity = allUsersPerUniversity
             };
             return returnedDTO;
 
         }
+        
 
 
     }

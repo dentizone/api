@@ -194,6 +194,15 @@ namespace Dentizone.Infrastructure.Repositories
             return average;
 
         }
+        public async Task<Dictionary<string, int>> GetPostCountPerCategoryAsync()
+        {
+            var result = await dbContext.Posts
+                .Where(p => !p.IsDeleted && p.Category != null && !p.Category.IsDeleted)
+                .GroupBy(p => p.Category.Name)
+                .ToDictionaryAsync(g => g.Key, g => g.Count());
+
+            return result;
+        }
 
 
     }

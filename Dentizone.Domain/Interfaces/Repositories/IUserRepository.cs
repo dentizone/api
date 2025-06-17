@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+
 using Dentizone.Domain.Entity;
 
 
@@ -14,5 +15,5 @@ public interface IUserRepository : IBaseRepo<AppUser>
     Task<int> GetCountOfUsersAsync();
     Task<int> GetCount7DaysAsync();
     Task<int> GetCount30DaysAsync();
-   // Task<List<UniversityStudentCountDTO>> GetStudentCountPerUniversityAsync();
+    Task<Dictionary<string, int>> GetStudentCountPerUniversityAsync();
 }
