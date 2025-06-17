@@ -26,5 +26,7 @@ namespace Dentizone.Domain.Interfaces.Repositories
                                            string? sortBy, bool SortDirection, int page);
 
         Task UpdatePostStatus(string postId, PostStatus status);
+        Task<int> TotalNumberPostsAsync();
+        Task<decimal> AveragePostsPriceAsync();
     }
 }

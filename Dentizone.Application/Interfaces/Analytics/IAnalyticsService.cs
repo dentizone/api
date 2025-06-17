@@ -7,7 +7,7 @@ using Dentizone.Application.DTOs.Analytics;
 
 namespace Dentizone.Application.Interfaces.Analytics
 {
-    internal interface IAnalyticsService
+   public interface IAnalyticsService
     {
         public Task<UserAnalyticsDTO> GetUserAnalyticsAsync();
         public Task<PostAnalyticsDTO> GetPostAnalyticsAsync();

@@ -21,14 +21,28 @@ namespace Dentizone.Application.Services
             _orderRepository = orderRepository;
         }
 
-        public Task<PostAnalyticsDTO> GetPostAnalyticsAsync()
+        public async Task<PostAnalyticsDTO> GetPostAnalyticsAsync()
         {
-            throw new NotImplementedException();
+            var numberOfPosts = await _postRepository.TotalNumberPostsAsync();
+            var AverageValueOfOrders = await _postRepository.AveragePostsPriceAsync();
+            var returnedDTO = new PostAnalyticsDTO
+            {
+                TotalPosts = numberOfPosts,
+                AveragePostPrice =AverageValueOfOrders,
+            };
+            return returnedDTO;
         }
 
-        public Task<SalesAnalyticsDTO> GetSalesAnalyticsAsync()
+        public async Task<SalesAnalyticsDTO> GetSalesAnalyticsAsync()
         {
-            throw new NotImplementedException();
+            var numberOfOrders = await _orderRepository.CountTotalOrders();
+            var AverageValueOfOrders = await _orderRepository.AverageValueOfOrders();
+            var returnedDTO = new SalesAnalyticsDTO
+            {
+                TotalsOrder = numberOfOrders,
+                AveragePostPrice = (int)AverageValueOfOrders,
+            };
+            return returnedDTO;
         }
 
         public  async Task<UserAnalyticsDTO> GetUserAnalyticsAsync()
@@ -45,6 +59,7 @@ namespace Dentizone.Application.Services
             return returnedDTO;
 
         }
+
 
     }
 }

@@ -179,5 +179,22 @@ namespace Dentizone.Infrastructure.Repositories
             var skippedPages = CalculatePagination(page);
             return posts.Skip(skippedPages).Take(DefaultPageSize);
         }
+
+        public  async Task<int> TotalNumberPostsAsync()
+        {
+           var result= await dbContext.Posts.Where(p => !p.IsDeleted && p.Status == PostStatus.Active).CountAsync();
+            return result;
+        }
+
+        public async Task<decimal> AveragePostsPriceAsync()
+        {
+            var NumberOfPosts=await TotalNumberPostsAsync();
+            var sum= await dbContext.Posts.Where(p => !p.IsDeleted && p.Status == PostStatus.Active).SumAsync(p => p.Price);
+            var average = sum / NumberOfPosts;
+            return average;
+
+        }
+
+
     }
 }

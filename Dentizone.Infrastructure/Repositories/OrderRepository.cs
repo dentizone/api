@@ -85,5 +85,19 @@ namespace Dentizone.Infrastructure.Repositories
                                   .OrderByDescending(o => o.CreatedAt)
                                   .ToListAsync();
         }
+
+        public  async Task<int> CountTotalOrders()
+        {
+            var result =  await dbContext.Orders.Where(o => !o.IsDeleted).CountAsync();
+            return result;
+        }
+        public async Task<decimal> AverageValueOfOrders()
+        {
+            var no_of_orders= await CountTotalOrders();
+            var sum =await dbContext.Orders.Where(o => !o.IsDeleted).SumAsync(o => o.TotalAmount);
+            var avg= sum /no_of_orders;
+            return avg;
+        }  
+        
     }
 }

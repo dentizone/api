@@ -12,4 +12,6 @@ public interface IOrderRepository : IBaseRepo<Order>
     Task<IEnumerable<Order>> GetAllAsync(int page, Expression<Func<Order, bool>> filter,
                                          Expression<Func<Order, object>>? orderBy = null,
                                          Expression<Func<Order, object>>[]? includes = null);
+    Task<int> CountTotalOrders();
+    Task<decimal> AverageValueOfOrders();
 }
