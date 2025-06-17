@@ -1,5 +1,6 @@
 ﻿using Dentizone.Application.DTOs.Catalog;
 using Dentizone.Application.Interfaces.Catalog;
+using Dentizone.Domain.Entity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers
@@ -36,9 +37,10 @@ namespace Dentizone.Presentaion.Controllers
             return Ok(createdCategory);
         }
 
-        [HttpPut("categories")]
-        public async Task<IActionResult> UpdateCategory([FromQuery] string categoryId,
-                                                        [FromBody] CategoryDto categoryDto)
+        [HttpPut("categories/{categoryId}")]
+        public async Task<IActionResult> UpdateCategory(
+            string categoryId,
+            [FromBody] CategoryDto categoryDto)
         {
             var updatedCategory = await catalogService.UpdateCategory(categoryId, categoryDto);
             return Ok(updatedCategory);
