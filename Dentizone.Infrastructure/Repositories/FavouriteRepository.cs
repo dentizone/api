@@ -1,16 +1,12 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Infrastructure.Repositories;
 
-public class FavouriteRepository : AbstractRepository, IFavouriteRepository
+public class FavouriteRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IFavouriteRepository
 {
-    public FavouriteRepository(AppDbContext dbContext) : base(dbContext)
-    {
-    }
-
     public async Task<Favourite?> GetByIdAsync(string id)
     {
         return await dbContext.Favourites
@@ -53,17 +49,16 @@ public class FavouriteRepository : AbstractRepository, IFavouriteRepository
         return toBeDeleted;
     }
 
-    public async Task<IEnumerable<Favourite>> FindAllByAsync(Expression<Func<Favourite, bool>> condition,Expression<Func<Favourite, object>>[]? includes = null)
+    public async Task<IEnumerable<Favourite>> FindAllByAsync(Expression<Func<Favourite, bool>> condition)
     {
         IQueryable<Favourite> query = dbContext.Favourites;
 
-        if (includes != null)
-        {
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-        }
+        query = query.Include(f => f.Post)
+                     .ThenInclude(pa => pa.PostAssets)
+                     .ThenInclude(pa => pa.Asset)
+                     .AsNoTracking()
+                     .AsSplitQuery();
+        query = query.Include(f => f.Post.Seller);
 
         return await query.Where(condition).ToListAsync();
     }

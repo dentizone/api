@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Dentizone.Application.DTOs.Favorites;
 using Dentizone.Domain.Entity;
 
@@ -13,7 +8,7 @@ namespace Dentizone.Application.AutoMapper.Favorite
     {
         public FavoriteProfile()
         {
-           CreateMap< FavoriteDto,Favourite >()
+            CreateMap<FavoriteDto, Favourite>()
                 .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.UserId, opt => opt.Ignore())
@@ -24,6 +19,8 @@ namespace Dentizone.Application.AutoMapper.Favorite
 
             CreateMap<Favourite, FavoriteDto>()
                 .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId));
+
+            CreateMap<Favourite, FavoriteViewDto>().ReverseMap();
         }
     }
 }
