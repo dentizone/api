@@ -52,4 +52,19 @@ public class FavouriteRepository : AbstractRepository, IFavouriteRepository
         await dbContext.SaveChangesAsync();
         return toBeDeleted;
     }
+
+    public async Task<IEnumerable<Favourite>> FindAllByAsync(Expression<Func<Favourite, bool>> condition,Expression<Func<Favourite, object>>[]? includes = null)
+    {
+        IQueryable<Favourite> query = dbContext.Favourites;
+
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+        }
+
+        return await query.Where(condition).ToListAsync();
+    }
 }
