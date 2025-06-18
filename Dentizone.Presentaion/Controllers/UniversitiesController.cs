@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Dentizone.Application.Services;
+﻿using Dentizone.Application.DTOs.University;
 using Dentizone.Application.Interfaces;
-using Dentizone.Application.DTOs.University;
+using Microsoft.AspNetCore.Mvc;
+
 namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
@@ -10,16 +9,19 @@ namespace Dentizone.Presentaion.Controllers
     public class UniversitiesController : ControllerBase
     {
         private readonly IUniversityService _universityService;
+
         public UniversitiesController(IUniversityService universityService)
         {
             _universityService = universityService;
         }
+
         [HttpGet("supported")]
         public async Task<IActionResult> GetAllUniversities()
         {
             var universities = await _universityService.GetSupportedUniversitiesAsync();
             return Ok(universities);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUniversityById(string id)
         {
@@ -33,6 +35,7 @@ namespace Dentizone.Presentaion.Controllers
                 return NotFound(ex.Message);
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateUniversity([FromBody] CreateUniversityDto universityDto)
         {
@@ -40,9 +43,11 @@ namespace Dentizone.Presentaion.Controllers
             {
                 return BadRequest("University data is null.");
             }
+
             var createdUniversity = await _universityService.CreateUniversityAsync(universityDto);
             return CreatedAtAction(nameof(GetUniversityById), new { id = createdUniversity.Id }, createdUniversity);
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUniversity(string id, [FromBody] UpdateUniversityDto updateUniversityDto)
         {
@@ -50,6 +55,7 @@ namespace Dentizone.Presentaion.Controllers
             {
                 return BadRequest("University data is null.");
             }
+
             try
             {
                 var updatedUniversity = await _universityService.UpdateUniversityAsync(id, updateUniversityDto);
@@ -60,6 +66,7 @@ namespace Dentizone.Presentaion.Controllers
                 return NotFound(ex.Message);
             }
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUniversity(string id)
         {
@@ -73,6 +80,5 @@ namespace Dentizone.Presentaion.Controllers
                 return NotFound(ex.Message);
             }
         }
-
     }
 }

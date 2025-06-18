@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Dentizone.Domain.Enums
+﻿namespace Dentizone.Domain.Enums
 {
     public enum ShipmentActivityStatus
     {
@@ -12,6 +6,5 @@ namespace Dentizone.Domain.Enums
         shipped = 1,
         delivered = 2,
         cancelled = 3
-
     }
 }

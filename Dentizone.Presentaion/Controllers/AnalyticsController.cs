@@ -1,5 +1,4 @@
 ﻿using Dentizone.Application.Interfaces.Analytics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers

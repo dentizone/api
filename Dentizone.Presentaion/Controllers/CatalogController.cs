@@ -1,6 +1,5 @@
 ﻿using Dentizone.Application.DTOs.Catalog;
 using Dentizone.Application.Interfaces.Catalog;
-using Dentizone.Domain.Entity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers

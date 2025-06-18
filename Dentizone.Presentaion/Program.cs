@@ -1,4 +1,3 @@
-using AutoMapper;
 using Dentizone.Application.DI;
 using Dentizone.Application.Interfaces;
 using Dentizone.Infrastructure;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.DTOs.Analytics;
+﻿using Dentizone.Application.DTOs.Analytics;
 using Dentizone.Application.Interfaces.Analytics;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +17,11 @@ namespace Dentizone.Application.Services
             var averageValueOfOrders = await postRepository.AveragePostsPriceAsync();
             var postsByCategory = await postRepository.GetPostCountPerCategoryAsync();
             var returnedDto = new PostAnalyticsDto
-            {
-                TotalPosts = numberOfPosts,
-                AveragePostPrice = averageValueOfOrders,
-                PostsByCategory = postsByCategory
-            };
+                              {
+                                  TotalPosts = numberOfPosts,
+                                  AveragePostPrice = averageValueOfOrders,
+                                  PostsByCategory = postsByCategory
+                              };
             return returnedDto;
         }
 
@@ -35,10 +30,10 @@ namespace Dentizone.Application.Services
             var numberOfOrders = await orderRepository.CountTotalOrders();
             var averageValueOfOrders = await orderRepository.AverageValueOfOrders();
             var returnedDto = new SalesAnalyticsDto
-            {
-                TotalsOrder = numberOfOrders,
-                AveragePostPrice = averageValueOfOrders,
-            };
+                              {
+                                  TotalsOrder = numberOfOrders,
+                                  AveragePostPrice = averageValueOfOrders,
+                              };
             return returnedDto;
         }
 
@@ -49,12 +44,12 @@ namespace Dentizone.Application.Services
             var allUsersLast30Days = await userRepository.GetCount30DaysAsync();
             var allUsersPerUniversity = await userRepository.GetStudentCountPerUniversityAsync();
             var returnedDto = new UserAnalyticsDto
-            {
-                TotalUsers = allUsers,
-                NewUsersLast7Days = allUsersLast7Days,
-                NewUsersLast30Days = allUsersLast30Days,
-                UsersByUniversity = allUsersPerUniversity
-            };
+                              {
+                                  TotalUsers = allUsers,
+                                  NewUsersLast7Days = allUsersLast7Days,
+                                  NewUsersLast30Days = allUsersLast30Days,
+                                  UsersByUniversity = allUsersPerUniversity
+                              };
             return returnedDto;
         }
     }

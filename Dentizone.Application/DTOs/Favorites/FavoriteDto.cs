@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Dentizone.Application.DTOs.Favorites
 {
     public class FavoriteDto
     {
         public required string PostId { get; set; }
-
     }
+
     public class FavoriteDtoValidation : AbstractValidator<FavoriteDto>
     {
         public FavoriteDtoValidation()

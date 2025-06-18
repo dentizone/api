@@ -1,9 +1,8 @@
-﻿using System.Security.Claims;
-using Dentizone.Application.DTOs.Favorites;
+﻿using Dentizone.Application.DTOs.Favorites;
 using Dentizone.Application.Interfaces.Favorites;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dentizone.Presentaion.Controllers
 {
@@ -19,6 +18,7 @@ namespace Dentizone.Presentaion.Controllers
             var favorites = await favoritesService.GetUserFavoritesAsync(userId);
             return Ok(favorites);
         }
+
         [HttpPost]
         public async Task<IActionResult> AddToFavorites([FromBody] FavoriteDto dto)
         {

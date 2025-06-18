@@ -1,5 +1,4 @@
-﻿using Dentizone.Domain.Entity;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.DTOs.Assets;
 

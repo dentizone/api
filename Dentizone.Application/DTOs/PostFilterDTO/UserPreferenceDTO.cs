@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CloudinaryDotNet;
-using Dentizone.Domain.Enums;
+﻿using Dentizone.Domain.Enums;
 using FluentValidation;
 
 namespace Dentizone.Application.DTOs.PostFilterDTO
