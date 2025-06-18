@@ -54,11 +54,8 @@ namespace Dentizone.Infrastructure.Secret
         {
             try
             {
-                if (_cache.TryGetValue(name, out var value))
-                    return value;
-                value = _infisicalClient.GetSecret(CreateSecret(name)).SecretValue;
-                _cache[name] = value;
-                return value;
+                return _cache.GetOrAdd(name,
+                                       n => _infisicalClient.GetSecret(CreateSecret(n)).SecretValue);
             }
             catch (Exception ex)
             {

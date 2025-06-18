@@ -21,6 +21,7 @@ namespace Dentizone.Infrastructure.DependencyInjection
             services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<IShipInfoRepository, ShipInfoRepository>();
+            services.AddScoped<IFavouriteRepository, FavouriteRepository>();    
             return services;
         }
     }

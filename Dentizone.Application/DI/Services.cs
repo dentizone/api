@@ -4,6 +4,7 @@ using Dentizone.Application.Interfaces.Assets;
 using Dentizone.Application.Interfaces.Cart;
 using Dentizone.Application.Interfaces.Catalog;
 using Dentizone.Application.Interfaces.Cloudinary;
+using Dentizone.Application.Interfaces.Favorites;
 using Dentizone.Application.Interfaces.Order;
 using Dentizone.Application.Interfaces.Post;
 using Dentizone.Application.Interfaces.User;
@@ -21,7 +22,6 @@ namespace Dentizone.Application.DI
         {
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IPostService, PostService>();
-
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<IUniversityService, UniversityService>();
@@ -33,10 +33,8 @@ namespace Dentizone.Application.DI
             services.AddScoped<IAssetService, AssetService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICartService, CartService>();
-
             services.AddScoped<IAnalyticsService, AnalyticsService>();
-
-
+            services.AddScoped<IFavoritesService, FavoriteService>();
             services.AddScoped<IVerificationService, VerificationService>();
 
             return services;
