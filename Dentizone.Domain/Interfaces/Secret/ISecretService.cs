@@ -2,6 +2,5 @@
 
 public interface ISecretService
 {
-    MailSecrets GetMailServiceSecret();
     string GetSecret(string name);
 }

@@ -33,22 +33,6 @@ namespace Dentizone.Infrastructure.Secret
             _infisicalClient = infisicalClient;
         }
 
-        public MailSecrets GetMailServiceSecret()
-        {
-            try
-            {
-                var email = _infisicalClient.GetSecret(CreateSecret("TurboSmtpAuthUser")).SecretValue;
-                var password = _infisicalClient.GetSecret(CreateSecret("TurboSmtpAuthPass")).SecretValue;
-                var from = _infisicalClient.GetSecret(CreateSecret("TurboSmtpFrom")).SecretValue;
-                return new MailSecrets(email, password, from);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error retrieving secret: {ex.Message}");
-                throw;
-            }
-        }
-
 
         public string GetSecret(string name)
         {

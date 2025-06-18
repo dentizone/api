@@ -17,9 +17,13 @@ namespace Dentizone.Application.Services
 
         public async Task<object?> Send(string to, string subject, string body)
         {
+            var mailSecrets = new MailSecrets(_secretService.GetSecret("TurboSmtpAuthUser"),
+                                              _secretService.GetSecret("TurboSmtpAuthPass"),
+                                              _secretService.GetSecret("TurboSmtpFrom"));
+
+
             var response = await _smtpApi.SendEmailAsync(
-                                                         new TurboSmtpEmailRequest(_secretService
-                                                                  .GetMailServiceSecret())
+                                                         new TurboSmtpEmailRequest(mailSecrets)
                                                          {
                                                              To = to,
                                                              Subject = subject,
