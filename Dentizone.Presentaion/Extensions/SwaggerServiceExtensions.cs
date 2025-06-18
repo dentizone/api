@@ -29,7 +29,7 @@ namespace Dentizone.Presentaion.Extensions
                                                                        Type = ReferenceType.SecurityScheme
                                                                    }
                                                    },
-                                                   Array.Empty<string>()
+                                                   []
                                                }
                                            });
             });
