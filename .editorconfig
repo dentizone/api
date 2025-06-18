@@ -1,8 +1,6 @@
-# .editorconfig
-
 # top-most EditorConfig file
 root = true
 
 # Unused using directives
 [*.cs]
-dotnet_diagnostic.IDE0005.severity = error
+dotnet_diagnostic.IDE0005.severity = warning

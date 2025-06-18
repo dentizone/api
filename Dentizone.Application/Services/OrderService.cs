@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.Order;
+using Dentizone.Application.Interfaces;
 using Dentizone.Application.Interfaces.Order;
 using Dentizone.Application.Interfaces.Post;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
+using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
 
@@ -17,12 +19,14 @@ namespace Dentizone.Application.Services
         IOrderStatusRepository orderStatusRepository,
         IPostService postService,
         IShipInfoRepository shipInfoRepository,
+        IMailService mailService,
+        IAuthService authService,
         AppDbContext dbContext)
         : IOrderService
     {
         public async Task<OrderViewDto?> CancelOrderAsync(string orderId, string userId)
         {
-            var order = await orderRepository.FindBy(o => o.Id == orderId, [o => o.OrderStatuses]);
+            var order = await orderRepository.FindBy(o => o.Id == orderId, [o => o.OrderStatuses, o => o.OrderItems]);
 
             if (order == null)
             {
@@ -45,6 +49,27 @@ namespace Dentizone.Application.Services
                 Status = OrderStatues.Cancelled,
             };
             await orderStatusRepository.CreateAsync(orderStatus);
+
+            // send cancellation email
+            var emailContent = $"Your order with ID {order.Id} has been cancelled.";
+
+            // Get Buyer and Seller Emails
+
+            var buyer = await authService.GetById(order.BuyerId);
+            await mailService.Send(buyer.Email, "Order Cancellation", emailContent);
+
+            foreach (var orderItem in order.OrderItems)
+            {
+                var post = await postService.GetPostById(orderItem.PostId);
+                if (post != null)
+                {
+                    await postService.UpdatePostStatus(post.Id, PostStatus.Active);
+                    var seller = await authService.GetById(post.Seller.Id);
+                    await mailService.Send(seller.Email, "Order Cancelled",
+                                           $"Your post {post.Title} has been cancelled by the buyer. we relisted it now for sale again@!");
+                }
+            }
+
 
             var dto = mapper.Map<OrderViewDto>(order);
             return dto;
@@ -106,6 +131,21 @@ namespace Dentizone.Application.Services
                 foreach (var post in posts)
                 {
                     await postService.UpdatePostStatus(post.Id, PostStatus.Sold);
+                }
+
+                // Send Confirmation Email
+                var emailContent = $"Your order with ID {result.Id} has been successfully placed.";
+
+                // Get Buyer and Seller Emails
+
+                var buyer = await authService.GetById(buyerId);
+                await mailService.Send(buyer.Email, "Order Confirmation", emailContent);
+
+                foreach (var post in posts)
+                {
+                    var seller = await authService.GetById(post.SellerId);
+                    await mailService.Send(seller.Email, "New Order Placed",
+                                           $"Your post {post.Title} has been sold. Wait for pickup");
                 }
 
 
