@@ -1,8 +1,9 @@
-﻿using Dentizone.Domain.Entity;
+﻿using System.Linq.Expressions;
+using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Dentizone.Infrastructure.Repositories
 {
@@ -16,7 +17,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<Post?> FindBy(Expression<Func<Post, bool>> condition,
-                                        Expression<Func<Post, object>>[]? includes)
+            Expression<Func<Post, object>>[]? includes)
         {
             IQueryable<Post> query = dbContext.Posts;
             if (includes != null)
@@ -49,14 +50,14 @@ namespace Dentizone.Infrastructure.Repositories
         {
             int skippedPages = CalculatePagination(page);
             return await dbContext.Posts
-                                  .Skip(skippedPages)
-                                  .Take(DefaultPageSize)
-                                  .ToListAsync();
+                .Skip(skippedPages)
+                .Take(DefaultPageSize)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Post>> GetAllAsync(int page, Expression<Func<Post, bool>>? filter,
-                                                         Expression<Func<Post, object>>? orderBy,
-                                                         Expression<Func<Post, object>>[]? includes = null)
+            Expression<Func<Post, object>>? orderBy,
+            Expression<Func<Post, object>>[]? includes = null)
         {
             IQueryable<Post> query = dbContext.Posts;
             if (filter != null)
@@ -82,8 +83,8 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public IQueryable<Post> GetAllAsync(Expression<Func<Post, bool>>? filter,
-                                            Expression<Func<Post, object>>? orderBy = null,
-                                            Expression<Func<Post, object>>[]? includes = null)
+            Expression<Func<Post, object>>? orderBy = null,
+            Expression<Func<Post, object>>[]? includes = null)
         {
             IQueryable<Post> query = dbContext.Posts;
             if (filter != null)
@@ -110,11 +111,11 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<Post?> GetByIdAsync(string id)
         {
             return await dbContext.Posts
-                                  .Include(p => p.Seller)
-                                  .Include(p => p.PostAssets)
-                                  .ThenInclude(p => p.Asset)
-                                  .ThenInclude(p => p.User.University)
-                                  .FirstOrDefaultAsync(p => p.Id == id);
+                .Include(p => p.Seller)
+                .Include(p => p.PostAssets)
+                .ThenInclude(p => p.Asset)
+                .ThenInclude(p => p.User.University)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<Post> UpdateAsync(Post entity)
@@ -138,20 +139,20 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<IQueryable<Post>> SearchAsync(string? keyword, string? city, string? category,
-                                                        string? subcategory, PostItemCondition? condition,
-                                                        decimal? minPrice, decimal? maxPrice, string? sortBy,
-                                                        bool sortDirection, int page)
+            string? subcategory, PostItemCondition? condition,
+            decimal? minPrice, decimal? maxPrice, string? sortBy,
+            bool sortDirection, int page)
         {
             var posts = dbContext.Posts
-                                 .Where(p => !p.IsDeleted && p.Status == PostStatus.Active)
-                                 .AsQueryable();
+                .Where(p => !p.IsDeleted && p.Status == PostStatus.Active)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 var kw = keyword.Trim().ToLower();
                 posts = posts.Where(p =>
-                                        p.Title.ToLower().Contains(kw) ||
-                                        p.Description.ToLower().Contains(kw));
+                    p.Title.ToLower().Contains(kw) ||
+                    p.Description.ToLower().Contains(kw));
             }
 
             if (!string.IsNullOrWhiteSpace(city))
@@ -178,6 +179,38 @@ namespace Dentizone.Infrastructure.Repositories
 
             var skippedPages = CalculatePagination(page);
             return posts.Skip(skippedPages).Take(DefaultPageSize);
+        }
+
+        public IQueryable<Post> GetActivePosts()
+        {
+            var result = dbContext.Posts.AsNoTracking().Where(p => !p.IsDeleted && p.Status == PostStatus.Active);
+
+            return result;
+        }
+
+        public async Task<decimal> AveragePostsPriceAsync()
+        {
+            var posts = GetActivePosts();
+
+            if (!await posts.AnyAsync())
+            {
+                return 0;
+            }
+
+            return await posts.AverageAsync(p => p.Price);
+        }
+
+        public async Task<Dictionary<string, int>> GetPostCountPerCategoryAsync()
+        {
+            var result = await dbContext.Posts
+                .AsNoTracking()
+                .Include(p => p.Category)
+                .Where(p => !p.IsDeleted && !p.Category.IsDeleted)
+                .GroupBy(p => p.Category.Name)
+                .AsSplitQuery()
+                .ToDictionaryAsync(g => g.Key, g => g.Count());
+
+            return result;
         }
     }
 }
