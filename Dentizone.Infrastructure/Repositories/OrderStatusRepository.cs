@@ -5,12 +5,8 @@ using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Infrastructure.Repositories;
 
-public class OrderStatusRepository : AbstractRepository, IOrderStatusRepository
+public class OrderStatusRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IOrderStatusRepository
 {
-    public OrderStatusRepository(AppDbContext dbContext) : base(dbContext)
-    {
-    }
-
     public async Task<OrderStatus?> GetByIdAsync(string id)
     {
         return await dbContext.OrderStatuses

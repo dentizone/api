@@ -1,16 +1,12 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class PaymentRepository : AbstractRepository, IPaymentRepository
+    internal class PaymentRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IPaymentRepository
     {
-        public PaymentRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<Payment> CreateAsync(Payment entity)
         {
             await dbContext.Payments.AddAsync(entity);

@@ -6,14 +6,9 @@ using Dentizone.Domain.Interfaces.Secret;
 
 namespace Dentizone.Application.Services
 {
-    public class CloudinaryService : ICloudinaryService
+    public class CloudinaryService(ISecretService secretService) : ICloudinaryService
     {
-        private readonly Cloudinary _cloudinary;
-
-        public CloudinaryService(ISecretService secretService)
-        {
-            _cloudinary = new Cloudinary(secretService.GetSecret("cloudinary"));
-        }
+        private readonly Cloudinary _cloudinary = new(secretService.GetSecret("cloudinary"));
 
 
         public string Upload(Stream fileStream, string fileName)

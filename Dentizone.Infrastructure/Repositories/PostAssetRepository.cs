@@ -5,12 +5,8 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class PostAssetRepository : AbstractRepository, IPostAssetRepository
+    internal class PostAssetRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IPostAssetRepository
     {
-        public PostAssetRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<PostAsset> CreateAsync(PostAsset entity)
         {
             await dbContext.PostAssets.AddAsync(entity);

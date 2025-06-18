@@ -5,13 +5,9 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class SubCategoryRepository : AbstractRepository,
+    internal class SubCategoryRepository(AppDbContext dbContext) : AbstractRepository(dbContext),
         ISubCategoryRepository
     {
-        public SubCategoryRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<SubCategory?> GetByIdAsync(string id)
         {
             return await dbContext.SubCategories

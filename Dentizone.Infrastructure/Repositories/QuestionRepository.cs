@@ -5,12 +5,8 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class QuestionRepository : AbstractRepository, IQuestionRepository
+    internal class QuestionRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IQuestionRepository
     {
-        public QuestionRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<Question> CreateAsync(Question entity)
         {
             await dbContext.Questions.AddAsync(entity);

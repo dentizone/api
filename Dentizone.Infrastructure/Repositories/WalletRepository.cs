@@ -5,14 +5,9 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class WalletRepository : AbstractRepository, IWalletRepository
+    internal class WalletRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IWalletRepository
     {
-        private AppDbContext DbContext;
-
-        public WalletRepository(AppDbContext dbContext) : base(dbContext)
-        {
-            DbContext = dbContext;
-        }
+        private AppDbContext DbContext = dbContext;
 
         public async Task<Wallet> CreateAsync(Wallet entity)
         {

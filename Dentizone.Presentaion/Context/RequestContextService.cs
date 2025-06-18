@@ -3,22 +3,14 @@ using DeviceDetectorNET.Parser;
 
 namespace Dentizone.Presentaion.Context;
 
-public class RequestContextService : IRequestContextService
+public class RequestContextService(IHttpContextAccessor httpContextAccessor, IHostEnvironment environment)
+    : IRequestContextService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IHostEnvironment _environment;
-    private readonly BotParser _botParser;
-
-    public RequestContextService(IHttpContextAccessor httpContextAccessor, IHostEnvironment environment)
-    {
-        _botParser = new BotParser();
-        _httpContextAccessor = httpContextAccessor;
-        _environment = environment;
-    }
+    private readonly BotParser _botParser = new();
 
     public string? GetUserId()
     {
-        var user = _httpContextAccessor.HttpContext?.User;
+        var user = httpContextAccessor.HttpContext?.User;
         return user?.Identity?.IsAuthenticated == true
             ? user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
             : null;
@@ -26,12 +18,12 @@ public class RequestContextService : IRequestContextService
 
     public string GetUserAgent()
     {
-        return _httpContextAccessor.HttpContext?.Request.Headers["User-Agent"].ToString() ?? "Unknown";
+        return httpContextAccessor.HttpContext?.Request.Headers["User-Agent"].ToString() ?? "Unknown";
     }
 
     public string GetFingerprint()
     {
-        return _httpContextAccessor.HttpContext?.Request.Headers["X-Fingerprint"].ToString() ?? "Unknown";
+        return httpContextAccessor.HttpContext?.Request.Headers["X-Fingerprint"].ToString() ?? "Unknown";
     }
 
     public string GetDeviceType()
@@ -45,7 +37,7 @@ public class RequestContextService : IRequestContextService
 
     public string GetIpAddress()
     {
-        var context = _httpContextAccessor.HttpContext;
+        var context = httpContextAccessor.HttpContext;
 
         if (context == null)
             return "Unknown";
@@ -54,7 +46,7 @@ public class RequestContextService : IRequestContextService
         if (!string.IsNullOrEmpty(forwardedHeader))
             return forwardedHeader.Split(',').First().Trim();
 
-        if (_environment.IsDevelopment())
+        if (environment.IsDevelopment())
         {
             return "127.0.0.1";
         }

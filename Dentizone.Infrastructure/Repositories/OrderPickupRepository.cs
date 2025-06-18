@@ -5,12 +5,8 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories;
 
-public class OrderPickupRepository : AbstractRepository, IOrderPickupRepository
+public class OrderPickupRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IOrderPickupRepository
 {
-    public OrderPickupRepository(AppDbContext dbContext) : base(dbContext)
-    {
-    }
-
     public async Task<OrderPickup> CreateAsync(OrderPickup entity)
     {
         await dbContext.OrderPickups.AddAsync(entity);

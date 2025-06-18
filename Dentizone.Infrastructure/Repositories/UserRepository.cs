@@ -5,12 +5,8 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class UserRepository : AbstractRepository, IUserRepository
+    internal class UserRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IUserRepository
     {
-        public UserRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<AppUser?> GetByIdAsync(string id)
         {
             return await

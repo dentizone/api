@@ -1,16 +1,13 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class WalletActivityRepository : AbstractRepository, IWalletActivityRepository
+    internal class WalletActivityRepository(AppDbContext dbContext)
+        : AbstractRepository(dbContext), IWalletActivityRepository
     {
-        public WalletActivityRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<WalletActivity?> GetByIdAsync(string id)
         {
             return await dbContext.WalletActivities

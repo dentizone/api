@@ -5,12 +5,8 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class UniversityRepository : AbstractRepository, IUniversityRepository
+    internal class UniversityRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IUniversityRepository
     {
-        public UniversityRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<University?> GetByIdAsync(string id)
         {
             return await dbContext.Universities.Where(u => !u.IsDeleted).FirstOrDefaultAsync(u => u.Id == id);

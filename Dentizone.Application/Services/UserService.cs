@@ -9,41 +9,32 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services
 {
-    public class UserService : IUserService
+    public class UserService(IUserRepository userRepository, IMapper mapper) : IUserService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
-
-        public UserService(IUserRepository userRepository, IMapper mapper)
-        {
-            _userRepository = userRepository;
-            _mapper = mapper;
-        }
-
         public async Task<UserView> CreateAsync(CreateAppUser userDto)
         {
-            var userEntity = _mapper.Map<AppUser>(userDto);
-            var createdUser = await _userRepository.CreateAsync(userEntity);
-            return _mapper.Map<UserView>(createdUser);
+            var userEntity = mapper.Map<AppUser>(userDto);
+            var createdUser = await userRepository.CreateAsync(userEntity);
+            return mapper.Map<UserView>(createdUser);
         }
 
 
         public async Task<UserView> DeleteAsync(string id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await userRepository.GetByIdAsync(id);
             if (user == null)
             {
                 throw new NotFoundException($"User with id {id} not found.");
             }
 
-            var deletedUser = await _userRepository.DeleteAsync(id);
-            return _mapper.Map<UserView>(deletedUser);
+            var deletedUser = await userRepository.DeleteAsync(id);
+            return mapper.Map<UserView>(deletedUser);
         }
 
         public async Task<ICollection<UserView>> GetAllAsync(int page, string? searchByName = null,
                                                              Expression<Func<AppUser, bool>>? filterExpression = null)
         {
-            var users = await _userRepository.GetAllAsync(page, filterExpression);
+            var users = await userRepository.GetAllAsync(page, filterExpression);
             if (users == null)
             {
                 throw new NotFoundException("No users found.");
@@ -55,41 +46,41 @@ namespace Dentizone.Application.Services
                              .ToList();
             }
 
-            return _mapper.Map<ICollection<UserView>>(users);
+            return mapper.Map<ICollection<UserView>>(users);
         }
 
         public async Task<DomainUserView> GetByIdAsync(string id)
         {
-            var user = await _userRepository.FindBy(u => u.Id == id,
-                                                    [
-                                                        u => u.University
-                                                    ]
-                                                   );
+            var user = await userRepository.FindBy(u => u.Id == id,
+                                                   [
+                                                       u => u.University
+                                                   ]
+                                                  );
             if (user == null)
             {
                 throw new NotFoundException($"User with id {id} not found.");
             }
 
-            return _mapper.Map<DomainUserView>(user);
+            return mapper.Map<DomainUserView>(user);
         }
 
 
         public async Task SetUserStateAsync(string userId, UserStateDTO userStateDto)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await userRepository.GetByIdAsync(userId);
             if (user == null)
             {
                 throw new NotFoundException($"User with id {userId} not found.");
             }
 
             user.Status = userStateDto.Status;
-            await _userRepository.Update(user);
+            await userRepository.Update(user);
         }
 
 
         public async Task<UserView> SetKycStatusAsync(string userId, KycStatus status)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await userRepository.GetByIdAsync(userId);
             if (user == null)
             {
                 throw new NotFoundException($"User with id {userId} not found.");
@@ -104,22 +95,22 @@ namespace Dentizone.Application.Services
             };
 
             user.KycStatus = status;
-            var updatedUser = await _userRepository.Update(user);
-            return _mapper.Map<UserView>(updatedUser);
+            var updatedUser = await userRepository.Update(user);
+            return mapper.Map<UserView>(updatedUser);
         }
 
         public async Task<UserView> SetNationalId(string userId, string nationalId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await userRepository.GetByIdAsync(userId);
             if (user == null)
             {
                 throw new NotFoundException($"User with id {userId} not found.");
             }
 
             user.NationalId = long.Parse(nationalId);
-            var updated = await _userRepository.Update(user);
+            var updated = await userRepository.Update(user);
 
-            return _mapper.Map<UserView>(updated);
+            return mapper.Map<UserView>(updated);
         }
     }
 }

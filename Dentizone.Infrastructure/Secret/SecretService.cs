@@ -15,9 +15,8 @@ namespace Dentizone.Infrastructure.Secret
     }
 
 
-    public class SecretService : ISecretService
+    public class SecretService(InfisicalClient infisicalClient) : ISecretService
     {
-        private readonly InfisicalClient _infisicalClient;
         private readonly ConcurrentDictionary<string, string> _cache = new();
 
         private GetSecret CreateSecret(string name)
@@ -28,18 +27,13 @@ namespace Dentizone.Infrastructure.Secret
             };
         }
 
-        public SecretService(InfisicalClient infisicalClient)
-        {
-            _infisicalClient = infisicalClient;
-        }
-
 
         public string GetSecret(string name)
         {
             try
             {
                 return _cache.GetOrAdd(name,
-                                       n => _infisicalClient.GetSecret(CreateSecret(n)).SecretValue);
+                                       n => infisicalClient.GetSecret(CreateSecret(n)).SecretValue);
             }
             catch (Exception ex)
             {

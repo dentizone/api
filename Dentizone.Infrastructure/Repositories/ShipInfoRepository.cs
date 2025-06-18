@@ -1,16 +1,12 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class ShipInfoRepository : AbstractRepository, IShipInfoRepository
+    internal class ShipInfoRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IShipInfoRepository
     {
-        public ShipInfoRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<ShipInfo?> GetByIdAsync(string id)
         {
             return await dbContext.ShipInfos

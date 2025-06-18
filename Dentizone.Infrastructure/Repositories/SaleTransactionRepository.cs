@@ -5,12 +5,9 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories;
 
-public class SaleTransactionRepository : AbstractRepository, ISaleTransactionRepository
+public class SaleTransactionRepository(AppDbContext dbContext)
+    : AbstractRepository(dbContext), ISaleTransactionRepository
 {
-    public SaleTransactionRepository(AppDbContext dbContext) : base(dbContext)
-    {
-    }
-
     public async Task<SalesTransaction?> GetByIdAsync(string id)
     {
         return await dbContext.SalesTransactions

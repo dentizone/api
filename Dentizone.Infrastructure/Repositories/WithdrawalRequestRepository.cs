@@ -1,18 +1,14 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class WithdrawalRequestRepository : AbstractRepository, IWithdrawalRequestRepository
+    internal class WithdrawalRequestRepository(AppDbContext dbContext)
+        : AbstractRepository(dbContext), IWithdrawalRequestRepository
     {
-        private AppDbContext DbContext;
-
-        public WithdrawalRequestRepository(AppDbContext dbContext) : base(dbContext)
-        {
-            DbContext = dbContext;
-        }
+        private AppDbContext DbContext = dbContext;
 
         public async Task<WithdrawalRequest> CreateAsync(WithdrawalRequest entity)
         {

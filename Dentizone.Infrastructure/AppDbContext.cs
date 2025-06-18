@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Infrastructure
 {
-    public class AppDbContext : IdentityDbContext<ApplicationUser>
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
         public DbSet<Answer> Answers { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
@@ -35,11 +35,6 @@ namespace Dentizone.Infrastructure
 
         public DbSet<ShipmentActivity> ShipmentActivities { get; set; }
         public DbSet<SalesTransaction> SalesTransactions { get; set; }
-
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -1,16 +1,12 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Domain.Entity;
+﻿using Dentizone.Domain.Entity;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    public class UserActivityRepository : AbstractRepository, IUserActivityRepository
+    public class UserActivityRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IUserActivityRepository
     {
-        public UserActivityRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<UserActivity?> GetByIdAsync(string id)
         {
             return await dbContext.UserActivities

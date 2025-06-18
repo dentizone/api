@@ -5,14 +5,9 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    public class CategoryRepository : AbstractRepository, ICategoryRepository
+    public class CategoryRepository(AppDbContext dbContext) : AbstractRepository(dbContext), ICategoryRepository
     {
-        private readonly AppDbContext DbContext;
-
-        public CategoryRepository(AppDbContext dbContext) : base(dbContext)
-        {
-            DbContext = dbContext;
-        }
+        private readonly AppDbContext DbContext = dbContext;
 
         public async Task<Category> CreateAsync(Category entity)
         {

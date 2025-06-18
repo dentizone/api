@@ -6,19 +6,12 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UniversitiesController : ControllerBase
+    public class UniversitiesController(IUniversityService universityService) : ControllerBase
     {
-        private readonly IUniversityService _universityService;
-
-        public UniversitiesController(IUniversityService universityService)
-        {
-            _universityService = universityService;
-        }
-
         [HttpGet("supported")]
         public async Task<IActionResult> GetAllUniversities()
         {
-            var universities = await _universityService.GetSupportedUniversitiesAsync();
+            var universities = await universityService.GetSupportedUniversitiesAsync();
             return Ok(universities);
         }
 
@@ -27,7 +20,7 @@ namespace Dentizone.Presentaion.Controllers
         {
             try
             {
-                var university = await _universityService.GetUniversityByIdAsync(id);
+                var university = await universityService.GetUniversityByIdAsync(id);
                 return Ok(university);
             }
             catch (Exception ex)
@@ -44,7 +37,7 @@ namespace Dentizone.Presentaion.Controllers
                 return BadRequest("University data is null.");
             }
 
-            var createdUniversity = await _universityService.CreateUniversityAsync(universityDto);
+            var createdUniversity = await universityService.CreateUniversityAsync(universityDto);
             return CreatedAtAction(nameof(GetUniversityById), new { id = createdUniversity.Id }, createdUniversity);
         }
 
@@ -58,7 +51,7 @@ namespace Dentizone.Presentaion.Controllers
 
             try
             {
-                var updatedUniversity = await _universityService.UpdateUniversityAsync(id, updateUniversityDto);
+                var updatedUniversity = await universityService.UpdateUniversityAsync(id, updateUniversityDto);
                 return Ok(updatedUniversity);
             }
             catch (Exception ex)
@@ -72,7 +65,7 @@ namespace Dentizone.Presentaion.Controllers
         {
             try
             {
-                var deletedUniversity = await _universityService.DeleteUniversity(id);
+                var deletedUniversity = await universityService.DeleteUniversity(id);
                 return Ok(deletedUniversity);
             }
             catch (Exception ex)

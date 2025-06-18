@@ -5,12 +5,8 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class ReviewRepository : AbstractRepository, IReviewRepository
+    internal class ReviewRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IReviewRepository
     {
-        public ReviewRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<Review?> GetByIdAsync(string id)
         {
             return await dbContext.Reviews

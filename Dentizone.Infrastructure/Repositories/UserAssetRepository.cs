@@ -1,16 +1,12 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class UserAssetRepository : AbstractRepository, IUserAssetRepository
+    internal class UserAssetRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IUserAssetRepository
     {
-        public UserAssetRepository(AppDbContext dbContext) : base(dbContext)
-        {
-        }
-
         public async Task<UserAsset?> GetByIdAsync(string id)
         {
             return await dbContext.UserAssets

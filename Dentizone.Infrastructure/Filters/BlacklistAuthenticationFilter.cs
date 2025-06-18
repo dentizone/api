@@ -7,17 +7,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Dentizone.Infrastructure.Filters
 {
-    public class BlacklistAuthenticationFilter : IAsyncAuthorizationFilter
+    public class BlacklistAuthenticationFilter(
+        ITokenService tokenService,
+        ILogger<BlacklistAuthenticationFilter> logger)
+        : IAsyncAuthorizationFilter
     {
-        private readonly ITokenService _tokenService;
-        private readonly ILogger<BlacklistAuthenticationFilter> _logger;
-
-        public BlacklistAuthenticationFilter(ITokenService tokenService, ILogger<BlacklistAuthenticationFilter> logger)
-        {
-            _tokenService = tokenService;
-            _logger = logger;
-        }
-
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             // Skip if endpoint allows anonymous access
@@ -42,27 +36,27 @@ namespace Dentizone.Infrastructure.Filters
                     return;
                 }
 
-                var tokenId = _tokenService.ExtractTokenId(token);
+                var tokenId = tokenService.ExtractTokenId(token);
 
                 if (string.IsNullOrEmpty(tokenId))
                 {
-                    _logger.LogWarning("Token missing JTI claim");
+                    logger.LogWarning("Token missing JTI claim");
                     context.Result = CreateUnauthorizedResult("Invalid token format");
                     return;
                 }
 
-                var isBlacklisted = await _tokenService.IsBlacklistedAsync(tokenId);
+                var isBlacklisted = await tokenService.IsBlacklistedAsync(tokenId);
 
                 if (isBlacklisted)
                 {
-                    _logger.LogWarning("Blacklisted token attempted access. Token ID: {TokenId}", tokenId);
+                    logger.LogWarning("Blacklisted token attempted access. Token ID: {TokenId}", tokenId);
                     context.Result = CreateUnauthorizedResult("Token has been revoked");
                     return;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error checking token blacklist status");
+                logger.LogError(ex, "Error checking token blacklist status");
                 context.Result = CreateUnauthorizedResult("Authentication error");
             }
         }
