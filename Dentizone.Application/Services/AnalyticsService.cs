@@ -6,66 +6,56 @@ using System.Threading.Tasks;
 using Dentizone.Application.DTOs.Analytics;
 using Dentizone.Application.Interfaces.Analytics;
 using Dentizone.Domain.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Services
 {
-    internal class AnalyticsService : IAnalyticsService
+    internal class AnalyticsService(
+        IUserRepository userRepository,
+        IPostRepository postRepository,
+        IOrderRepository orderRepository)
+        : IAnalyticsService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IPostRepository _postRepository;
-        private readonly IOrderRepository _orderRepository;
-        public AnalyticsService(IUserRepository userRepository, IPostRepository postRepository, IOrderRepository orderRepository)
+        public async Task<PostAnalyticsDto> GetPostAnalyticsAsync()
         {
-            _userRepository = userRepository;
-            _postRepository = postRepository;
-            _orderRepository = orderRepository;
-        }
-
-        public async Task<PostAnalyticsDTO> GetPostAnalyticsAsync()
-        {
-            var numberOfPosts = await _postRepository.TotalNumberPostsAsync();
-            var AverageValueOfOrders = await _postRepository.AveragePostsPriceAsync();
-            var countofpostsperCategory = await _postRepository.GetPostCountPerCategoryAsync();
-            var returnedDTO = new PostAnalyticsDTO
+            var numberOfPosts = await postRepository.GetActivePosts().CountAsync();
+            var averageValueOfOrders = await postRepository.AveragePostsPriceAsync();
+            var postsByCategory = await postRepository.GetPostCountPerCategoryAsync();
+            var returnedDto = new PostAnalyticsDto
             {
                 TotalPosts = numberOfPosts,
-                AveragePostPrice =AverageValueOfOrders,
-                PostsByCategory = countofpostsperCategory
-
+                AveragePostPrice = averageValueOfOrders,
+                PostsByCategory = postsByCategory
             };
-            return returnedDTO;
+            return returnedDto;
         }
 
-        public async Task<SalesAnalyticsDTO> GetSalesAnalyticsAsync()
+        public async Task<SalesAnalyticsDto> GetSalesAnalyticsAsync()
         {
-            var numberOfOrders = await _orderRepository.CountTotalOrders();
-            var AverageValueOfOrders = await _orderRepository.AverageValueOfOrders();
-            var returnedDTO = new SalesAnalyticsDTO
+            var numberOfOrders = await orderRepository.CountTotalOrders();
+            var averageValueOfOrders = await orderRepository.AverageValueOfOrders();
+            var returnedDto = new SalesAnalyticsDto
             {
                 TotalsOrder = numberOfOrders,
-                AveragePostPrice = (int)AverageValueOfOrders,
+                AveragePostPrice = (int)averageValueOfOrders,
             };
-            return returnedDTO;
+            return returnedDto;
         }
 
-        public  async Task<UserAnalyticsDTO> GetUserAnalyticsAsync()
+        public async Task<UserAnalyticsDto> GetUserAnalyticsAsync()
         {
-            var AllUsers=await _userRepository.GetCountOfUsersAsync();
-            var allUsersLast7Days = await _userRepository.GetCount7DaysAsync();
-            var allUsersLast30Days = await _userRepository.GetCount30DaysAsync();
-            var allUsersPerUniversity = await _userRepository.GetStudentCountPerUniversityAsync();
-            var returnedDTO=new UserAnalyticsDTO
+            var allUsers = await userRepository.GetCountOfUsersAsync();
+            var allUsersLast7Days = await userRepository.GetCount7DaysAsync();
+            var allUsersLast30Days = await userRepository.GetCount30DaysAsync();
+            var allUsersPerUniversity = await userRepository.GetStudentCountPerUniversityAsync();
+            var returnedDto = new UserAnalyticsDto
             {
-                TotalUsers = AllUsers,
+                TotalUsers = allUsers,
                 NewUsersLast7Days = allUsersLast7Days,
                 NewUsersLast30Days = allUsersLast30Days,
                 UsersByUniversity = allUsersPerUniversity
             };
-            return returnedDTO;
-
+            return returnedDto;
         }
-        
-
-
     }
 }
