@@ -37,7 +37,7 @@ namespace Dentizone.Application.Services
             var returnedDto = new SalesAnalyticsDto
             {
                 TotalsOrder = numberOfOrders,
-                AveragePostPrice = (int)averageValueOfOrders,
+                AveragePostPrice = averageValueOfOrders,
             };
             return returnedDto;
         }
