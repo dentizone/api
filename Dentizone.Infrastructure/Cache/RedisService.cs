@@ -4,7 +4,7 @@ using StackExchange.Redis;
 
 namespace Dentizone.Infrastructure.Cache
 {
-    public class RedisService : IRedisService
+    public class RedisService : IRedisService, IDisposable, IAsyncDisposable
     {
         private readonly ConnectionMultiplexer redis;
         private readonly IDatabase database;
@@ -47,6 +47,22 @@ namespace Dentizone.Infrastructure.Cache
         {
             var value = await database.StringGetAsync(key);
             return value.IsNullOrEmpty ? null : value.ToString();
+        }
+
+
+        public void Dispose()
+        {
+            redis.Dispose();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await redis.DisposeAsync();
+        }
+
+        public async Task InvalidateCache(string key)
+        {
+            await database.KeyDeleteAsync(key);
         }
     }
 }
