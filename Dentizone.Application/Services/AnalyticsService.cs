@@ -38,11 +38,10 @@ namespace Dentizone.Application.Services
                                   AveragePostPrice = averageValueOfOrders,
                                   PostsByCategory = postsByCategory
                               };
-            if (useCache)
-            {
+            
                 var serialized = JsonConvert.SerializeObject(returnedDto);
                 await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(1800));
-            }
+           
 
             return returnedDto;
         }
@@ -68,11 +67,10 @@ namespace Dentizone.Application.Services
                                   TotalsOrder = numberOfOrders,
                                   AveragePostPrice = averageValueOfOrders,
                               };
-            if (useCache)
-            {
+            
                 var serialized = JsonConvert.SerializeObject(returnedDto);
                 await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(1800));
-            }
+            
             return returnedDto;
         }
 
@@ -99,11 +97,10 @@ namespace Dentizone.Application.Services
                                   NewUsersLast30Days = allUsersLast30Days,
                                   UsersByUniversity = allUsersPerUniversity
                               };
-            if (useCache)
-            {
+            
                 var serialized = JsonConvert.SerializeObject(returnedDto);
                 await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(1800));
-            }
+            
             return returnedDto;
         }
     }
