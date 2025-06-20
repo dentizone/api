@@ -18,6 +18,8 @@ namespace Dentizone.Application.AutoMapper.Posts
             CreateMap<Post, PostViewDto>()
                 .ForMember(dest => dest.Assets, opt => opt.MapFrom(src => src.PostAssets))
                 .ForMember(dest => dest.Seller, opt => opt.MapFrom(src => src.Seller))
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.SubCatgory, opt => opt.MapFrom(src => src.SubCategory.Name))
                 .ReverseMap();
         }
     }
