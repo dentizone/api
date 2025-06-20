@@ -41,7 +41,7 @@ namespace Dentizone.Application.Services
             if (useCache)
             {
                 var serialized = JsonConvert.SerializeObject(returnedDto);
-                await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(10));
+                await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(1800));
             }
 
             return returnedDto;
@@ -71,7 +71,7 @@ namespace Dentizone.Application.Services
             if (useCache)
             {
                 var serialized = JsonConvert.SerializeObject(returnedDto);
-                await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(10));
+                await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(1800));
             }
             return returnedDto;
         }
@@ -102,7 +102,7 @@ namespace Dentizone.Application.Services
             if (useCache)
             {
                 var serialized = JsonConvert.SerializeObject(returnedDto);
-                await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(10));
+                await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(1800));
             }
             return returnedDto;
         }
