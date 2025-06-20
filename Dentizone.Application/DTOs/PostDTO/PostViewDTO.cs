@@ -10,6 +10,8 @@ namespace Dentizone.Application.DTOs.PostDTO
         public decimal Price { get; set; }
         public DateTime? ExpireDate { get; set; }
         public string Condition { get; set; }
+        public string Category { get; set; }
+        public string SubCatgory { get; set; }
         public string Status { get; set; }
         public UserView Seller { get; set; }
         public List<PostAssetView> Assets { get; set; }
