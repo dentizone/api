@@ -8,23 +8,23 @@ namespace Dentizone.Presentaion.Controllers
     public class AnalyticsController(IAnalyticsService analyticsService) : ControllerBase
     {
         [HttpGet("user")]
-        public async Task<IActionResult> GetUserAnalytics()
+        public async Task<IActionResult> GetUserAnalytics(bool useCache = false)
         {
-            var userAnalytics = await analyticsService.GetUserAnalyticsAsync();
+            var userAnalytics = await analyticsService.GetUserAnalyticsAsync(useCache);
             return Ok(userAnalytics);
         }
 
         [HttpGet("post")]
-        public async Task<IActionResult> GetPostAnalytics()
+        public async Task<IActionResult> GetPostAnalytics([FromQuery] bool useCache = false)
         {
-            var postAnalytics = await analyticsService.GetPostAnalyticsAsync();
+            var postAnalytics = await analyticsService.GetPostAnalyticsAsync(useCache);
             return Ok(postAnalytics);
         }
 
         [HttpGet("sales")]
-        public async Task<IActionResult> GetSalesAnalytics()
+        public async Task<IActionResult> GetSalesAnalytics([FromQuery] bool useCache = false)
         {
-            var salesAnalytics = await analyticsService.GetSalesAnalyticsAsync();
+            var salesAnalytics = await analyticsService.GetSalesAnalyticsAsync(useCache);
             return Ok(salesAnalytics);
         }
     }

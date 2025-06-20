@@ -1,18 +1,34 @@
 ﻿using Dentizone.Application.DTOs.Analytics;
 using Dentizone.Application.Interfaces.Analytics;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
+using Dentizone.Infrastructure.Cache;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Dentizone.Application.Services
 {
     internal class AnalyticsService(
         IUserRepository userRepository,
         IPostRepository postRepository,
+        IRedisService _redisService,
         IOrderRepository orderRepository)
         : IAnalyticsService
     {
-        public async Task<PostAnalyticsDto> GetPostAnalyticsAsync()
+        public async Task<PostAnalyticsDto> GetPostAnalyticsAsync(bool useCache = false)
         {
+            var cacheKey = CacheHelper.GenerateCacheKey("analytics", "post");
+
+            if (useCache)
+            {
+                var cachedValue = await _redisService.GetValue(cacheKey);
+                if (cachedValue != null)
+                {
+                    return JsonConvert.DeserializeObject<PostAnalyticsDto>(cachedValue)!;
+                }
+            }
+
+
             var numberOfPosts = await postRepository.GetActivePosts().CountAsync();
             var averageValueOfOrders = await postRepository.AveragePostsPriceAsync();
             var postsByCategory = await postRepository.GetPostCountPerCategoryAsync();
@@ -22,11 +38,29 @@ namespace Dentizone.Application.Services
                                   AveragePostPrice = averageValueOfOrders,
                                   PostsByCategory = postsByCategory
                               };
+            if (useCache)
+            {
+                var serialized = JsonConvert.SerializeObject(returnedDto);
+                await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(10));
+            }
+
             return returnedDto;
         }
 
-        public async Task<SalesAnalyticsDto> GetSalesAnalyticsAsync()
+       
+
+        public async Task<SalesAnalyticsDto> GetSalesAnalyticsAsync(bool useCache = false)
         {
+            var cacheKey = CacheHelper.GenerateCacheKey("analytics", "Sales");
+
+            if (useCache)
+            {
+                var cachedValue = await _redisService.GetValue(cacheKey);
+                if (cachedValue != null)
+                {
+                    return JsonConvert.DeserializeObject<SalesAnalyticsDto>(cachedValue)!;
+                }
+            }
             var numberOfOrders = await orderRepository.CountTotalOrders();
             var averageValueOfOrders = await orderRepository.AverageValueOfOrders();
             var returnedDto = new SalesAnalyticsDto
@@ -34,11 +68,26 @@ namespace Dentizone.Application.Services
                                   TotalsOrder = numberOfOrders,
                                   AveragePostPrice = averageValueOfOrders,
                               };
+            if (useCache)
+            {
+                var serialized = JsonConvert.SerializeObject(returnedDto);
+                await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(10));
+            }
             return returnedDto;
         }
 
-        public async Task<UserAnalyticsDto> GetUserAnalyticsAsync()
+        public async Task<UserAnalyticsDto> GetUserAnalyticsAsync( bool useCache = false)
         {
+            var cacheKey = CacheHelper.GenerateCacheKey("analytics", "Sales");
+
+            if (useCache)
+            {
+                var cachedValue = await _redisService.GetValue(cacheKey);
+                if (cachedValue != null)
+                {
+                    return JsonConvert.DeserializeObject<UserAnalyticsDto>(cachedValue)!;
+                }
+            }
             var allUsers = await userRepository.GetCountOfUsersAsync();
             var allUsersLast7Days = await userRepository.GetCount7DaysAsync();
             var allUsersLast30Days = await userRepository.GetCount30DaysAsync();
@@ -50,6 +99,11 @@ namespace Dentizone.Application.Services
                                   NewUsersLast30Days = allUsersLast30Days,
                                   UsersByUniversity = allUsersPerUniversity
                               };
+            if (useCache)
+            {
+                var serialized = JsonConvert.SerializeObject(returnedDto);
+                await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(10));
+            }
             return returnedDto;
         }
     }
