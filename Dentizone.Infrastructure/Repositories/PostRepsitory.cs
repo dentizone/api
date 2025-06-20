@@ -111,6 +111,8 @@ namespace Dentizone.Infrastructure.Repositories
         {
             return await dbContext.Posts
                                   .Include(p => p.Seller)
+                                  .Include(p => p.Category)
+                                  .Include(p => p.SubCategory)
                                   .Include(p => p.PostAssets)
                                   .ThenInclude(p => p.Asset)
                                   .ThenInclude(p => p.User.University)
