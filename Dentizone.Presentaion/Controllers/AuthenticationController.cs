@@ -7,6 +7,7 @@ using Dentizone.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Dentizone.Application.Services.Payment;
 
 namespace Dentizone.Presentaion.Controllers
 {
@@ -15,6 +16,7 @@ namespace Dentizone.Presentaion.Controllers
     public class AuthenticationController(
         IAuthService authenticationService,
         IUserService userService,
+        IWalletService walletService,
         ITokenService tokenService) : ControllerBase
     {
         [HttpPost("login")]
@@ -29,7 +31,7 @@ namespace Dentizone.Presentaion.Controllers
 
 
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, loggedInUser.User.Email,
-                                                         loggedInUser.role.ToString());
+                loggedInUser.role.ToString());
             var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);
             return Ok(new RefreshTokenResponse()
             {
@@ -54,8 +56,9 @@ namespace Dentizone.Presentaion.Controllers
                 Id = loggedInUser.User.Id, // IdentityServer uses string IDs for users
             };
             var userData = await userService.CreateAsync(userDataDto);
+            await walletService.CreateWallet(userData.Id);
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, registerPayloadDto.Email,
-                                                         loggedInUser.role.ToString());
+                loggedInUser.role.ToString());
             var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);
             return Ok(new RefreshTokenResponse()
             {
@@ -99,7 +102,7 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
             var result = await authenticationService.ResetPassword(resetPasswordDto.Email, resetPasswordDto.Token,
-                                                                   resetPasswordDto.NewPassword);
+                resetPasswordDto.NewPassword);
 
 
             return Ok(new { Message = result });

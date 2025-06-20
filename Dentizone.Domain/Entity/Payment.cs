@@ -10,7 +10,7 @@ namespace Dentizone.Domain.Entity
         public string BuyerId { get; set; }
         public decimal Amount { get; set; }
         public PaymentMethod Method { get; set; }
-        public PaymentStatus Status { get; set; }
+        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
         public DateTime CreatedAt { get; set; }
 
 
