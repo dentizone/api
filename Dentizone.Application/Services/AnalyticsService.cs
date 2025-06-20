@@ -38,6 +38,7 @@ namespace Dentizone.Application.Services
                                   AveragePostPrice = averageValueOfOrders,
                                   PostsByCategory = postsByCategory
                               };
+            //hyupdate lma ygeb mn el DB 
             
                 var serialized = JsonConvert.SerializeObject(returnedDto);
                 await _redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(1800));
