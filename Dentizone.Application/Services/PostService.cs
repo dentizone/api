@@ -305,10 +305,12 @@ namespace Dentizone.Application.Services
             );
 
             var postsWithIncludes = await postsQuery
-                .Include(p => p.PostAssets).ThenInclude(pa => pa.Asset)
-                .Include(p => p.Seller)
-                .ThenInclude(p => p.University)
-                .ToListAsync();
+                                          .Include(p => p.PostAssets).ThenInclude(pa => pa.Asset)
+                                          .Include(p => p.Seller)
+                                          .ThenInclude(p => p.University)
+                                          .Include(p => p.Category)
+                                          .Include(p => p.SubCategory)
+                                          .ToListAsync();
 
             var mappedPosts = mapper.Map<List<PostViewDto>>(postsWithIncludes);
 

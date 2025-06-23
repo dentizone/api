@@ -111,6 +111,8 @@ namespace Dentizone.Infrastructure.Repositories
         {
             return await dbContext.Posts
                                   .Include(p => p.Seller)
+                                  .Include(p => p.Category)
+                                  .Include(p => p.SubCategory)
                                   .Include(p => p.PostAssets)
                                   .ThenInclude(p => p.Asset)
                                   .ThenInclude(p => p.User.University)
@@ -185,6 +187,11 @@ namespace Dentizone.Infrastructure.Repositories
             var result = dbContext.Posts.AsNoTracking().Where(p => !p.IsDeleted && p.Status == PostStatus.Active);
 
             return result;
+        }
+
+        public IQueryable<Post> GetPendingPosts()
+        {
+            return dbContext.Posts.AsNoTracking().Where(p => !p.IsDeleted && p.Status == PostStatus.Pending);
         }
 
         public async Task<decimal> AveragePostsPriceAsync()
