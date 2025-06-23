@@ -30,15 +30,16 @@ namespace Dentizone.Application.Services
 
 
             var numberOfPosts = await postRepository.GetActivePosts().CountAsync();
+            var pendingPosts = await postRepository.GetPendingPosts().CountAsync();
             var averageValueOfOrders = await postRepository.AveragePostsPriceAsync();
             var postsByCategory = await postRepository.GetPostCountPerCategoryAsync();
             var returnedDto = new PostAnalyticsDto
             {
+                PendingPosts = pendingPosts,
                 TotalPosts = numberOfPosts,
                 AveragePostPrice = averageValueOfOrders,
                 PostsByCategory = postsByCategory
             };
-            //hyupdate lma ygeb mn el DB 
 
             var serialized = JsonConvert.SerializeObject(returnedDto);
             await redisService.SetValue(cacheKey, serialized, TimeSpan.FromMinutes(1800));

@@ -189,6 +189,11 @@ namespace Dentizone.Infrastructure.Repositories
             return result;
         }
 
+        public IQueryable<Post> GetPendingPosts()
+        {
+            return dbContext.Posts.AsNoTracking().Where(p => !p.IsDeleted && p.Status == PostStatus.Pending);
+        }
+
         public async Task<decimal> AveragePostsPriceAsync()
         {
             var posts = GetActivePosts();
