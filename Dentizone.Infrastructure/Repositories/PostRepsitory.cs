@@ -222,9 +222,11 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<IEnumerable<Post>> ValidatePostsByState(List<string> postIds, PostStatus state)
         {
             var posts = await dbContext.Posts
+            .AsNoTracking()
                                        .Where(p => postIds.Contains(p.Id) && p.Status == state)
                                        .Include(p => p.Seller)
                                        .ThenInclude(s => s.Wallet)
+                                       
                                        .ToListAsync();
 
             return posts;
