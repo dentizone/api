@@ -28,20 +28,19 @@ namespace Dentizone.Application.Services
     {
         public async Task<List<Post>> ValidatePosts(List<string> postIds)
         {
-            var posts = await repo.GetAllAsync(p => postIds.Contains(p.Id) && !p.IsDeleted &&
-                                                    p.Status == PostStatus.Active).ToListAsync();
+            var posts = await repo.ValidatePostsByState(postIds, PostStatus.Active);
 
-            if (posts.Count != postIds.Count)
+            if (posts.Count() != postIds.Count)
             {
                 throw new BadActionException("Some of theses posts are not available ");
             }
 
-            if (posts.Count == 0)
+            if (!posts.Any())
             {
                 throw new NotFoundException("No posts found");
             }
 
-            return posts;
+            return posts.ToList();
         }
 
         private async Task ValidateAssetNotUsed(string assetId, string? postIdToExclude = null)
@@ -84,10 +83,10 @@ namespace Dentizone.Application.Services
             await ValidateAssetNotUsed(assetId, postIdToExclude);
 
             var postAsset = new PostAsset
-            {
-                PostId = postId,
-                AssetId = assetId
-            };
+                            {
+                                PostId = postId,
+                                AssetId = assetId
+                            };
 
             await postAssetRepository.CreateAsync(postAsset);
             return postAsset;
@@ -250,23 +249,23 @@ namespace Dentizone.Application.Services
             var categories = availablePosts
                              .GroupBy(p => p.Category.Name)
                              .Select(g => new CategoryFilterDto
-                             {
-                                 Id = g.First().Category.Id,
-                                 CategoryName = g.Key,
-                                 Subcategories = g.Select(p => p.SubCategory.Name)
+                                          {
+                                              Id = g.First().Category.Id,
+                                              CategoryName = g.Key,
+                                              Subcategories = g.Select(p => p.SubCategory.Name)
                                                                .Distinct()
                                                                .OrderBy(s => s).ToList()
-                             })
+                                          })
                              .OrderBy(c => c.CategoryName)
                              .ToList();
 
             var sidebarFilterResults = new SidebarFilterDto
-            {
-                Cities = cities,
-                MinPrice = minPrice,
-                MaxPrice = maxPrice,
-                Categories = categories
-            };
+                                       {
+                                           Cities = cities,
+                                           MinPrice = minPrice,
+                                           MaxPrice = maxPrice,
+                                           Categories = categories
+                                       };
 
 
             // if the sidebarFilterResults is null, we will not cache it

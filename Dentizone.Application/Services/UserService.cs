@@ -1,21 +1,35 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces.User;
+using Dentizone.Application.Services.Payment;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Services
 {
-    public class UserService(IUserRepository userRepository, IMapper mapper) : IUserService
+    public class UserService(IUserRepository userRepository, IMapper mapper, IWalletService walletService, Infrastructure.AppDbContext dbContext)
+        : IUserService
     {
         public async Task<UserView> CreateAsync(CreateAppUser userDto)
         {
-            var userEntity = mapper.Map<AppUser>(userDto);
-            var createdUser = await userRepository.CreateAsync(userEntity);
-            return mapper.Map<UserView>(createdUser);
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                var userEntity = mapper.Map<AppUser>(userDto);
+                var createdUser = await userRepository.CreateAsync(userEntity);
+                await walletService.CreateWallet(userEntity.Id);
+                await transaction.CommitAsync();
+                return mapper.Map<UserView>(createdUser);
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
 

@@ -218,5 +218,18 @@ namespace Dentizone.Infrastructure.Repositories
 
             return result;
         }
+
+        public async Task<IEnumerable<Post>> ValidatePostsByState(List<string> postIds, PostStatus state)
+        {
+            var posts = await dbContext.Posts
+            .AsNoTracking()
+                                       .Where(p => postIds.Contains(p.Id) && p.Status == state)
+                                       .Include(p => p.Seller)
+                                       .ThenInclude(s => s.Wallet)
+                                       
+                                       .ToListAsync();
+
+            return posts;
+        }
     }
 }

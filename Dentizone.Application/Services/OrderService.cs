@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.Order;
 using Dentizone.Application.Interfaces;
+using Dentizone.Application.Interfaces.Cart;
 using Dentizone.Application.Interfaces.Order;
 using Dentizone.Application.Interfaces.Post;
+using Dentizone.Application.Services.Payment;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
@@ -21,12 +23,15 @@ namespace Dentizone.Application.Services
         IShipInfoRepository shipInfoRepository,
         IMailService mailService,
         IAuthService authService,
+        IPaymentService paymentService,
+        ICartService cartService,
         AppDbContext dbContext)
         : IOrderService
     {
         public async Task<OrderViewDto?> CancelOrderAsync(string orderId, string userId)
         {
-            var order = await orderRepository.FindBy(o => o.Id == orderId, [o => o.OrderStatuses, o => o.OrderItems]);
+            var order = await orderRepository.FindBy(o => o.Id == orderId,
+                                                     [o => o.OrderStatuses, o => o.OrderItems]);
 
             if (order == null)
             {
@@ -42,6 +47,12 @@ namespace Dentizone.Application.Services
             {
                 throw new BadActionException("Order is already canceled.");
             }
+
+            if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Arrived))
+            {
+                throw new BadActionException("Order is already completed, cannot cancel.");
+            }
+
 
             var orderStatus = new OrderStatus
             {
@@ -61,7 +72,7 @@ namespace Dentizone.Application.Services
             foreach (var orderItem in order.OrderItems)
             {
                 var post = await postService.GetPostById(orderItem.PostId);
-                if (post != null)
+                if (post is not null)
                 {
                     await postService.UpdatePostStatus(post.Id, PostStatus.Active);
                     var seller = await authService.GetById(post.Seller.Id);
@@ -70,11 +81,25 @@ namespace Dentizone.Application.Services
                 }
             }
 
+            // Get the Payment by order id to cancel it
+            await paymentService.CancelPaymentByOrderId(order.Id);
+
 
             var dto = mapper.Map<OrderViewDto>(order);
             return dto;
         }
 
+        private async Task SendConfirmationEmail(List<string> sellerEmails, string buyerEmail, string orderId)
+        {
+            var emailContent = $"Your order with ID {orderId} has been successfully placed.";
+            await mailService.Send(buyerEmail, "Order Confirmation", emailContent);
+
+            foreach (var email in sellerEmails)
+            {
+                await mailService.Send(email, "New Order Placed",
+                                       $"Your post has been sold. Wait for pickup. Order ID: {orderId}");
+            }
+        }
 
         public async Task<string> CreateOrderAsync(CreateOrderDto createOrderDto, string buyerId)
         {
@@ -104,6 +129,17 @@ namespace Dentizone.Application.Services
                 };
                 await orderStatusRepository.CreateAsync(orderStatus);
 
+                // Create Order Payment
+                var paymentDto = new PaymentDto
+                {
+                    OrderId = result.Id,
+                    BuyerId = buyerId,
+                    Amount = result.TotalAmount,
+                    PaymentMethod = PaymentMethod.COD
+                };
+
+                var payment = await paymentService.CreatePaymentAsync(paymentDto);
+
                 // Create Order Items
 
                 foreach (var post in posts)
@@ -114,6 +150,9 @@ namespace Dentizone.Application.Services
                         PostId = post.Id,
                     };
                     await orderItemRepository.CreateAsync(orderItem);
+                    // Create a Sale Transaction for each order item
+                    await paymentService.CreateSaleTransaction(
+                                                               payment.Id, post.Seller.Wallet.Id, post.Price);
                 }
 
                 // Create Ship Info 
@@ -133,21 +172,22 @@ namespace Dentizone.Application.Services
                     await postService.UpdatePostStatus(post.Id, PostStatus.Sold);
                 }
 
-                // Send Confirmation Email
-                var emailContent = $"Your order with ID {result.Id} has been successfully placed.";
-
                 // Get Buyer and Seller Emails
 
                 var buyer = await authService.GetById(buyerId);
-                await mailService.Send(buyer.Email, "Order Confirmation", emailContent);
 
+                // TEMPO SOLUTION UNTIL WE MAKE THE NEW MIGRATIONS
+                List<string> sellerEmails = [];
                 foreach (var post in posts)
                 {
                     var seller = await authService.GetById(post.SellerId);
-                    await mailService.Send(seller.Email, "New Order Placed",
-                                           $"Your post {post.Title} has been sold. Wait for pickup");
+                    sellerEmails.Add(seller.Email!);
                 }
 
+                await SendConfirmationEmail(sellerEmails, buyer.Email, order.Id);
+                // Reset Cart
+
+                await cartService.ClearCartAsync(buyerId);
 
                 await transaction.CommitAsync();
                 return result.Id;
@@ -176,6 +216,36 @@ namespace Dentizone.Application.Services
             var orders = await orderRepository.GetOrdersWithDetails(buyerId);
 
             return mapper.Map<List<OrderViewDto>>(orders);
+        }
+
+        public async Task CompleteOrder(string orderId)
+        {
+            await paymentService.ConfirmPaymentAsync(orderId);
+
+            // Mark Order as Completed
+            var order = await orderRepository.FindBy(o => o.Id == orderId, [o => o.OrderStatuses]);
+            if (order == null)
+            {
+                throw new NotFoundException("Order not found.");
+            }
+
+            if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Arrived))
+            {
+                throw new BadActionException("Order is already completed.");
+            }
+
+            if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Cancelled))
+            {
+                throw new BadActionException("Order is cancelled, cannot complete.");
+            }
+
+            var orderStatus = new OrderStatus
+            {
+                OrderId = order.Id,
+                Status = OrderStatues.Arrived,
+            };
+
+            await orderStatusRepository.CreateAsync(orderStatus);
         }
     }
 }

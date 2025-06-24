@@ -10,6 +10,7 @@ using Dentizone.Application.Interfaces.Post;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Application.Services;
 using Dentizone.Application.Services.Authentication;
+using Dentizone.Application.Services.Payment;
 using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Mail;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +37,10 @@ namespace Dentizone.Application.DI
             services.AddScoped<IAnalyticsService, AnalyticsService>();
             services.AddScoped<IFavoritesService, FavoriteService>();
             services.AddScoped<IVerificationService, VerificationService>();
+
+            services.AddScoped<IWalletService, WalletService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+
 
             return services;
         }

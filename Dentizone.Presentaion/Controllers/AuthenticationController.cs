@@ -54,6 +54,7 @@ namespace Dentizone.Presentaion.Controllers
                 Id = loggedInUser.User.Id, // IdentityServer uses string IDs for users
             };
             var userData = await userService.CreateAsync(userDataDto);
+
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, registerPayloadDto.Email,
                                                          loggedInUser.role.ToString());
             var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);

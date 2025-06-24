@@ -4,6 +4,7 @@ using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.DependencyInjection;
 using Dentizone.Infrastructure.Filters;
 using Dentizone.Infrastructure.Identity;
+using Dentizone.Infrastructure.Persistence.Seeder;
 using Dentizone.Presentaion.Context;
 using Dentizone.Presentaion.Extensions;
 using Dentizone.Presentaion.Middlewares;
@@ -70,9 +71,9 @@ namespace Dentizone.Presentaion
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
                 // Seed the database with initial data
-                // UniversitySeeder.SeedAsync(dbContext).Wait();
-                // CatalogSeeder.SeedCategoriesAndSubCategoriesAsync(dbContext).Wait();
-                // DataSeeder.SeedAsync(dbContext, userManager).Wait();
+                //UniversitySeeder.SeedAsync(dbContext).Wait();
+                //CatalogSeeder.SeedCategoriesAndSubCategoriesAsync(dbContext).Wait();
+                //DataSeeder.SeedAsync(dbContext, userManager).Wait();
             }
 
             app.Run();

@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class WalletRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IWalletRepository
+    public class WalletRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IWalletRepository
     {
         private AppDbContext DbContext = dbContext;
 
@@ -17,7 +17,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<Wallet?> FindBy(Expression<Func<Wallet, bool>> condition,
-                                          Expression<Func<Wallet, object>>[]? includes)
+            Expression<Func<Wallet, object>>[]? includes)
         {
             IQueryable<Wallet> query = DbContext.Wallets;
             if (includes != null)
@@ -35,7 +35,7 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<Wallet?> GetByIdAsync(string id)
         {
             var wallet = await DbContext.Wallets.Where(w => w.Id == id)
-                                        .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync();
             return wallet;
         }
 
