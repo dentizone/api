@@ -3,6 +3,7 @@ using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Services.Payment
 {
@@ -21,12 +22,12 @@ namespace Dentizone.Application.Services.Payment
         Task CreateWallet(string userId);
         Task<Wallet?> GetWalletByUserIdAsync(string userId);
 
-        Task<WalletView> UpdateBalance(decimal amount, string walletId);
+        Task<WalletView> AddToBalance(decimal amount, string walletId);
 
         Task<WalletView> GetWalletBalanceAsync(string userUd);
     }
 
-    public class WalletService(IWalletRepository walletRepository, IMapper mapper) : IWalletService
+    public class WalletService(IWalletRepository walletRepository, IMapper mapper, Infrastructure.AppDbContext dbContext) : IWalletService
     {
         public async Task CreateWallet(string userId)
         {
@@ -53,27 +54,50 @@ namespace Dentizone.Application.Services.Payment
 
         public async Task<Wallet?> GetWalletByUserIdAsync(string userId)
         {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new ArgumentException("userId cannot be null or empty.", nameof(userId));
+            }
             return await walletRepository.FindBy(w => w.UserId == userId);
         }
 
 
-        public async Task<WalletView> UpdateBalance(decimal amount, string walletId)
+        public async Task<WalletView> AddToBalance(decimal amount, string walletId)
         {
-            var wallet = await walletRepository.FindBy(w => w.Id == walletId && w.Status == UserWallet.ACTIVE);
-
-            if (wallet is null)
+            if (amount == 0)
             {
-                throw new BadActionException("No Wallet for this Wallet Id");
+                throw new ArgumentException("Amount must not be zero.", nameof(amount));
             }
 
-            wallet.Balance += amount;
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                var wallet = await walletRepository.FindBy(w => w.Id == walletId && w.Status == UserWallet.ACTIVE);
 
+                if (wallet is null)
+                {
+                    throw new BadActionException("No Wallet for this Wallet Id");
+                }
 
-            await walletRepository.UpdateAsync(wallet);
+                var newBalance = wallet.Balance + amount;
+                if (newBalance < 0)
+                {
+                    throw new BadActionException("Insufficient wallet balance.");
+                }
 
-            var view = mapper.Map<WalletView>(wallet);
+                wallet.Balance = newBalance;
+                await walletRepository.UpdateAsync(wallet);
 
-            return view;
+                await transaction.CommitAsync();
+
+                var view = mapper.Map<WalletView>(wallet);
+                return view;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<WalletView> GetWalletBalanceAsync(string userUd)

@@ -118,7 +118,7 @@ namespace Dentizone.Application.Services.Payment
 
                     // 5. Transfer Amount to Wallet of the seller
                     var amount = transaction.Amount;
-                    await walletService.UpdateBalance(amount, transaction.WalletId);
+                    await walletService.AddToBalance(amount, transaction.WalletId);
                 }
 
                 var updatedPayment = await repo.UpdateAsync(payment);
