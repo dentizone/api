@@ -49,7 +49,7 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> ConfirmOrder(string orderId)
         {
             await orderService.CompleteOrder(orderId);
-            return Ok();
+            return Ok(new { message = "Order Completed Successfully" });
         }
     }
 }
