@@ -30,5 +30,6 @@ namespace Dentizone.Domain.Interfaces.Repositories
         IQueryable<Post> GetPendingPosts();
         Task<decimal> AveragePostsPriceAsync();
         Task<Dictionary<string, int>> GetPostCountPerCategoryAsync();
+        Task<IEnumerable<Post>> ValidatePostsByState(List<string> postIds, PostStatus state);
     }
 }

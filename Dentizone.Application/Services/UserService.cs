@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces.User;
+using Dentizone.Application.Services.Payment;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
@@ -9,12 +10,14 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services
 {
-    public class UserService(IUserRepository userRepository, IMapper mapper) : IUserService
+    public class UserService(IUserRepository userRepository, IMapper mapper, IWalletService walletService)
+        : IUserService
     {
         public async Task<UserView> CreateAsync(CreateAppUser userDto)
         {
             var userEntity = mapper.Map<AppUser>(userDto);
             var createdUser = await userRepository.CreateAsync(userEntity);
+            await walletService.CreateWallet(userEntity.Id);
             return mapper.Map<UserView>(createdUser);
         }
 

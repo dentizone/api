@@ -3,6 +3,7 @@ using Dentizone.Application.DTOs.Order;
 using Dentizone.Application.Interfaces;
 using Dentizone.Application.Interfaces.Order;
 using Dentizone.Application.Interfaces.Post;
+using Dentizone.Application.Services.Payment;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
@@ -21,6 +22,7 @@ namespace Dentizone.Application.Services
         IShipInfoRepository shipInfoRepository,
         IMailService mailService,
         IAuthService authService,
+        IPaymentService paymentService,
         AppDbContext dbContext)
         : IOrderService
     {
@@ -61,7 +63,7 @@ namespace Dentizone.Application.Services
             foreach (var orderItem in order.OrderItems)
             {
                 var post = await postService.GetPostById(orderItem.PostId);
-                if (post != null)
+                if (post is not null)
                 {
                     await postService.UpdatePostStatus(post.Id, PostStatus.Active);
                     var seller = await authService.GetById(post.Seller.Id);
@@ -104,6 +106,17 @@ namespace Dentizone.Application.Services
                 };
                 await orderStatusRepository.CreateAsync(orderStatus);
 
+                // Create Order Payment
+                var paymentDto = new PaymentDto
+                {
+                    OrderId = result.Id,
+                    BuyerId = buyerId,
+                    Amount = result.TotalAmount,
+                    PaymentMethod = PaymentMethod.COD
+                };
+
+                var payment = await paymentService.CreatePaymentAsync(paymentDto);
+
                 // Create Order Items
 
                 foreach (var post in posts)
@@ -114,6 +127,9 @@ namespace Dentizone.Application.Services
                         PostId = post.Id,
                     };
                     await orderItemRepository.CreateAsync(orderItem);
+                    // Create a Sale Transaction for each order item
+                    await paymentService.CreateSaleTransaction(
+                                                               payment.Id, post.Seller.Wallet.Id, post.Price);
                 }
 
                 // Create Ship Info 

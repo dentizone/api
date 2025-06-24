@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
@@ -37,7 +32,7 @@ namespace Dentizone.Application.Services.Payment
             var existingWallet = await GetWalletByUserIdAsync(userId);
             if (existingWallet != null)
             {
-                throw new InvalidOperationException("Wallet already exists for this user.");
+                throw new BadActionException("Wallet already exists for this user.");
             }
 
             // Create a new wallet
@@ -50,7 +45,7 @@ namespace Dentizone.Application.Services.Payment
             var createdWallet = await walletRepository.CreateAsync(newWallet);
             if (createdWallet == null)
             {
-                throw new InvalidOperationException("Failed to create wallet.");
+                throw new BadActionException("Failed to create wallet.");
             }
         }
 

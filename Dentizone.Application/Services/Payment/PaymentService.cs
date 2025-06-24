@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
@@ -26,7 +27,8 @@ namespace Dentizone.Application.Services.Payment
     }
 
 
-    public class PaymentService(IMapper mapper, IPaymentRepository repo) : IPaymentService
+    public class PaymentService(IMapper mapper, IPaymentRepository repo, ISaleTransactionRepository salesRepo)
+        : IPaymentService
     {
         public async Task<PaymentView> CreatePaymentAsync(PaymentDto payment)
         {
@@ -60,11 +62,28 @@ namespace Dentizone.Application.Services.Payment
 
             return mapper.Map<PaymentView>(payment);
         }
+
+        public async Task CreateSaleTransaction(string paymentId, string walletId, decimal amount)
+        {
+            var saleTransaction = new SalesTransaction
+            {
+                PaymentId = paymentId,
+                WalletId = walletId,
+                Amount = amount,
+                Status = SaleStatus.Pending
+            };
+            var createdTransaction = await salesRepo.CreateAsync(saleTransaction);
+            if (createdTransaction == null)
+            {
+                throw new BadActionException("Failed to create sale transaction.");
+            }
+        }
     }
 
     public interface IPaymentService
     {
         Task<PaymentView> CreatePaymentAsync(PaymentDto payment);
         Task<PaymentView> GetPaymentByIdAsync(string paymentId);
+        Task CreateSaleTransaction(string paymentId, string walletId, decimal amount);
     }
 }
