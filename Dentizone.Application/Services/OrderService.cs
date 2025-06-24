@@ -28,7 +28,8 @@ namespace Dentizone.Application.Services
     {
         public async Task<OrderViewDto?> CancelOrderAsync(string orderId, string userId)
         {
-            var order = await orderRepository.FindBy(o => o.Id == orderId, [o => o.OrderStatuses, o => o.OrderItems]);
+            var order = await orderRepository.FindBy(o => o.Id == orderId,
+                                                     [o => o.OrderStatuses, o => o.OrderItems]);
 
             if (order == null)
             {
@@ -44,6 +45,12 @@ namespace Dentizone.Application.Services
             {
                 throw new BadActionException("Order is already canceled.");
             }
+
+            if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Arrived))
+            {
+                throw new BadActionException("Order is already completed, cannot cancel.");
+            }
+
 
             var orderStatus = new OrderStatus
             {
@@ -72,11 +79,25 @@ namespace Dentizone.Application.Services
                 }
             }
 
+            // Get the Payment by order id to cancel it
+            await paymentService.CancelPaymentByOrderId(order.Id);
+
 
             var dto = mapper.Map<OrderViewDto>(order);
             return dto;
         }
 
+        private async Task SendConfirmationEmail(List<string> sellerEmails, string buyerEmail, string orderId)
+        {
+            var emailContent = $"Your order with ID {orderId} has been successfully placed.";
+            await mailService.Send(buyerEmail, "Order Confirmation", emailContent);
+
+            foreach (var email in sellerEmails)
+            {
+                await mailService.Send(email, "New Order Placed",
+                                       $"Your post has been sold. Wait for pickup. Order ID: {orderId}");
+            }
+        }
 
         public async Task<string> CreateOrderAsync(CreateOrderDto createOrderDto, string buyerId)
         {
@@ -155,14 +176,16 @@ namespace Dentizone.Application.Services
                 // Get Buyer and Seller Emails
 
                 var buyer = await authService.GetById(buyerId);
-                await mailService.Send(buyer.Email, "Order Confirmation", emailContent);
 
+                // TEMPO SOLUTION UNTIL WE MAKE THE NEW MIGRATIONS
+                List<string> sellerEmails = [];
                 foreach (var post in posts)
                 {
                     var seller = await authService.GetById(post.SellerId);
-                    await mailService.Send(seller.Email, "New Order Placed",
-                                           $"Your post {post.Title} has been sold. Wait for pickup");
+                    sellerEmails.Add(seller.Email!);
                 }
+
+                await SendConfirmationEmail(sellerEmails, buyer.Email, order.Id);
 
 
                 await transaction.CommitAsync();
@@ -192,6 +215,36 @@ namespace Dentizone.Application.Services
             var orders = await orderRepository.GetOrdersWithDetails(buyerId);
 
             return mapper.Map<List<OrderViewDto>>(orders);
+        }
+
+        public async Task CompleteOrder(string orderId)
+        {
+            await paymentService.ConfirmPaymentAsync(orderId);
+
+            // Mark Order as Completed
+            var order = await orderRepository.FindBy(o => o.Id == orderId, [o => o.OrderStatuses]);
+            if (order == null)
+            {
+                throw new NotFoundException("Order not found.");
+            }
+
+            if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Arrived))
+            {
+                throw new BadActionException("Order is already completed.");
+            }
+
+            if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Cancelled))
+            {
+                throw new BadActionException("Order is cancelled, cannot complete.");
+            }
+
+            var orderStatus = new OrderStatus
+            {
+                OrderId = order.Id,
+                Status = OrderStatues.Arrived,
+            };
+
+            await orderStatusRepository.CreateAsync(orderStatus);
         }
     }
 }

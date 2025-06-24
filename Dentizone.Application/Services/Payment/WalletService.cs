@@ -22,6 +22,8 @@ namespace Dentizone.Application.Services.Payment
         Task<Wallet?> GetWalletByUserIdAsync(string userId);
 
         Task<WalletView> UpdateBalance(decimal amount, string walletId);
+
+        Task<WalletView> GetWalletBalanceAsync(string userUd);
     }
 
     public class WalletService(IWalletRepository walletRepository, IMapper mapper) : IWalletService
@@ -72,6 +74,18 @@ namespace Dentizone.Application.Services.Payment
             var view = mapper.Map<WalletView>(wallet);
 
             return view;
+        }
+
+        public async Task<WalletView> GetWalletBalanceAsync(string userUd)
+        {
+            var wallet = await GetWalletByUserIdAsync(userUd);
+            if (wallet == null)
+            {
+                throw new NotFoundException("Wallet not found for the user.");
+            }
+
+            var walletView = mapper.Map<WalletView>(wallet);
+            return walletView;
         }
     }
 }

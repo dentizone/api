@@ -44,5 +44,12 @@ namespace Dentizone.Presentaion.Controllers
             var result = await orderService.CancelOrderAsync(orderId, userId);
             return Ok(result);
         }
+
+        [HttpPut("{orderId}/confirm")]
+        public async Task<IActionResult> ConfirmOrder(string orderId)
+        {
+            await orderService.CompleteOrder(orderId);
+            return Ok();
+        }
     }
 }

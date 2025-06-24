@@ -15,7 +15,6 @@ namespace Dentizone.Domain.Entity
         public virtual ICollection<OrderPickup> OrderPickups { get; set; } = new List<OrderPickup>();
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public virtual ICollection<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
-        public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
