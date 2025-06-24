@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.Order;
 using Dentizone.Application.Interfaces;
+using Dentizone.Application.Interfaces.Cart;
 using Dentizone.Application.Interfaces.Order;
 using Dentizone.Application.Interfaces.Post;
 using Dentizone.Application.Services.Payment;
@@ -23,6 +24,7 @@ namespace Dentizone.Application.Services
         IMailService mailService,
         IAuthService authService,
         IPaymentService paymentService,
+        ICartService cartService,
         AppDbContext dbContext)
         : IOrderService
     {
@@ -170,9 +172,6 @@ namespace Dentizone.Application.Services
                     await postService.UpdatePostStatus(post.Id, PostStatus.Sold);
                 }
 
-                // Send Confirmation Email
-                var emailContent = $"Your order with ID {result.Id} has been successfully placed.";
-
                 // Get Buyer and Seller Emails
 
                 var buyer = await authService.GetById(buyerId);
@@ -186,7 +185,9 @@ namespace Dentizone.Application.Services
                 }
 
                 await SendConfirmationEmail(sellerEmails, buyer.Email, order.Id);
+                // Reset Cart
 
+                await cartService.ClearCartAsync(buyerId);
 
                 await transaction.CommitAsync();
                 return result.Id;
