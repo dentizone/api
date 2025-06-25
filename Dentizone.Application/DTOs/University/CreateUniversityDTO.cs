@@ -2,8 +2,10 @@
 
 namespace Dentizone.Application.DTOs.University
 {
-    public class CreateUniversityDto : UniversityDto
+    public class CreateUniversityDto
     {
+        public string Name { get; set; } = string.Empty;
+        public string Domain { get; set; } = string.Empty;
     }
 
     public class CreateUniversityValidation : AbstractValidator<CreateUniversityDto>

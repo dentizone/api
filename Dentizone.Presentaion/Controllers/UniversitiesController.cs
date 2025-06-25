@@ -8,6 +8,13 @@ namespace Dentizone.Presentaion.Controllers
     [ApiController]
     public class UniversitiesController(IUniversityService universityService) : ControllerBase
     {
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var universities = await universityService.GetAllUniversitiesAsync();
+            return Ok(universities);
+        }
+
         [HttpGet("supported")]
         public async Task<IActionResult> GetAllUniversities()
         {
@@ -18,25 +25,13 @@ namespace Dentizone.Presentaion.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUniversityById(string id)
         {
-            try
-            {
-                var university = await universityService.GetUniversityByIdAsync(id);
-                return Ok(university);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var university = await universityService.GetUniversityByIdAsync(id);
+            return Ok(university);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateUniversity([FromBody] CreateUniversityDto universityDto)
         {
-            if (universityDto == null)
-            {
-                return BadRequest("University data is null.");
-            }
-
             var createdUniversity = await universityService.CreateUniversityAsync(universityDto);
             return CreatedAtAction(nameof(GetUniversityById), new { id = createdUniversity.Id }, createdUniversity);
         }
@@ -44,34 +39,15 @@ namespace Dentizone.Presentaion.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUniversity(string id, [FromBody] UpdateUniversityDto updateUniversityDto)
         {
-            if (updateUniversityDto == null)
-            {
-                return BadRequest("University data is null.");
-            }
-
-            try
-            {
-                var updatedUniversity = await universityService.UpdateUniversityAsync(id, updateUniversityDto);
-                return Ok(updatedUniversity);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var updatedUniversity = await universityService.UpdateUniversityAsync(id, updateUniversityDto);
+            return Ok(updatedUniversity);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUniversity(string id)
         {
-            try
-            {
-                var deletedUniversity = await universityService.DeleteUniversity(id);
-                return Ok(deletedUniversity);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var deletedUniversity = await universityService.DeleteUniversity(id);
+            return Ok(deletedUniversity);
         }
     }
 }
