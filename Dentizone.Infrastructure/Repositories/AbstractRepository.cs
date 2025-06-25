@@ -7,6 +7,7 @@ namespace Dentizone.Infrastructure.Repositories
         protected readonly int DefaultPageSize = Pagination.DefaultPageSize;
         protected readonly AppDbContext dbContext = dbContext;
 
+
         protected int CalculatePagination(int page)
         {
             if (page < 1)

@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.DTOs.Order;
+﻿using Dentizone.Application.DTOs;
+using Dentizone.Application.DTOs.Order;
 
 namespace Dentizone.Application.Interfaces.Order
 {
@@ -9,6 +10,6 @@ namespace Dentizone.Application.Interfaces.Order
         Task<List<OrderViewDto>> GetOrdersByBuyerAsync(string buyerId);
         Task<OrderViewDto?> CancelOrderAsync(string orderId, string userId);
         Task CompleteOrder(string orderId);
-        Task<IReadOnlyCollection<OrderViewDto>> GetOrders(int Page);
+        Task<PagedResultDto<OrderViewDto>> GetOrders(int Page);
     }
 }
