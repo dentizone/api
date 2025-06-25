@@ -40,7 +40,7 @@ namespace Dentizone.Application.DI
 
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<IPaymentService, PaymentService>();
-
+            services.AddScoped<IWithdrawalService, WithdrawalService>();
 
             return services;
         }
