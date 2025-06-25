@@ -5,8 +5,6 @@
         public bool? IsSupported { get; set; }
         public string? Name { get; set; }
 
-        public string? Domain { get; set; };
-
-
+        public string? Domain { get; set; }
     }
 }
