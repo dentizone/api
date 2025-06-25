@@ -10,10 +10,6 @@ public interface IOrderRepository : IBaseRepo<Order>
     Task<IReadOnlyCollection<Order>> GetOrdersWithDetails(string buyerId);
     Task<PagedResult<Order>> GetAllAsync(int page, Expression<Func<Order, bool>>? filter);
 
-    Task<PagedResult<Order>> GetAllAsync(int page, Expression<Func<Order, bool>> filter,
-                                         Expression<Func<Order, object>>? orderBy = null,
-                                         Expression<Func<Order, object>>[]? includes = null);
-
     Task<int> CountTotalOrders();
     Task<decimal> AverageValueOfOrders();
 }

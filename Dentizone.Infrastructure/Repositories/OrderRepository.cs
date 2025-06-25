@@ -43,14 +43,22 @@ namespace Dentizone.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(condition);
         }
 
-
-        public async Task<PagedResult<Order>> GetAllAsync(int page, Expression<Func<Order, bool>> filter = null)
+        private IQueryable<Order> BuildPagedQuery(int page, Expression<Func<Order, bool>>? filter)
         {
             IQueryable<Order> query = dbContext.Orders;
             if (filter != null)
             {
-                query = query.Where(filter);
+                query = query.Where(filter).OrderByDescending(o => o.CreatedAt)
+                             .Skip(CalculatePagination(page))
+                             .Take(DefaultPageSize);
             }
+
+            return query;
+        }
+
+        public async Task<PagedResult<Order>> GetAllAsync(int page, Expression<Func<Order, bool>>? filter)
+        {
+            var query = BuildPagedQuery(page, filter);
 
             var totalCount = await query.CountAsync();
 
@@ -60,9 +68,6 @@ namespace Dentizone.Infrastructure.Repositories
                          .Include(o => o.ShipInfo)
                          .Include(o => o.OrderStatuses);
 
-            query = query.OrderByDescending(o => o.CreatedAt)
-                         .Skip(CalculatePagination(page))
-                         .Take(DefaultPageSize);
 
             return new PagedResult<Order>
             {
@@ -73,41 +78,6 @@ namespace Dentizone.Infrastructure.Repositories
             };
         }
 
-        public async Task<PagedResult<Order>> GetAllAsync(int page, Expression<Func<Order, bool>>? filter,
-                                                          Expression<Func<Order, object>>? orderBy = null,
-                                                          Expression<Func<Order, object>>[]? includes = null)
-        {
-            IQueryable<Order> query = dbContext.Orders;
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-
-            if (includes != null)
-            {
-                foreach (var include in includes)
-                {
-                    query = query.Include(include);
-                }
-            }
-
-            var totalCount = await query.CountAsync();
-            if (orderBy != null)
-            {
-                query = query.OrderByDescending(orderBy);
-            }
-
-            query = query.Skip(CalculatePagination(page)).Take(DefaultPageSize);
-            return new PagedResult<Order>
-            {
-                Items = await query.ToListAsync(),
-                Page = page,
-                PageSize = DefaultPageSize,
-                TotalCount = totalCount
-            };
-        }
 
         public async Task<Order?> GetOrderDetails(string orderId, string buyerId)
         {
