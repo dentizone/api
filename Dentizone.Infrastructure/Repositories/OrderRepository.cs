@@ -1,5 +1,5 @@
-﻿using Dentizone.Application.DTOs;
-using Dentizone.Domain.Entity;
+﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -49,13 +49,12 @@ namespace Dentizone.Infrastructure.Repositories
             IQueryable<Order> query = dbContext.Orders;
             if (filter != null)
             {
-                query.Where(filter);
+                query = query.Where(filter);
             }
 
             var totalCount = await query.CountAsync();
 
             query = query.Include(o => o.Buyer)
-                         .Include(o => o.OrderItems)
                          .Include(o => o.OrderItems)
                          .ThenInclude(p => p.Post)
                          .Include(o => o.ShipInfo)
@@ -82,7 +81,7 @@ namespace Dentizone.Infrastructure.Repositories
 
             if (filter != null)
             {
-                query.Where(filter);
+                query = query.Where(filter);
             }
 
 

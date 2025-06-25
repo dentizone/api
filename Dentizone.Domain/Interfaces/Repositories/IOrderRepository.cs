@@ -1,5 +1,4 @@
-﻿using Dentizone.Application.DTOs;
-using Dentizone.Domain.Entity;
+﻿using Dentizone.Domain.Entity;
 using System.Linq.Expressions;
 
 namespace Dentizone.Domain.Interfaces.Repositories;

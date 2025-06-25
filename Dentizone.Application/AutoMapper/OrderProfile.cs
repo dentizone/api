@@ -2,6 +2,7 @@
 using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Order;
 using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Application.AutoMapper;
 
