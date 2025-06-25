@@ -51,5 +51,13 @@ namespace Dentizone.Presentaion.Controllers
             await orderService.CompleteOrder(orderId);
             return Ok(new { message = "Order Completed Successfully" });
         }
+
+        [HttpGet("all")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllOrders([FromQuery] int page = 1)
+        {
+            var orders = await orderService.GetOrders(page);
+            return Ok(orders);
+        }
     }
 }

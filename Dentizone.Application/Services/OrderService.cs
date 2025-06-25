@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Order;
 using Dentizone.Application.Interfaces;
 using Dentizone.Application.Interfaces.Cart;
@@ -55,10 +56,10 @@ namespace Dentizone.Application.Services
 
 
             var orderStatus = new OrderStatus
-                              {
-                                  OrderId = order.Id,
-                                  Status = OrderStatues.Cancelled,
-                              };
+            {
+                OrderId = order.Id,
+                Status = OrderStatues.Cancelled,
+            };
             await orderStatusRepository.CreateAsync(orderStatus);
 
             // send cancellation email
@@ -110,11 +111,11 @@ namespace Dentizone.Application.Services
                 var posts = await postService.ValidatePosts(createOrderDto.PostIds);
 
                 var order = new Order
-                            {
-                                BuyerId = buyerId,
-                                CommissionAmount = 0.2m,
-                                TotalAmount = posts.Sum(p => p.Price) * 1.2m,
-                            };
+                {
+                    BuyerId = buyerId,
+                    CommissionAmount = 0.2m,
+                    TotalAmount = posts.Sum(p => p.Price) * 1.2m,
+                };
 
                 var result = await orderRepository.CreateAsync(order);
                 if (result == null)
@@ -123,20 +124,20 @@ namespace Dentizone.Application.Services
                 }
 
                 var orderStatus = new OrderStatus
-                                  {
-                                      OrderId = result.Id,
-                                      Status = OrderStatues.Placed,
-                                  };
+                {
+                    OrderId = result.Id,
+                    Status = OrderStatues.Placed,
+                };
                 await orderStatusRepository.CreateAsync(orderStatus);
 
                 // Create Order Payment
                 var paymentDto = new PaymentDto
-                                 {
-                                     OrderId = result.Id,
-                                     BuyerId = buyerId,
-                                     Amount = result.TotalAmount,
-                                     PaymentMethod = PaymentMethod.COD
-                                 };
+                {
+                    OrderId = result.Id,
+                    BuyerId = buyerId,
+                    Amount = result.TotalAmount,
+                    PaymentMethod = PaymentMethod.COD
+                };
 
                 var payment = await paymentService.CreatePaymentAsync(paymentDto);
 
@@ -145,10 +146,10 @@ namespace Dentizone.Application.Services
                 foreach (var post in posts)
                 {
                     var orderItem = new OrderItem
-                                    {
-                                        OrderId = result.Id,
-                                        PostId = post.Id,
-                                    };
+                    {
+                        OrderId = result.Id,
+                        PostId = post.Id,
+                    };
                     await orderItemRepository.CreateAsync(orderItem);
                     // Create a Sale Transaction for each order item
                     await paymentService.CreateSaleTransaction(
@@ -158,12 +159,12 @@ namespace Dentizone.Application.Services
                 // Create Ship Info 
 
                 var shipInfo = new ShipInfo
-                               {
-                                   OrderId = result.Id,
-                                   Street = createOrderDto.ShipInfo.Address,
-                                   City = createOrderDto.ShipInfo.City,
-                                   UserId = buyerId
-                               };
+                {
+                    OrderId = result.Id,
+                    Street = createOrderDto.ShipInfo.Address,
+                    City = createOrderDto.ShipInfo.City,
+                    UserId = buyerId
+                };
                 await shipInfoRepository.CreateAsync(shipInfo);
 
                 // Mark the post as Sold
@@ -240,27 +241,21 @@ namespace Dentizone.Application.Services
             }
 
             var orderStatus = new OrderStatus
-                              {
-                                  OrderId = order.Id,
-                                  Status = OrderStatues.Arrived,
-                              };
+            {
+                OrderId = order.Id,
+                Status = OrderStatues.Arrived,
+            };
 
             await orderStatusRepository.CreateAsync(orderStatus);
         }
 
-        public async Task<IReadOnlyCollection<OrderViewDto>> GetOrders(int Page)
+        public async Task<PagedResultDto<OrderViewDto>> GetOrders(int Page)
         {
             var order = await orderRepository.GetAllAsync(
-                                                          Page,
-                                                          filter: null,
-                                                          includes:
-                                                          [
-                                                              o => o.OrderStatuses, o => o.OrderItems, o => o.ShipInfo,
-                                                              o => o.Buyer
-                                                          ],
-                                                          orderBy: q => q.CreatedAt);
+                                                          Page, null
+                                                         );
 
-            return mapper.Map<IReadOnlyCollection<OrderViewDto>>(order);
+            return mapper.Map<PagedResultDto<OrderViewDto>>(order);
         }
     }
 }

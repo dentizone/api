@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Order;
 using Dentizone.Domain.Entity;
 
@@ -23,5 +24,11 @@ public class OrderProfile : Profile
             .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
             .ForMember(dest => dest.StatusTimeline, opt => opt.MapFrom(src => src.OrderStatuses))
             .ForMember(dest => dest.OrderShipmentAddress, opt => opt.MapFrom(src => src.ShipInfo));
+
+        CreateMap(typeof(PagedResult<>), typeof(PagedResultDto<>))
+            .ForMember("Items", opt => opt.MapFrom("Items"))
+            .ForMember("Page", opt => opt.MapFrom("Page"))
+            .ForMember("PageSize", opt => opt.MapFrom("PageSize"))
+            .ForMember("TotalCount", opt => opt.MapFrom("TotalCount"));
     }
 }
