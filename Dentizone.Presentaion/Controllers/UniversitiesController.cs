@@ -9,9 +9,9 @@ namespace Dentizone.Presentaion.Controllers
     public class UniversitiesController(IUniversityService universityService) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1)
         {
-            var universities = await universityService.GetAllUniversitiesAsync();
+            var universities = await universityService.GetAllUniversitiesAsync(page);
             return Ok(universities);
         }
 

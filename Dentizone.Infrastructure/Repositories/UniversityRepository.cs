@@ -1,4 +1,5 @@
 ﻿using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -58,11 +59,40 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
 
-        public async Task<ICollection<University>> GetAll()
+        public async Task<IReadOnlyCollection<University>> GetAll()
         {
             return await dbContext.Universities
                                   .Where(u => !u.IsDeleted)
+                                  .OrderByDescending(u => u.CreatedAt)
+                                  .AsNoTracking()
                                   .ToListAsync();
+        }
+
+        public async Task<PagedResult<University>> GetAll(int page, Expression<Func<University, bool>>? filter)
+        {
+            var query = dbContext.Universities.AsQueryable();
+            query = query.Where(u => !u.IsDeleted)
+                         .OrderByDescending(u => u.CreatedAt);
+
+            var totalCount = await query.CountAsync();
+
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            var items = await query
+                              .Skip(CalculatePagination(page))
+                              .Take(DefaultPageSize)
+                              .ToListAsync();
+            return new PagedResult<University>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageSize = DefaultPageSize,
+                Page = page
+            };
         }
     }
 }

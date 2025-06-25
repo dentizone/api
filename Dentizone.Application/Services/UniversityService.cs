@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.University;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
@@ -23,10 +24,10 @@ namespace Dentizone.Application.Services
                    throw new NotFoundException("No University found with this id. Please check the id and try again.");
         }
 
-        public async Task<IReadOnlyList<UniversityDto>> GetAllUniversitiesAsync()
+        public async Task<PagedResultDto<UniversityDto>> GetAllUniversitiesAsync(int page = 1)
         {
-            var universities = await repo.GetAll();
-            return mapper.Map<IReadOnlyList<UniversityDto>>(universities);
+            var universities = await repo.GetAll(page, null);
+            return mapper.Map<PagedResultDto<UniversityDto>>(universities);
         }
 
         public async Task<IReadOnlyList<SupportedUniversitiesDto>> GetSupportedUniversitiesAsync()
@@ -35,6 +36,7 @@ namespace Dentizone.Application.Services
             var supported = universities.Where(u => u.IsSupported).ToList();
             return mapper.Map<IReadOnlyList<SupportedUniversitiesDto>>(supported);
         }
+
 
         public async Task<UniversityDto> GetUniversityByIdAsync(string id)
         {
