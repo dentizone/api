@@ -48,7 +48,7 @@ namespace Dentizone.Infrastructure.Repositories
             IQueryable<Order> query = dbContext.Orders;
             if (filter != null)
             {
-                query = query.Where(filter).OrderByDescending(o => o.CreatedAt)
+                query = query.OrderByDescending(o => o.CreatedAt)
                              .Skip(CalculatePagination(page))
                              .Take(DefaultPageSize);
             }
@@ -56,7 +56,7 @@ namespace Dentizone.Infrastructure.Repositories
             return query;
         }
 
-        public async Task<PagedResult<Order>> GetAllAsync(int page, Expression<Func<Order, bool>>? filter)
+        public async Task<PagedResult<Order>> GetAllAsync(int page, Expression<Func<Order, bool>> filter)
         {
             var query = BuildPagedQuery(page, filter);
 
@@ -67,6 +67,8 @@ namespace Dentizone.Infrastructure.Repositories
                          .ThenInclude(p => p.Post)
                          .Include(o => o.ShipInfo)
                          .Include(o => o.OrderStatuses);
+
+            query = query.Where(filter);
 
 
             return new PagedResult<Order>

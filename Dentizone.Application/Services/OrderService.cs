@@ -12,6 +12,7 @@ using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
+using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services
 {
@@ -249,10 +250,20 @@ namespace Dentizone.Application.Services
             await orderStatusRepository.CreateAsync(orderStatus);
         }
 
-        public async Task<PagedResultDto<OrderViewDto>> GetOrders(int Page)
+        public async Task<PagedResultDto<OrderViewDto>> GetOrders(int page, FilterOrderDto filters)
         {
+            // Apply filters if any
+
+            Expression<Func<Order, bool>> filterExpression = o =>
+                (string.IsNullOrEmpty(filters.BuyerName) || o.Buyer.FullName.Contains(filters.BuyerName)) &&
+                (string.IsNullOrEmpty(filters.OrderId) || o.Id.ToString().Contains(filters.OrderId)) &&
+                (filters.Status == null ||
+                 o.OrderStatuses.Any(os => os.Status.ToString().Contains(filters.Status.ToString())));
+
+
             var order = await orderRepository.GetAllAsync(
-                                                          Page, null
+                                                          page,
+                                                          filterExpression
                                                          );
 
             return mapper.Map<PagedResultDto<OrderViewDto>>(order);

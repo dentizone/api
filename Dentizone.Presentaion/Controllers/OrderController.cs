@@ -54,9 +54,9 @@ namespace Dentizone.Presentaion.Controllers
 
         [HttpGet("all")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAllOrders([FromQuery] int page = 1)
+        public async Task<IActionResult> GetAllOrders([FromQuery] FilterOrderDto filters, [FromQuery] int page = 1)
         {
-            var orders = await orderService.GetOrders(page);
+            var orders = await orderService.GetOrders(page, filters);
             return Ok(orders);
         }
     }
