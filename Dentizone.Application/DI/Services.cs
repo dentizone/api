@@ -7,6 +7,7 @@ using Dentizone.Application.Interfaces.Cloudinary;
 using Dentizone.Application.Interfaces.Favorites;
 using Dentizone.Application.Interfaces.Order;
 using Dentizone.Application.Interfaces.Post;
+using Dentizone.Application.Interfaces.Review;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Application.Services;
 using Dentizone.Application.Services.Authentication;
@@ -41,6 +42,7 @@ namespace Dentizone.Application.DI
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<IPaymentService, PaymentService>();
 
+            services.AddScoped<IReviewService, ReviewService>();
 
             return services;
         }
