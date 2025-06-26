@@ -2,9 +2,10 @@
 {
     public enum ShipmentActivityStatus
     {
-        pending = 0,
-        shipped = 1,
-        delivered = 2,
-        cancelled = 3
+        Pending = 0,
+        PickedUp = 1,  // New
+        Shipped = 2,   // Corresponds to "In its way"
+        Delivered = 3, // Corresponds to "Arrived"
+        Cancelled = 4
     }
 }

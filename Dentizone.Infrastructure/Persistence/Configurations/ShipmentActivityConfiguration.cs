@@ -1,6 +1,6 @@
 ﻿using Dentizone.Domain.Entity;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Dentizone.Infrastructure.Persistence.Configurations
 {
@@ -11,30 +11,30 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
             builder.HasKey(sa => sa.Id);
 
             builder.Property(sa => sa.Id)
-                .IsRequired();
+                   .IsRequired();
 
 
-            builder.Property(sa => sa.OrderId)
-                .IsRequired();
+            builder.Property(sa => sa.ItemId)
+                   .IsRequired();
 
 
             builder.Property(sa => sa.Status)
-                .IsRequired();
+                   .IsRequired();
 
 
             builder.Property(sa => sa.ActivityDescription)
-                .HasColumnType("text");
+                   .HasColumnType("text");
 
             builder.Property(sa => sa.CreatedAt)
-                .IsRequired()
-                .ValueGeneratedOnAdd()
-                .HasDefaultValueSql(SqlCommon.Date);
+                   .IsRequired()
+                   .ValueGeneratedOnAdd()
+                   .HasDefaultValueSql(SqlCommon.Date);
 
 
-            builder.HasOne(sa => sa.Order)
-                .WithMany(o => o.ShipmentActivities)
-                .HasForeignKey(sa => sa.OrderId)
-                .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(sa => sa.Item)
+                   .WithMany(o => o.ShipmentActivities)
+                   .HasForeignKey(sa => sa.ItemId)
+                   .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

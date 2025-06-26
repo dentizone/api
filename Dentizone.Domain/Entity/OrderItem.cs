@@ -11,5 +11,7 @@ namespace Dentizone.Domain.Entity
         public virtual Post Post { get; set; }
         public string OrderId { get; set; }
         public virtual Order Order { get; set; }
+
+        public ICollection<ShipmentActivity> ShipmentActivities { get; set; } = new List<ShipmentActivity>();
     }
 }
