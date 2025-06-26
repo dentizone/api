@@ -15,7 +15,8 @@ namespace Dentizone.Application.AutoMapper
         {
             CreateMap<WithdrawalRequestDto, WithdrawalRequest>().ReverseMap();
             CreateMap<WithdrawalRequest, WithdrawalRequestView>()
-                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Wallet.UserId.ToString()));
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Wallet.UserId.ToString()))
+                .ReverseMap();
         }
 
     }

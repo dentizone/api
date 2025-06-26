@@ -11,7 +11,7 @@ namespace Dentizone.Application.DTOs.Withdrawal
         public string Id { get; set; }
         public decimal Amount { get; set; }
         public string WalletId { get; set; }
-        public string Status { get; set; } // e.g., Pending, Completed, Failed
-        public string UserId { get; set; } // The ID of the user who made the withdrawal request
+        public string Status { get; set; } 
+        public string UserId { get; set; } 
     }
 }

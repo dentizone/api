@@ -44,7 +44,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers(int page, string? search = null)
+        public async Task<IActionResult> GetAllUsers(string? search = null, int page = 1)
         {
             var users = await userService.GetAllAsync(page, search);
             return Ok(users);
