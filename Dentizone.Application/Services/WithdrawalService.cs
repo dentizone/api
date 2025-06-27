@@ -78,18 +78,16 @@ namespace Dentizone.Application.Services
             request.AdminNotes = adminNote;
 
 
-            var updatedRequest = await withdrawalRepo.UpdateAsync(request);
+            await withdrawalRepo.UpdateAsync(request);
 
-            if (updatedRequest == null)
-                throw new BadActionException("Failed to update withdrawal request.");
 
-            var UserId = updatedRequest.Wallet.UserId;
+            //  var UserId = request.Wallet.User.Email ;
 
             var subject = "Withdrawal Approved";
             var body = $"Your withdrawal request of {request.Amount:C} has been approved. Note:{adminNote}";
-            await mailService.Send(UserId, subject, body);
+            //  await mailService.Send(UserId, subject, body);
 
-            return mapper.Map<WithdrawalRequestView>(updatedRequest);
+            return mapper.Map<WithdrawalRequestView>(request);
         }
 
         public async Task<WithdrawalRequestView> RejectWithdrawalAsync(string id, string? adminNote)

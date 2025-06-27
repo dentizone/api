@@ -1,7 +1,4 @@
-﻿using Dentizone.Application.DTOs.Withdrawal;
-using Dentizone.Application.Interfaces;
-using Dentizone.Application.Services;
-using Microsoft.AspNetCore.Http;
+﻿using Dentizone.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers
@@ -10,18 +7,18 @@ namespace Dentizone.Presentaion.Controllers
     [ApiController]
     public class AdminController(IWithdrawalService withdrawalService) : ControllerBase
     {
-        [HttpPut("withdrawal/{id}/approve")]
-        public async Task<IActionResult> ApproveWithdrawal(string id, [FromBody] string adminNote)
+        [HttpPost("withdrawal/{id}/approve")]
+        public async Task<IActionResult> ApproveWithdrawal(string id)
         {
-            var approvedRequest = await withdrawalService.ApproveWithdrawalAsync(id, adminNote);
+            var approvedRequest = await withdrawalService.ApproveWithdrawalAsync(id, "adminNote");
 
             return Ok(approvedRequest);
         }
 
-        [HttpPut("withdrawal/{id}/reject")]
-        public async Task<IActionResult> RejectWithdrawal(string id, [FromBody] string adminNote)
+        [HttpPost("withdrawal/{id}/reject")]
+        public async Task<IActionResult> RejectWithdrawal(string id)
         {
-            var rejectedRequest = await withdrawalService.RejectWithdrawalAsync(id, adminNote);
+            var rejectedRequest = await withdrawalService.RejectWithdrawalAsync(id, "adminNote");
             return Ok(rejectedRequest);
         }
     }
