@@ -3,7 +3,6 @@ using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Services.Payment
 {
@@ -25,9 +24,14 @@ namespace Dentizone.Application.Services.Payment
         Task<WalletView> AddToBalance(decimal amount, string walletId);
 
         Task<WalletView> GetWalletBalanceAsync(string userId);
+
+        Task<WalletView> UpdateWallet(Wallet updatedWallet);
     }
 
-    public class WalletService(IWalletRepository walletRepository, IMapper mapper, Infrastructure.AppDbContext dbContext) : IWalletService
+    public class WalletService(
+        IWalletRepository walletRepository,
+        IMapper mapper,
+        Infrastructure.AppDbContext dbContext) : IWalletService
     {
         public async Task CreateWallet(string userId)
         {
@@ -58,6 +62,7 @@ namespace Dentizone.Application.Services.Payment
             {
                 throw new ArgumentException("userId cannot be null or empty.", nameof(userId));
             }
+
             return await walletRepository.FindBy(w => w.UserId == userId);
         }
 
@@ -110,6 +115,17 @@ namespace Dentizone.Application.Services.Payment
 
             var walletView = mapper.Map<WalletView>(wallet);
             return walletView;
+        }
+
+        public async Task<WalletView> UpdateWallet(Wallet updatedWallet)
+        {
+            var updatedEntity = await walletRepository.UpdateAsync(updatedWallet);
+            if (updatedEntity == null)
+            {
+                throw new BadActionException("Failed to update wallet.");
+            }
+
+            return mapper.Map<WalletView>(updatedEntity);
         }
     }
 }

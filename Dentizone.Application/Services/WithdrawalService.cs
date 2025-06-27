@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using Dentizone.Application.DTOs.Withdrawal;
 using Dentizone.Application.Interfaces;
 using Dentizone.Application.Services.Payment;
@@ -8,28 +7,31 @@ using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace Dentizone.Application.Services
 {
-    public class WithdrawalService(IWithdrawalService withdrawalService, IWalletService walletService, IWalletRepository walletRepo, IWithdrawalRequestRepository withdrawalRepo,IMailService mailService,  IMapper mapper) : IWithdrawalService
+    public class WithdrawalService(
+        IWalletService walletService,
+        IWithdrawalRequestRepository withdrawalRepo,
+        IMailService mailService,
+        IMapper mapper) : IWithdrawalService
     {
-        public async Task<WithdrawalRequestView> CreateWithdrawalRequestAsync(string userId, WithdrawalRequestDto withdrawalRequestDto )
+        public async Task<WithdrawalRequestView> CreateWithdrawalRequestAsync(
+            string userId, WithdrawalRequestDto withdrawalRequestDto)
         {
             var wallet = await walletService.GetWalletByUserIdAsync(userId);
             if (wallet == null)
-                throw new InvalidOperationException("Wallet not found.");
+                throw new NotFoundException("Wallet not found.");
             if (wallet.Balance < withdrawalRequestDto.Amount)
-                throw new InvalidOperationException("Insufficient balance.");
+                throw new BadActionException("Insufficient balance.");
 
             wallet.Balance -= withdrawalRequestDto.Amount;
-            await walletRepo.UpdateAsync(wallet);
+            await walletService.UpdateWallet(wallet);
 
 
             var request = new WithdrawalRequest
             {
-                Id = Guid.NewGuid().ToString(),
                 WalletId = wallet.Id,
                 Amount = withdrawalRequestDto.Amount,
                 Status = WithdrawalRequestStatus.Pending
@@ -37,7 +39,7 @@ namespace Dentizone.Application.Services
             var createdRequest = await withdrawalRepo.CreateAsync(request);
             if (createdRequest == null)
             {
-                throw new NotFoundException("Failed to create withdrawal request.");
+                throw new BadActionException("Failed to create withdrawal request.");
             }
 
             var withdrawalView = mapper.Map<WithdrawalRequestView>(createdRequest);
@@ -54,8 +56,9 @@ namespace Dentizone.Application.Services
             var withdrawalRequests = await withdrawalRepo.GetAllAsync(page, w => w.WalletId == wallet.Id);
             if (!withdrawalRequests.Any())
             {
-                throw new NotFoundException("No withdrawal requests found for this user.");
+                return [];
             }
+
             var withdrawalView = mapper.Map<List<WithdrawalRequestView>>(withdrawalRequests);
             return withdrawalView;
         }
@@ -67,9 +70,9 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException("Withdrawal request not found.");
 
             if (request.Status != WithdrawalRequestStatus.Pending)
-                throw new InvalidOperationException("Only pending requests can be approved.");
+                throw new BadActionException("Only pending requests can be approved.");
 
-            request.Status = WithdrawalRequestStatus.Approved;  
+            request.Status = WithdrawalRequestStatus.Approved;
             if (string.IsNullOrEmpty(adminNote))
                 request.AdminNotes = "No additional notes provided.";
             request.AdminNotes = adminNote;
@@ -78,14 +81,14 @@ namespace Dentizone.Application.Services
             var updatedRequest = await withdrawalRepo.UpdateAsync(request);
 
             if (updatedRequest == null)
-                throw new NotFoundException("Failed to update withdrawal request.");
+                throw new BadActionException("Failed to update withdrawal request.");
 
             var UserId = updatedRequest.Wallet.UserId;
 
             var subject = "Withdrawal Approved";
             var body = $"Your withdrawal request of {request.Amount:C} has been approved. Note:{adminNote}";
-            await mailService.Send(UserId, subject, body); 
-            
+            await mailService.Send(UserId, subject, body);
+
             return mapper.Map<WithdrawalRequestView>(updatedRequest);
         }
 
@@ -96,7 +99,7 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException("Withdrawal request not found.");
 
             if (request.Status != WithdrawalRequestStatus.Pending)
-                throw new InvalidOperationException("Only pending requests can be rejected.");
+                throw new BadActionException("Only pending requests can be rejected.");
 
             request.Status = WithdrawalRequestStatus.Rejected;
 
