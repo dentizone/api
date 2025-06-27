@@ -7,7 +7,7 @@ using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.Interfaces.Order
 {
-    internal interface IShippingService
+   public interface IShippingService
     {
        
          void UpdateItemShipmentStatusAsync(string orderItemId, ShipmentActivityStatus newStatus);
