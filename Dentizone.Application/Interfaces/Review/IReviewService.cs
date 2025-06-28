@@ -7,6 +7,6 @@ namespace Dentizone.Application.Interfaces.Review
         Task CreateOrderReviewAsync(string userId, CreateReviewDto createReviewDto);
         Task UpdateReviewAsync(string reviewId, UpdateReviewDto updateReviewDto);
         Task DeleteReviewAsync(string reviewId);
-        Task<IEnumerable<ReviewDto>> GetUserReviewsTaken(string userId);
+        Task<IEnumerable<ReviewDto>> GetSubmittedReviews(string userId);
     }
 }

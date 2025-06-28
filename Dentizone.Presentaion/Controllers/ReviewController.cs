@@ -20,14 +20,14 @@ namespace Dentizone.Presentaion.Controllers
             return Ok();
         }
 
-        [HttpPut("{reviewId}")]
+        [HttpPut("{reviewId}")] // ADMIN ONLY
         public async Task<IActionResult> UpdateReview(string reviewId, [FromBody] UpdateReviewDto updateReviewDto)
         {
             await reviewService.UpdateReviewAsync(reviewId, updateReviewDto);
             return Ok();
         }
 
-        [HttpDelete("{reviewId}")]
+        [HttpDelete("{reviewId}")] // ADMIN ONLY
         public async Task<IActionResult> DeleteReview(string reviewId)
         {
             await reviewService.DeleteReviewAsync(reviewId);
@@ -35,11 +35,11 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserReviews()
+        public async Task<IActionResult> GetSubmittedReviews()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var reviews = await reviewService.GetUserReviewsTaken(userId);
+            var reviews = await reviewService.GetSubmittedReviews(userId);
             return Ok(reviews);
         }
     }

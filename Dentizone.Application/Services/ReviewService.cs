@@ -27,7 +27,7 @@ namespace Dentizone.Application.Services
             await repo.DeleteAsync(reviewId);
         }
 
-        public async Task<IEnumerable<ReviewDto>> GetUserReviewsTaken(string userId)
+        public async Task<IEnumerable<ReviewDto>> GetSubmittedReviews(string userId)
         {
             var review = repo.FindAllBy(r => r.UserId == userId && !r.IsDeleted);
 
