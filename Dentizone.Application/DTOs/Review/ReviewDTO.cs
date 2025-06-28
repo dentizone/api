@@ -13,6 +13,7 @@ namespace Dentizone.Application.DTOs.Review
         public ReviewDtoValidation()
         {
             RuleFor(x => x.Comment)
+                .NotEmpty()
                 .NotNull().WithMessage("Comment cannot be null.")
                 .MaximumLength(500).WithMessage("Comment must not exceed 500 characters.");
 
