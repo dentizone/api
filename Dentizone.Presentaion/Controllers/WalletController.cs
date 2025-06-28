@@ -1,4 +1,6 @@
-﻿using Dentizone.Application.Services.Payment;
+﻿using Dentizone.Application.DTOs.Withdrawal;
+using Dentizone.Application.Interfaces;
+using Dentizone.Application.Services.Payment;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -6,7 +8,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class WalletController(IWalletService walletService) : ControllerBase
+    public class WalletController(IWalletService walletService, IWithdrawalService withdrawalService) : ControllerBase
     {
         [HttpGet("balance")]
         public async Task<IActionResult> GetWalletBalance()
@@ -16,6 +18,21 @@ namespace Dentizone.Presentaion.Controllers
 
             var wallet = await walletService.GetWalletBalanceAsync(userId);
             return Ok(wallet);
+        }
+        [HttpPost("withdraw")]
+        public async Task<IActionResult> RequestWithdrawal([FromBody] WithdrawalRequestDto withdrawalRequestDto)
+        {
+            var UserId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+
+            var request = await withdrawalService.CreateWithdrawalRequestAsync(UserId, withdrawalRequestDto);
+            return Ok(request);
+        }
+        [HttpGet("withdrawal-history")]
+        public async Task<IActionResult> GetWithdrawalHistory(int page = 1)
+        {
+            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var history = await withdrawalService.GetWithdrawalHistoryAsync(userId, page);
+            return Ok(history);
         }
     }
 }
