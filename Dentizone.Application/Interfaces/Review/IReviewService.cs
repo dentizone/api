@@ -8,5 +8,6 @@ namespace Dentizone.Application.Interfaces.Review
         Task UpdateReviewAsync(string reviewId, UpdateReviewDto updateReviewDto);
         Task DeleteReviewAsync(string reviewId);
         Task<IEnumerable<ReviewDto>> GetSubmittedReviews(string userId);
+        Task<IEnumerable<ReviewDto>> GetReceivedReviews(string userId);
     }
 }

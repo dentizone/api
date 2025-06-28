@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.Review;
+using Dentizone.Application.Interfaces.Order;
 using Dentizone.Application.Interfaces.Review;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Interfaces.Repositories;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Services
 {
-    public class ReviewService(IMapper mapper, IReviewRepository repo) : IReviewService
+    public class ReviewService(IMapper mapper, IReviewRepository repo, IOrderService orderService) : IReviewService
     {
         public async Task CreateOrderReviewAsync(string userId, CreateReviewDto createReviewDto)
         {
@@ -44,6 +45,21 @@ namespace Dentizone.Application.Services
             review.Text = updateReviewDto.Comment;
 
             await repo.Update(review);
+        }
+
+        public async Task<IEnumerable<ReviewDto>> GetReceivedReviews(string userId)
+        {
+            var reviews = await orderService.GetReviewedOrdersByUserId(userId);
+
+
+            // Get the reviews for the orders
+            var reviewDtos = reviews.Select(r => new ReviewDto
+            {
+                Comment = r.Review.Text ?? "No Comment",
+                Stars = r.Review.Stars,
+            });
+
+            return reviewDtos.ToList();
         }
     }
 }

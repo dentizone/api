@@ -42,5 +42,12 @@ namespace Dentizone.Presentaion.Controllers
             var reviews = await reviewService.GetSubmittedReviews(userId);
             return Ok(reviews);
         }
+
+        [HttpGet("received-review")]
+        public async Task<IActionResult> GetReceivedReviews()
+        {
+            var reviews = await reviewService.GetReceivedReviews(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return Ok(reviews);
+        }
     }
 }
