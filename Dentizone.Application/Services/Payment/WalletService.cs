@@ -24,6 +24,8 @@ namespace Dentizone.Application.Services.Payment
         Task<WalletView> AddToBalance(decimal amount, string walletId);
 
         Task<WalletView> GetWalletBalanceAsync(string userId);
+
+        Task<WalletView> UpdateWallet(Wallet updatedWallet);
     }
 
     public class WalletService(
@@ -98,6 +100,17 @@ namespace Dentizone.Application.Services.Payment
 
             var walletView = mapper.Map<WalletView>(wallet);
             return walletView;
+        }
+
+        public async Task<WalletView> UpdateWallet(Wallet updatedWallet)
+        {
+            var updatedEntity = await walletRepository.UpdateAsync(updatedWallet);
+            if (updatedEntity == null)
+            {
+                throw new BadActionException("Failed to update wallet.");
+            }
+
+            return mapper.Map<WalletView>(updatedEntity);
         }
     }
 }

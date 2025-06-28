@@ -44,6 +44,7 @@ namespace Dentizone.Application.DI
 
             services.AddScoped<IReviewService, ReviewService>();
 
+            services.AddScoped<IWithdrawalService, WithdrawalService>();
             return services;
         }
     }

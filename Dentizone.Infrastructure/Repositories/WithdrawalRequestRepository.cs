@@ -32,6 +32,22 @@ namespace Dentizone.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(condition);
         }
 
+        public async Task<IEnumerable<WithdrawalRequest>> GetAllAsync(
+            int page, Expression<Func<WithdrawalRequest, bool>>? condition)
+        {
+            IQueryable<WithdrawalRequest> query = DbContext.WithdrawalRequests;
+            if (condition != null)
+            {
+                query = query.Where(condition);
+            }
+
+            return await query
+                         .OrderByDescending(u => u.CreatedAt)
+                         .Skip(CalculatePagination(page))
+                         .Take(DefaultPageSize)
+                         .ToListAsync();
+        }
+
         public async Task<WithdrawalRequest?> DeleteAsync(string id)
         {
             var deleted_request = await GetByIdAsync(id);
@@ -46,6 +62,8 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<WithdrawalRequest?> GetByIdAsync(string id)
         {
             var request = await DbContext.WithdrawalRequests.Where(w => w.Id == id)
+                                         .Include(w => w.Wallet)
+                                         .Include(w => w.Wallet.User)
                                          .FirstOrDefaultAsync();
             return request;
         }
