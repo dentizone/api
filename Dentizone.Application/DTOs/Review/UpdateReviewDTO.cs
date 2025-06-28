@@ -4,7 +4,7 @@ namespace Dentizone.Application.DTOs.Review
 {
     public class UpdateReviewDto
     {
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
         public int Stars { get; set; }
     }
 
@@ -13,8 +13,9 @@ namespace Dentizone.Application.DTOs.Review
         public UpdateReviewDtoValidation()
         {
             RuleFor(x => x.Comment)
-                .NotNull().WithMessage("Comment cannot be null.")
-                .MaximumLength(500).WithMessage("Comment must not exceed 500 characters.");
+                .MaximumLength(500)
+                .When(x => x.Comment != null)
+                .WithMessage("Comment must not exceed 500 characters when provided.");
             RuleFor(x => x.Stars)
                 .InclusiveBetween(1, 5).WithMessage("Stars must be between 1 and 5.");
         }
