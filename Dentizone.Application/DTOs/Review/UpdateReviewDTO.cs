@@ -1,17 +1,13 @@
 ﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dentizone.Application.DTOs.Review
 {
-    public class UpdateReviewDTO
+    public class UpdateReviewDto
     {
         public string Comment { get; set; }
     }
-    public class UpdateReviewDtoValidation : AbstractValidator<UpdateReviewDTO>
+
+    public class UpdateReviewDtoValidation : AbstractValidator<UpdateReviewDto>
     {
         public UpdateReviewDtoValidation()
         {

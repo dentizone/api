@@ -1,19 +1,14 @@
 ﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dentizone.Application.DTOs.Review
 {
-    public class ReviewDTO
+    public class ReviewDto
     {
         public string Comment { get; set; }
         public decimal Stars { get; set; }
     }
 
-    public class ReviewDtoValidation : AbstractValidator<ReviewDTO>
+    public class ReviewDtoValidation : AbstractValidator<ReviewDto>
     {
         public ReviewDtoValidation()
         {
@@ -25,5 +20,4 @@ namespace Dentizone.Application.DTOs.Review
                 .InclusiveBetween(1, 5).WithMessage("Stars must be between 1 and 5.");
         }
     }
-    
 }

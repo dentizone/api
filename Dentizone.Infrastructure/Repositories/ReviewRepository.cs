@@ -10,7 +10,7 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<Review?> GetByIdAsync(string id)
         {
             return await dbContext.Reviews
-                                  .FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
+                .FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
         }
 
 
@@ -22,7 +22,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<Review?> FindBy(Expression<Func<Review, bool>> condition,
-                                          Expression<Func<Review, object>>[]? includes)
+            Expression<Func<Review, object>>[]? includes)
         {
             IQueryable<Review> query = dbContext.Reviews;
             if (includes != null)
@@ -53,6 +53,12 @@ namespace Dentizone.Infrastructure.Repositories
             dbContext.Reviews.Update(entity);
             await dbContext.SaveChangesAsync();
             return entity;
+        }
+
+        public IQueryable<Review> FindAllBy(Expression<Func<Review, bool>> condition)
+        {
+            return dbContext.Reviews
+                .Where(condition).AsQueryable();
         }
     }
 }

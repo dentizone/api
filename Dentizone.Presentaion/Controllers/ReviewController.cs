@@ -6,16 +6,17 @@ namespace Dentizone.Presentaion.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-
-    public class ReviewController:ControllerBase
+    public class ReviewController : ControllerBase
     {
         private readonly IReviewService _reviewService;
+
         public ReviewController(IReviewService reviewService)
         {
             _reviewService = reviewService;
         }
+
         [HttpPost]
-        public async Task<IActionResult> CreateOrderReview([FromBody] CreateReviewDTO createReviewDto)
+        public async Task<IActionResult> CreateOrderReview([FromBody] CreateReviewDto createReviewDto)
         {
             var userId = createReviewDto.UserId;
             if (string.IsNullOrEmpty(userId))
@@ -24,8 +25,9 @@ namespace Dentizone.Presentaion.Controllers
             await _reviewService.CreateOrderReviewAsync(userId, createReviewDto);
             return Ok();
         }
+
         [HttpPut("{reviewId}")]
-        public async Task<IActionResult> UpdateReview(string reviewId, [FromBody] UpdateReviewDTO updateReviewDto)
+        public async Task<IActionResult> UpdateReview(string reviewId, [FromBody] UpdateReviewDto updateReviewDto)
         {
             await _reviewService.UpdateReviewAsync(reviewId, updateReviewDto);
             return Ok();
