@@ -51,12 +51,17 @@ namespace Dentizone.Infrastructure.Repositories
                 page = 1;
             }
 
+            // Always order before pagination
+            query = query.OrderByDescending(o => o.CreatedAt);
+
+            // Apply filter if present
             if (filter != null)
             {
-                query = query.OrderByDescending(o => o.CreatedAt)
-                    .Skip(CalculatePagination(page))
-                    .Take(DefaultPageSize);
+                query = query.Where(filter);
             }
+
+            // Always apply pagination
+            query = query.Skip(CalculatePagination(page)).Take(DefaultPageSize);
 
             return query;
         }

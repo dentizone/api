@@ -5,8 +5,8 @@ namespace Dentizone.Application.Interfaces.Review
     public interface IReviewService
     {
         Task CreateOrderReviewAsync(string userId, CreateReviewDto createReviewDto);
-        Task UpdateReviewAsync(string reviewId, UpdateReviewDto updateReviewDto);
-        Task DeleteReviewAsync(string reviewId);
+        Task<bool> UpdateReviewAsync(string reviewId, UpdateReviewDto updateReviewDto);
+        Task<bool> DeleteReviewAsync(string reviewId);
         Task<IEnumerable<ReviewDto>> GetSubmittedReviews(string userId);
         Task<IEnumerable<ReviewDto>> GetReceivedReviews(string userId);
     }
