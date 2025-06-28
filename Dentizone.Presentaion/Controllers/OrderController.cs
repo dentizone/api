@@ -41,7 +41,7 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> CancelOrder(string orderId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = await orderService.CancelOrderAsync(orderId, userId);
+            var result = await orderService.CancelOrderAsync(orderId);
             return Ok(result);
         }
 

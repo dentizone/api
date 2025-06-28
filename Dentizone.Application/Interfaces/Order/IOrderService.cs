@@ -8,7 +8,7 @@ namespace Dentizone.Application.Interfaces.Order
         Task<string> CreateOrderAsync(CreateOrderDto createOrderDto, string buyerId);
         Task<OrderViewDto> GetOrderByIdAsync(string orderId, string buyerId);
         Task<List<OrderViewDto>> GetOrdersByBuyerAsync(string buyerId);
-        Task<OrderViewDto?> CancelOrderAsync(string orderId, string userId);
+        Task<OrderViewDto?> CancelOrderAsync(string orderId);
         Task CompleteOrder(string orderId);
         Task<PagedResultDto<OrderViewDto>> GetOrders(int page, FilterOrderDto filters);
 

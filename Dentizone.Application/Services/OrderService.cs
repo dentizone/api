@@ -32,7 +32,7 @@ namespace Dentizone.Application.Services
         AppDbContext dbContext)
         : BaseService(accessor), IOrderService
     {
-        public async Task<OrderViewDto?> CancelOrderAsync(string orderId, string userId)
+        public async Task<OrderViewDto?> CancelOrderAsync(string orderId)
         {
             var order = await orderRepository.FindBy(o => o.Id == orderId,
                 [o => o.OrderStatuses, o => o.OrderItems]);
