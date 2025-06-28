@@ -12,7 +12,13 @@ namespace Dentizone.Application.Services
     {
         public async Task CreateOrderReviewAsync(string userId, CreateReviewDto createReviewDto)
         {
-            var review = mapper.Map<Review>(createReviewDto);
+            var review = new Review()
+            {
+                OrderId = createReviewDto.OrderId,
+                Text = createReviewDto.Comment,
+                UserId = userId
+            };
+
             await repo.CreateAsync(review);
         }
 
