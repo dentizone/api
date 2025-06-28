@@ -5,6 +5,8 @@ using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 
+namespace Dentizone.Application.Services;
+
 public abstract class BaseService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
