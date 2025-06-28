@@ -55,5 +55,20 @@ namespace Dentizone.Infrastructure.Repositories
 
             return entity;
         }
+        public async Task<List<Question>> FindAllBy(Expression<Func<Question, bool>> condition, Expression<Func<Question, object>>[]? includes = null)
+        {
+            IQueryable<Question> query = dbContext.Questions;
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.Where(condition).ToListAsync();
+        }
+
     }
 }
