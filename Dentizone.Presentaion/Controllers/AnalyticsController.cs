@@ -1,10 +1,12 @@
 ﻿using Dentizone.Application.Interfaces.Analytics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize("IsAdmin")]
     public class AnalyticsController(IAnalyticsService analyticsService) : ControllerBase
     {
         [HttpGet("user")]

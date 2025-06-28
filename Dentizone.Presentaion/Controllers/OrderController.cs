@@ -22,6 +22,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "IsVerified")]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto createOrderDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -46,6 +47,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpPut("{orderId}/confirm")]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> ConfirmOrder(string orderId)
         {
             await orderService.CompleteOrder(orderId);
@@ -53,7 +55,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet("all")]
-        [AllowAnonymous]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> GetAllOrders([FromQuery] FilterOrderDto filters, [FromQuery] int page = 1)
         {
             var orders = await orderService.GetOrders(page, filters);

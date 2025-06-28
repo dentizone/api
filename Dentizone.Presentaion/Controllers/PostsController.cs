@@ -10,9 +10,11 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PostsController(IPostService postService) : ControllerBase
     {
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllPosts(int page = 1)
         {
             var posts = await postService.GetAllPosts(page);
@@ -20,14 +22,15 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetPostById(string id)
         {
             var post = await postService.GetPostById(id);
             return Ok(post);
         }
 
-        [Authorize]
         [HttpGet("users/{sellerId}/posts")]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> GetPostsBySellerId(string sellerId, int page = 1)
         {
             var posts = await postService.GetPostsBySellerId(sellerId, page);
@@ -35,9 +38,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpPost]
-        [Authorize]
-
-        //TODO: Require a Claims
+        [Authorize(Policy = "IsVerified")]
         public async Task<IActionResult> CreatePost([FromBody] CreatePostDto createPostDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -49,38 +50,26 @@ namespace Dentizone.Presentaion.Controllers
 
 
             var createdPost = await postService.CreatePost(createPostDto, userId);
-            ;
             return Ok(createdPost);
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> DeletePost(string id)
         {
-            try
-            {
-                var deletedPost = await postService.DeletePost(id);
-                return Ok(deletedPost);
-            }
-            catch (Exception ex)
-            {
-                return NotFound($"Error : {ex.Message}");
-            }
+            var deletedPost = await postService.DeletePost(id);
+            return Ok(deletedPost);
         }
 
+        [Authorize(Policy = "IsAdmin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePost(string id, [FromBody] UpdatePostDto updatePostDto)
         {
-            try
-            {
-                var updatedPost = await postService.UpdatePost(id, updatePostDto);
-                return Ok(updatedPost);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error : {ex.Message}");
-            }
+            var updatedPost = await postService.UpdatePost(id, updatePostDto);
+            return Ok(updatedPost);
         }
 
+        [AllowAnonymous]
         [HttpGet("sidebar")]
         public async Task<IActionResult> GetSidebarFilter()
         {
@@ -88,6 +77,7 @@ namespace Dentizone.Presentaion.Controllers
             return Ok(sidebarFilter);
         }
 
+        [AllowAnonymous]
         [HttpGet("search")]
         public async Task<IActionResult> Search([FromQuery] UserPreferenceDto userPreferenceDTO)
         {

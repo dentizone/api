@@ -3,11 +3,13 @@ using Dentizone.Application.Interfaces;
 using Dentizone.Application.Services.Payment;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize("IsVerified")]
     public class WalletController(IWalletService walletService, IWithdrawalService withdrawalService) : ControllerBase
     {
         [HttpGet("balance")]
@@ -19,6 +21,7 @@ namespace Dentizone.Presentaion.Controllers
             var wallet = await walletService.GetWalletBalanceAsync(userId);
             return Ok(wallet);
         }
+
         [HttpPost("withdraw")]
         public async Task<IActionResult> RequestWithdrawal([FromBody] WithdrawalRequestDto withdrawalRequestDto)
         {
@@ -27,6 +30,7 @@ namespace Dentizone.Presentaion.Controllers
             var request = await withdrawalService.CreateWithdrawalRequestAsync(UserId, withdrawalRequestDto);
             return Ok(request);
         }
+
         [HttpGet("withdrawal-history")]
         public async Task<IActionResult> GetWithdrawalHistory(int page = 1)
         {
