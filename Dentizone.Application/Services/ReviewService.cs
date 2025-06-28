@@ -5,11 +5,16 @@ using Dentizone.Application.Interfaces.Review;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Domain.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Services
 {
-    public class ReviewService(IMapper mapper, IReviewRepository repo, IOrderService orderService) : IReviewService
+    public class ReviewService(
+        IHttpContextAccessor accessor,
+        IMapper mapper,
+        IReviewRepository repo,
+        IOrderService orderService) : BaseService(accessor), IReviewService
     {
         public async Task CreateOrderReviewAsync(string userId, CreateReviewDto createReviewDto)
         {
@@ -72,6 +77,17 @@ namespace Dentizone.Application.Services
             });
 
             return reviewDtos.ToList();
+        }
+
+        protected override async Task<string> GetOwnerIdAsync(string resourceId)
+        {
+            var review = await repo.GetByIdAsync(resourceId);
+            if (review == null)
+            {
+                throw new NotFoundException($"Review with id {resourceId} not found");
+            }
+
+            return review.UserId;
         }
     }
 }

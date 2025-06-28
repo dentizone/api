@@ -13,6 +13,7 @@ using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Http;
 
 namespace Dentizone.Application.Services
 {
@@ -27,8 +28,9 @@ namespace Dentizone.Application.Services
         IAuthService authService,
         IPaymentService paymentService,
         ICartService cartService,
+        IHttpContextAccessor accessor,
         AppDbContext dbContext)
-        : IOrderService
+        : BaseService(accessor), IOrderService
     {
         public async Task<OrderViewDto?> CancelOrderAsync(string orderId, string userId)
         {
@@ -276,6 +278,17 @@ namespace Dentizone.Application.Services
                 o => o.IsReviewed && o.OrderItems.Any(oi => oi.Post.SellerId == userId)
             );
             return orders.Items;
+        }
+
+        protected override async Task<string> GetOwnerIdAsync(string resourceId)
+        {
+            var order = await orderRepository.GetByIdAsync(resourceId);
+            if (order == null)
+            {
+                throw new NotFoundException($"Order with id {resourceId} not found");
+            }
+
+            return order.BuyerId;
         }
     }
 }

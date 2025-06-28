@@ -7,6 +7,7 @@ using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
 using System.Linq.Expressions;
+using Dentizone.Infrastructure;
 
 namespace Dentizone.Application.Services
 {
@@ -14,7 +15,7 @@ namespace Dentizone.Application.Services
         IUserRepository userRepository,
         IMapper mapper,
         IWalletService walletService,
-        Infrastructure.AppDbContext dbContext)
+        AppDbContext dbContext)
         : IUserService
     {
         public async Task<UserView> CreateAsync(CreateAppUser userDto)
