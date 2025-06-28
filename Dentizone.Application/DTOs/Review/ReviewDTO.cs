@@ -5,7 +5,7 @@ namespace Dentizone.Application.DTOs.Review
     public class ReviewDto
     {
         public string Comment { get; set; }
-        public decimal Stars { get; set; }
+        public int Stars { get; set; }
     }
 
     public class ReviewDtoValidation : AbstractValidator<ReviewDto>

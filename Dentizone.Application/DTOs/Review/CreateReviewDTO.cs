@@ -5,7 +5,7 @@ namespace Dentizone.Application.DTOs.Review
     public class CreateReviewDto
     {
         public string OrderId { get; set; }
-        public decimal Stars { get; set; }
+        public int Stars { get; set; }
         public string Comment { get; set; }
     }
 
