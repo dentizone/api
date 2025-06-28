@@ -23,7 +23,6 @@ namespace Dentizone.Infrastructure
         public DbSet<PostAsset> PostAssets { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<ReviewUx> ReviewUxes { get; set; }
         public DbSet<ShipInfo> ShipInfos { get; set; }
         public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<University> Universities { get; set; }

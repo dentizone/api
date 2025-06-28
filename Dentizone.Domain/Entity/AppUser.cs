@@ -26,7 +26,6 @@ namespace Dentizone.Domain.Entity
         public ICollection<Cart> Carts { get; set; }
         public ICollection<Order> Orders { get; set; }
         public ICollection<Payment> Payments { get; set; }
-        public ICollection<ReviewUx> UXReviews { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public string Id { get; set; } = Guid.NewGuid().ToString();
     }

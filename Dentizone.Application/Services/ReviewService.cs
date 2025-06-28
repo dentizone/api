@@ -23,9 +23,14 @@ namespace Dentizone.Application.Services
             await repo.CreateAsync(review);
         }
 
-        public async Task DeleteReviewAsync(string reviewId)
+        public async Task<bool> DeleteReviewAsync(string reviewId)
         {
+            var review = await repo.GetByIdAsync(reviewId);
+            if (review == null || review.IsDeleted)
+                throw new NotFoundException("Review not found.");
+
             await repo.DeleteAsync(reviewId);
+            return true;
         }
 
         public async Task<IEnumerable<ReviewDto>> GetSubmittedReviews(string userId)
@@ -36,7 +41,7 @@ namespace Dentizone.Application.Services
             return await review.Select(r => mapper.Map<ReviewDto>(r)).ToListAsync();
         }
 
-        public async Task UpdateReviewAsync(string reviewId, UpdateReviewDto updateReviewDto)
+        public async Task<bool> UpdateReviewAsync(string reviewId, UpdateReviewDto updateReviewDto)
         {
             var review = await repo.GetByIdAsync(reviewId);
             if (review == null || review.IsDeleted)
@@ -44,7 +49,14 @@ namespace Dentizone.Application.Services
 
             review.Text = updateReviewDto.Comment;
 
-            await repo.Update(review);
+            var updated = await repo.Update(review);
+
+            if (updated == null)
+            {
+                throw new BadActionException("Failed to update review.");
+            }
+
+            return true;
         }
 
         public async Task<IEnumerable<ReviewDto>> GetReceivedReviews(string userId)

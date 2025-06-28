@@ -9,121 +9,115 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.Property(u => u.FullName)
-                   .IsRequired()
-                   .HasMaxLength(255);
+                .IsRequired()
+                .HasMaxLength(255);
 
             builder.Property(u => u.AcademicYear)
-                   .IsRequired();
+                .IsRequired();
 
             builder.Property(u => u.UniversityId)
-                   .IsRequired();
+                .IsRequired();
 
 
             builder.Property(u => u.NationalId);
 
             builder.Property(u => u.KycStatus)
-                   .IsRequired()
-                   .HasConversion<string>();
+                .IsRequired()
+                .HasConversion<string>();
 
             builder.Property(u => u.Status)
-                   .IsRequired()
-                   .HasConversion<string>();
+                .IsRequired()
+                .HasConversion<string>();
 
             builder.Property(u => u.CreatedAt)
-                   .HasDefaultValueSql(SqlCommon.Date)
-                   .ValueGeneratedOnAdd();
+                .HasDefaultValueSql(SqlCommon.Date)
+                .ValueGeneratedOnAdd();
 
 
             builder.Property(u => u.UpdatedAt)
-                   .IsRequired();
+                .IsRequired();
 
             builder.Property(u => u.IsDeleted)
-                   .IsRequired()
-                   .HasDefaultValue(false);
+                .IsRequired()
+                .HasDefaultValue(false);
 
 
             // Relationships
             // One-to-One: User to Wallet
             builder.HasOne(u => u.Wallet)
-                   .WithOne(w => w.User)
-                   .HasForeignKey<Wallet>(w => w.UserId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(w => w.User)
+                .HasForeignKey<Wallet>(w => w.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // One-to-Many: User to UserAssets
             builder.HasMany(u => u.UserAssets)
-                   .WithOne(ua => ua.User)
-                   .HasForeignKey(ua => ua.UserId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(ua => ua.User)
+                .HasForeignKey(ua => ua.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             // One-to-One: User to University
             builder.HasOne(u => u.University)
-                   .WithMany(un => un.Users)
-                   .HasForeignKey(u => u.UniversityId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithMany(un => un.Users)
+                .HasForeignKey(u => u.UniversityId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             // One-to-Many: User to UserActivities
             builder.HasMany(u => u.UserActivities)
-                   .WithOne(ua => ua.User)
-                   .HasForeignKey(ua => ua.UserId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(ua => ua.User)
+                .HasForeignKey(ua => ua.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // One-to-Many: User to Posts
             builder.HasMany(u => u.Posts)
-                   .WithOne(p => p.Seller)
-                   .HasForeignKey(p => p.SellerId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(p => p.Seller)
+                .HasForeignKey(p => p.SellerId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // One-to-Many: User to Questions
             builder.HasMany(u => u.Questions)
-                   .WithOne(q => q.User)
-                   .HasForeignKey(q => q.AskerId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(q => q.User)
+                .HasForeignKey(q => q.AskerId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             // One-to-Many: User to ShippingAddresses
             builder.HasMany(u => u.ShippingAddresses)
-                   .WithOne(sa => sa.User)
-                   .HasForeignKey(sa => sa.UserId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(sa => sa.User)
+                .HasForeignKey(sa => sa.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             // One-to-Many: User to Orders
             builder.HasMany(u => u.Orders)
-                   .WithOne(o => o.Buyer)
-                   .HasForeignKey(o => o.BuyerId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(o => o.Buyer)
+                .HasForeignKey(o => o.BuyerId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // One-to-Many: User to ReviewsGiven
             builder.HasMany(u => u.Reviews)
-                   .WithOne(r => r.User)
-                   .HasForeignKey(r => r.UserId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(r => r.User)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-
-            // One-to-Many: User to ReviewUXEntriesGiven
-            builder.HasMany(u => u.UXReviews)
-                   .WithOne(rux => rux.User)
-                   .HasForeignKey(rux => rux.UserId)
-                   .OnDelete(DeleteBehavior.NoAction);
 
             // One-to-Many: User to CartItems
             builder.HasMany(u => u.Carts)
-                   .WithOne(c => c.User)
-                   .HasForeignKey(c => c.UserId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(c => c.User)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             builder.HasMany(u => u.Favourites)
-                   .WithOne(f => f.User)
-                   .HasForeignKey(f => f.UserId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(f => f.User)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(u => u.Payments)
-                   .WithOne(f => f.Buyer)
-                   .HasForeignKey(f => f.BuyerId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(f => f.Buyer)
+                .HasForeignKey(f => f.BuyerId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
