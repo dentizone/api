@@ -9,61 +9,55 @@ using Dentizone.Application.Interfaces.Order;
 using Dentizone.Application.Services.Authentication;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
+using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.Extensions.Hosting;
 
-namespace Dentizone.Application.Services { 
-    internal class ShippingService : IShippingService
+namespace Dentizone.Application.Services
+{
+    internal class ShippingService(
+        IOrderItemRepository orderItemRepository,
+        IShipmentActivityRepository shipmentActivityRepository,
+        IMailService mailService,
+        AuthService authService)
+        : IShippingService
     {
-        private readonly IOrderItemRepository _orderItemRepository;
-        private readonly IOrderRepository _orderRepository;
-        private readonly IShipmentActivityRepository _shipmentActivityRepository;
-    private readonly IMailService _mailService;
-        private readonly AuthService _authService;
-
-        public ShippingService(IOrderItemRepository orderItemRepository, IOrderRepository orderRepository, IShipmentActivityRepository shipmentActivityRepository, IMailService mailService, AuthService authService)
-        {
-            _mailService = mailService;
-            _orderItemRepository = orderItemRepository;
-            _orderRepository = orderRepository;
-            _shipmentActivityRepository = shipmentActivityRepository;
-            _authService = authService;
-        }
-        public async void UpdateItemShipmentStatusAsync(string orderItemId, ShipmentActivityStatus newStatus)
+        public async Task UpdateItemShipmentStatusAsync(string orderItemId, ShipmentActivityStatus newStatus,
+            string? comments)
         {
             //search in DataBase if orderItemId found or not?
-           
-            OrderItem? item = await _orderItemRepository.FindBy(
-            oi => oi.Id == orderItemId,
-            new Expression<Func<OrderItem, object>>[] { oi => oi.ShipmentActivities });
 
-            if (item == null) {
-                throw new Exception("Not Found");
+            var item = await orderItemRepository.FindBy(
+                oi => oi.Id == orderItemId,
+                [oi => oi.ShipmentActivities]);
+
+            if (item == null)
+            {
+                throw new NotFoundException("Not Found");
             }
             else
             {
-                ShipmentActivity shipmentActivity = new ShipmentActivity();
-                shipmentActivity.Id = orderItemId;
-                shipmentActivity.Status = newStatus;
-                _shipmentActivityRepository.CreateAsync(shipmentActivity);
+                var shipmentActivity = new ShipmentActivity
+                {
+                    ItemId = orderItemId,
+                    Status = newStatus,
+                    ActivityDescription = comments
+                };
+                await shipmentActivityRepository.CreateAsync(shipmentActivity);
 
-                
-                var seller = await _authService.GetById(item.Post.SellerId);
-                
-                
 
-                await _mailService.Send(seller.Email, $"the Status has been changed to {newStatus}",
-                "New status update");
+                var seller = await authService.GetById(item.Post.SellerId);
 
-                var buyer = await _authService.GetById(item.Order.BuyerId);
 
-                await _mailService.Send(buyer.Email, $"the Status has been changed to {newStatus}",
-                "New status update");
+                await mailService.Send(seller.Email, $"the Status has been changed to {newStatus}",
+                    "New status update");
 
+                var buyer = await authService.GetById(item.Order.BuyerId);
+
+                await mailService.Send(buyer.Email, $"the Status has been changed to {newStatus}",
+                    "New status update");
             }
-
-
         }
     }
 }

@@ -11,14 +11,11 @@ namespace Dentizone.Presentaion.Controllers
     public class ShippingController(IShippingService shipmentActivity) : ControllerBase
     {
         [HttpPut]
-        
-        public async Task<IActionResult> UpdateItemShipmentStatus (string orderItemId, ShipmentActivityStatus newStatus)
+        public async Task<IActionResult> UpdateItemShipmentStatus(string orderItemId, ShipmentActivityStatus newStatus,
+            string? comment)
         {
-           shipmentActivity.UpdateItemShipmentStatusAsync(orderItemId, newStatus);
+            await shipmentActivity.UpdateItemShipmentStatusAsync(orderItemId, newStatus, comment);
             return Ok();
-
         }
-        
-        
     }
 }
