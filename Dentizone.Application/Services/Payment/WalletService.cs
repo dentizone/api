@@ -67,40 +67,25 @@ namespace Dentizone.Application.Services.Payment
 
         public async Task<WalletView> AddToBalance(decimal amount, string walletId)
         {
-            if (amount == 0)
+            var wallet = await walletRepository.FindBy(w => w.Id == walletId && w.Status == UserWallet.ACTIVE);
+
+            if (wallet is null)
             {
-                throw new ArgumentException("Amount must not be zero.", nameof(amount));
+                throw new BadActionException("No Wallet for this Wallet Id");
             }
 
-            await using var transaction = await dbContext.Database.BeginTransactionAsync();
-            try
+            var newBalance = wallet.Balance + amount;
+            if (newBalance < 0)
             {
-                var wallet = await walletRepository.FindBy(w => w.Id == walletId && w.Status == UserWallet.ACTIVE);
-
-                if (wallet is null)
-                {
-                    throw new BadActionException("No Wallet for this Wallet Id");
-                }
-
-                var newBalance = wallet.Balance + amount;
-                if (newBalance < 0)
-                {
-                    throw new BadActionException("Insufficient wallet balance.");
-                }
-
-                wallet.Balance = newBalance;
-                await walletRepository.UpdateAsync(wallet);
-
-                await transaction.CommitAsync();
-
-                var view = mapper.Map<WalletView>(wallet);
-                return view;
+                throw new BadActionException("Insufficient wallet balance.");
             }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+
+            wallet.Balance = newBalance;
+            await walletRepository.UpdateAsync(wallet);
+
+
+            var view = mapper.Map<WalletView>(wallet);
+            return view;
         }
 
         public async Task<WalletView> GetWalletBalanceAsync(string userId)
