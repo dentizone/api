@@ -7,11 +7,14 @@ using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Services
 {
-    public class UserService(IUserRepository userRepository, IMapper mapper, IWalletService walletService, Infrastructure.AppDbContext dbContext)
+    public class UserService(
+        IUserRepository userRepository,
+        IMapper mapper,
+        IWalletService walletService,
+        Infrastructure.AppDbContext dbContext)
         : IUserService
     {
         public async Task<UserView> CreateAsync(CreateAppUser userDto)
@@ -46,7 +49,7 @@ namespace Dentizone.Application.Services
         }
 
         public async Task<ICollection<UserView>> GetAllAsync(int page, string? searchByName = null,
-                                                             Expression<Func<AppUser, bool>>? filterExpression = null)
+            Expression<Func<AppUser, bool>>? filterExpression = null)
         {
             var users = await userRepository.GetAllAsync(page, filterExpression);
             if (users == null)
@@ -57,7 +60,7 @@ namespace Dentizone.Application.Services
             if (!string.IsNullOrEmpty(searchByName))
             {
                 users = users.Where(u => u.FullName.Contains(searchByName, StringComparison.OrdinalIgnoreCase))
-                             .ToList();
+                    .ToList();
             }
 
             return mapper.Map<ICollection<UserView>>(users);
@@ -66,10 +69,10 @@ namespace Dentizone.Application.Services
         public async Task<DomainUserView> GetByIdAsync(string id)
         {
             var user = await userRepository.FindBy(u => u.Id == id,
-                                                   [
-                                                       u => u.University
-                                                   ]
-                                                  );
+                [
+                    u => u.University
+                ]
+            );
             if (user == null)
             {
                 throw new NotFoundException($"User with id {id} not found.");

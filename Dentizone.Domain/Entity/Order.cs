@@ -21,6 +21,5 @@ namespace Dentizone.Domain.Entity
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
         public virtual Review Review { get; set; }
-        public virtual ReviewUx ReviewUx { get; set; }
     }
 }
