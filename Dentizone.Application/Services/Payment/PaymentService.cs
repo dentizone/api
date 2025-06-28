@@ -87,7 +87,7 @@ namespace Dentizone.Application.Services.Payment
 
         public async Task<PaymentView> ConfirmPaymentAsync(string orderId)
         {
-            await using var DatabaseTransaction = await db.Database.BeginTransactionAsync();
+            await using var databaseTransaction = await db.Database.BeginTransactionAsync();
 
             try
             {
@@ -95,7 +95,7 @@ namespace Dentizone.Application.Services.Payment
                 var payment =
                     await
                         repo.FindBy(p => p.OrderId == orderId && p.Status == PaymentStatus.Pending,
-                                    includes: [p => p.SalesTransactions]);
+                            includes: [p => p.SalesTransactions]);
                 // 3. Update Payment Status to Confirmed
                 if (payment == null)
                 {
@@ -109,7 +109,8 @@ namespace Dentizone.Application.Services.Payment
                     if (transaction.Status != SaleStatus.Pending)
                     {
                         throw new
-                            InvalidOperationException($"Sale transaction of id {transaction.Id} is not in pending status.");
+                            InvalidOperationException(
+                                $"Sale transaction of id {transaction.Id} is not in pending status.");
                     }
 
                     transaction.Status = SaleStatus.Completed;
@@ -128,14 +129,14 @@ namespace Dentizone.Application.Services.Payment
                 }
 
                 // Commit the transaction
-                await DatabaseTransaction.CommitAsync();
+                await databaseTransaction.CommitAsync();
 
                 return mapper.Map<PaymentView>(updatedPayment);
             }
             catch (Exception)
             {
                 // Rollback the transaction in case of an error
-                await DatabaseTransaction.RollbackAsync();
+                await databaseTransaction.RollbackAsync();
 
                 throw;
             }
@@ -143,12 +144,12 @@ namespace Dentizone.Application.Services.Payment
 
         public async Task CancelPaymentByOrderId(string orderId)
         {
-            await using var DatabaseTransaction = await db.Database.BeginTransactionAsync();
+            await using var databaseTransaction = await db.Database.BeginTransactionAsync();
             try
             {
                 // Find the payment by order ID
                 var payment = await repo.FindBy(p => p.OrderId == orderId && p.Status == PaymentStatus.Pending,
-                                                includes: [p => p.SalesTransactions]);
+                    includes: [p => p.SalesTransactions]);
                 if (payment == null)
                 {
                     throw new NotFoundException("Payment not found.");
@@ -168,7 +169,8 @@ namespace Dentizone.Application.Services.Payment
                     if (transaction.Status != SaleStatus.Pending)
                     {
                         throw new
-                            InvalidOperationException($"Sale transaction of id {transaction.Id} is not in pending status.");
+                            InvalidOperationException(
+                                $"Sale transaction of id {transaction.Id} is not in pending status.");
                     }
 
                     transaction.Status = SaleStatus.Failed;
@@ -177,12 +179,12 @@ namespace Dentizone.Application.Services.Payment
 
 
                 // Commit the transaction
-                await DatabaseTransaction.CommitAsync();
+                await databaseTransaction.CommitAsync();
             }
             catch (Exception)
             {
                 // Rollback the transaction in case of an error
-                await DatabaseTransaction.RollbackAsync();
+                await databaseTransaction.RollbackAsync();
                 throw;
             }
         }

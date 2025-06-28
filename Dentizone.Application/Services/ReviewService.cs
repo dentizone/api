@@ -30,10 +30,7 @@ namespace Dentizone.Application.Services
 
         public async Task<bool> DeleteReviewAsync(string reviewId)
         {
-            var review = await repo.GetByIdAsync(reviewId);
-            if (review == null || review.IsDeleted)
-                throw new NotFoundException("Review not found.");
-
+            await AuthorizeAdminOrOwnerAsync(reviewId);
             await repo.DeleteAsync(reviewId);
             return true;
         }
@@ -48,9 +45,10 @@ namespace Dentizone.Application.Services
 
         public async Task<bool> UpdateReviewAsync(string reviewId, UpdateReviewDto updateReviewDto)
         {
-            var review = await repo.GetByIdAsync(reviewId);
-            if (review == null || review.IsDeleted)
-                throw new NotFoundException("Review not found.");
+            await AuthorizeAdminOrOwnerAsync(reviewId);
+            var review = await repo.FindBy(r => !r.IsDeleted) ??
+                         throw new NotFoundException("Review with Provided id is not found");
+
 
             review.Text = updateReviewDto.Comment;
 

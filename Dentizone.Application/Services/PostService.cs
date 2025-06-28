@@ -182,6 +182,7 @@ namespace Dentizone.Application.Services
         public async Task<PostViewDto> UpdatePost(string postId, UpdatePostDto updatePostDto)
         {
             var existingPost = await repo.GetByIdAsync(postId);
+            await AuthorizeAdminOrOwnerAsync(postId);
 
             var post = mapper.Map(updatePostDto, existingPost);
 

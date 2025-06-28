@@ -8,6 +8,6 @@ namespace Dentizone.Application.Interfaces
         public Task<AssetDto> UploadImageAsync(IFormFile file, string userId);
         public Task<AssetDto> FindAssetById(string id);
 
-        public Task<AssetDto> DeleteAssetById(string id, string userId);
+        public Task DeleteAssetById(string id, string userId);
     }
 }

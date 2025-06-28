@@ -42,10 +42,7 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException("Order not found.");
             }
 
-            if (order.BuyerId != userId)
-            {
-                throw new UnauthorizedAccessException("You are not allowed to cancel this order.");
-            }
+            await AuthorizeAdminOrOwnerAsync(orderId);
 
             if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Cancelled))
             {

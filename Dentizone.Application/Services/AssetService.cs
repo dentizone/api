@@ -32,6 +32,9 @@ namespace Dentizone.Application.Services
         {
             var existingAsset = await assetRepository.GetByIdAsync(id) ??
                                 throw new NotFoundException($"Asset with id {id} not found");
+
+            await AuthorizeAdminOrOwnerAsync(existingAsset.Id);
+
             var u = mapper.Map(assetDto, existingAsset);
             var updatedAsset = await assetRepository.UpdateAsync(u);
             return mapper.Map<AssetDto>(updatedAsset);
@@ -39,6 +42,7 @@ namespace Dentizone.Application.Services
 
         public async Task DeleteAssetAsync(string assetId)
         {
+            await AuthorizeAdminOrOwnerAsync(assetId);
             await assetRepository.DeleteByIdAsync(assetId);
         }
 
