@@ -35,7 +35,7 @@ namespace Dentizone.Application.Services
             return image;
         }
 
-        public async Task DeleteAssetById(string id, string userId)
+        public async Task DeleteAssetById(string id)
         {
             await AuthorizeAdminOrOwnerAsync(id);
 

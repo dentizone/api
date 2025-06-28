@@ -46,7 +46,7 @@ namespace Dentizone.Application.Services
         public async Task<bool> UpdateReviewAsync(string reviewId, UpdateReviewDto updateReviewDto)
         {
             await AuthorizeAdminOrOwnerAsync(reviewId);
-            var review = await repo.FindBy(r => !r.IsDeleted) ??
+            var review = await repo.FindBy(r => r.Id == reviewId && !r.IsDeleted) ??
                          throw new NotFoundException("Review with Provided id is not found");
 
 
