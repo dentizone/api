@@ -46,7 +46,7 @@ namespace Dentizone.Presentaion.Controllers
             return NoContent();
         }
 
-        [HttpDelete("questionId}")]
+        [HttpDelete("{questionId}")]
         public async Task<IActionResult> DeleteQuestion(string questionId)
         {
             await QAService.DeleteQuestionAsync(questionId);
