@@ -4,7 +4,7 @@ namespace Dentizone.Application.DTOs.Q_A.AnswerDTO
 {
     public class UpdateAnswerDto
     {
-        public string Text { get; set; }
+        public required string Text { get; set; }
     }
 
     public class UpdateAnswerDtoValidator : AbstractValidator<UpdateAnswerDto>

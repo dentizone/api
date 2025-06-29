@@ -4,8 +4,8 @@ namespace Dentizone.Application.DTOs.Catalog
 {
     public class SubCategoryDto
     {
-        public string Name { get; set; }
-        public string CategoryId { get; set; }
+        public required string Name { get; set; }
+        public required string CategoryId { get; set; }
     }
 
     public class SubCategoryDtoValidator : AbstractValidator<SubCategoryDto>

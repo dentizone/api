@@ -5,9 +5,9 @@ namespace Dentizone.Application.DTOs.Q_A.QuestionDTO
 {
     public class QuestionViewDto
     {
-        public string Id { get; set; }
-        public string AskerName { get; set; }
-        public string Text { get; set; }
+        public required string Id { get; set; }
+        public required string AskerName { get; set; }
+        public required string Text { get; set; }
         public AnswerViewDto? Answer { get; set; }
         public DateTime CreatedAt { get; set; }
     }

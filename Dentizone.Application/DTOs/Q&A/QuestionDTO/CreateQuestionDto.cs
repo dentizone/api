@@ -6,7 +6,7 @@ namespace Dentizone.Application.DTOs.Q_A.QuestionDTO
 #nullable enable
     public class CreateQuestionDto
     {
-        public string PostId { get; set; }
+        public required string PostId { get; set; }
         public string? Text { get; set; }
     }
 

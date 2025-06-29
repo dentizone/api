@@ -15,8 +15,9 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
 
-        public async Task<Answer?> FindBy(Expression<Func<Answer, bool>> condition,
-            Expression<Func<Answer, object>>[]? includes)
+        public async Task<Answer?> FindBy(
+            Expression<Func<Answer, bool>> condition,
+            Expression<Func<Answer, object>>[]? includes = null)
         {
             var query = DbContext.Answers.AsQueryable();
 
@@ -24,12 +25,10 @@ namespace Dentizone.Infrastructure.Repositories
                 return await DbContext.Answers
                     .FirstOrDefaultAsync(condition);
 
-
             foreach (var include in includes)
             {
                 query = query.Include(include);
             }
-
 
             return await query
                 .FirstOrDefaultAsync(condition);

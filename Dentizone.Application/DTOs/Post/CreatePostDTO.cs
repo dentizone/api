@@ -5,17 +5,17 @@ namespace Dentizone.Application.DTOs.Post
 {
     public class CreatePostDto
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
         public decimal Price { get; set; }
         public PostItemCondition Condition { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string CategoryId { get; set; }
-        public string SubCategoryId { get; set; }
+        public required string Street { get; set; }
+        public required string City { get; set; }
+        public required string CategoryId { get; set; }
+        public required string SubCategoryId { get; set; }
 
         public DateTime? ExpireDate { get; set; }
-        public List<string> AssetIds { get; set; }
+        public required List<string> AssetIds { get; set; }
     }
 
     public class CreatePostDtoValidator : AbstractValidator<CreatePostDto>

@@ -4,8 +4,8 @@ namespace Dentizone.Application.DTOs.Payment;
 
 public class PaymentDto
 {
-    public string OrderId { get; set; }
-    public string BuyerId { get; set; }
+    public required string OrderId { get; set; }
+    public required string BuyerId { get; set; }
     public decimal Amount { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
 }

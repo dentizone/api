@@ -4,16 +4,16 @@ namespace Dentizone.Application.DTOs.Post
 {
     public class PostViewDto
     {
-        public string Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public DateTime? ExpireDate { get; set; }
-        public string Condition { get; set; }
-        public string Category { get; set; }
-        public string SubCatgory { get; set; }
-        public string Status { get; set; }
-        public UserView Seller { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal Price { get; set; } = 0;
+        public DateTime? ExpireDate { get; set; } = null;
+        public string Condition { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public string SubCatgory { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public UserView Seller { get; set; } = new();
         public List<PostAssetView> Assets { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

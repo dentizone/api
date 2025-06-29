@@ -4,9 +4,9 @@ namespace Dentizone.Application.DTOs.Review
 {
     public class CreateReviewDto
     {
-        public string OrderId { get; set; }
+        public required string OrderId { get; set; }
         public int Stars { get; set; }
-        public string Comment { get; set; }
+        public required string Comment { get; set; }
     }
 
     public class CreateReviewDtoValidation : AbstractValidator<CreateReviewDto>

@@ -4,8 +4,8 @@ namespace Dentizone.Application.DTOs.Order
 {
     public class CreateOrderDto
     {
-        public List<string> PostIds { get; set; } = new List<string>();
-        public ShipInfoDto ShipInfo { get; set; } = new ShipInfoDto();
+        public List<string> PostIds { get; set; } = new();
+        public ShipInfoDto ShipInfo { get; set; } = new();
     }
 
     public class ShipInfoDtoValidation : AbstractValidator<ShipInfoDto>

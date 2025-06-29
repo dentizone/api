@@ -2,7 +2,7 @@
 
 public class SubCategoryView
 {
-    public string Name { get; set; }
-    public string Id { get; set; }
-    public CategoryView Category { get; set; }
+    public required string Name { get; set; }
+    public required string Id { get; set; }
+    public required CategoryView Category { get; set; }
 }

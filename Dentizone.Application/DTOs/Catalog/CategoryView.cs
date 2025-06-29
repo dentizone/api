@@ -4,8 +4,8 @@ namespace Dentizone.Application.DTOs.Catalog
 {
     public class CategoryView
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
+        public required string Id { get; set; }
+        public required string Name { get; set; }
     }
 
     public class CreatedCategoryDtoValidator : AbstractValidator<CategoryView>

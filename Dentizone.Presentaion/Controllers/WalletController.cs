@@ -38,5 +38,22 @@ namespace Dentizone.Presentaion.Controllers
             var history = await withdrawalService.GetWithdrawalHistoryAsync(userId, page);
             return Ok(history);
         }
+
+        [Authorize("IsAdmin")]
+        [HttpPost("withdrawal/{id}/approve")]
+        public async Task<IActionResult> ApproveWithdrawal(string id, [FromBody] string note = "")
+        {
+            var approvedRequest = await withdrawalService.ApproveWithdrawalAsync(id, note);
+
+            return Ok(approvedRequest);
+        }
+
+        [Authorize("IsAdmin")]
+        [HttpPost("withdrawal/{id}/reject")]
+        public async Task<IActionResult> RejectWithdrawal(string id, [FromBody] string note = "")
+        {
+            var rejectedRequest = await withdrawalService.RejectWithdrawalAsync(id, note);
+            return Ok(rejectedRequest);
+        }
     }
 }

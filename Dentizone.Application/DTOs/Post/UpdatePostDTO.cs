@@ -4,12 +4,12 @@ namespace Dentizone.Application.DTOs.Post
 {
     public class UpdatePostDto
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
         public decimal Price { get; set; }
         public PostItemCondition Condition { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
+        public required string Street { get; set; }
+        public required string City { get; set; }
         public PostStatus Status { get; set; }
         public List<string> AssetIds { get; set; } = new();
 

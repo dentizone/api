@@ -8,9 +8,9 @@ namespace Dentizone.Application.Services.Payment
 {
     public class WalletView
     {
-        public string Id { get; set; }
+        public required string Id { get; set; }
         public decimal Balance { get; set; }
-        public string UserId { get; set; }
+        public required string UserId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

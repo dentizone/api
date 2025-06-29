@@ -2,9 +2,9 @@
 {
     public class UniversityView
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
+        public required string Id { get; set; }
+        public required string Name { get; set; }
         public bool IsSupported { get; set; }
-        public string Domain { get; set; }
+        public required string Domain { get; set; }
     }
 }

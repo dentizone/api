@@ -23,7 +23,8 @@ namespace Dentizone.Application.Services
                 throw new CloudinaryUploadException($"Error uploading image: {uploadResult.Error.Message}");
             }
 
-            return uploadResult.SecureUri.ToString();
+
+            return uploadResult.SecureUrl.ToString();
         }
     }
 }

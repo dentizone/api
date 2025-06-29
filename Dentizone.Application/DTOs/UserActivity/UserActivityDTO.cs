@@ -5,14 +5,14 @@ namespace Dentizone.Application.DTOs.UserActivity
 {
     public class UserActivityDto
     {
-        public string Id { get; set; }
-        public string UserName { get; set; }
-        public string UserId { get; set; }
-        public string FingerprintToken { get; set; }
-        public string Device { get; set; }
-        public string UserAgent { get; set; }
+        public required string Id { get; set; }
+        public required string UserName { get; set; }
+        public required string UserId { get; set; }
+        public required string FingerprintToken { get; set; }
+        public required string Device { get; set; }
+        public required string UserAgent { get; set; }
         public DateTime DetectedAt { get; set; }
-        public string IpAddress { get; set; }
+        public required string IpAddress { get; set; }
         public UserActivities ActivityType { get; set; }
     }
 

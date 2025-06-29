@@ -2,7 +2,7 @@
 {
     public class UniversitiesByUserDto
     {
-        public string UniversityName { get; set; }
+        public required string UniversityName { get; set; }
         public int StudentCount { get; set; }
     }
 }

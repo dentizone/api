@@ -10,8 +10,8 @@ namespace Dentizone.Application.Services.Authentication
 {
     public class Metadata
     {
-        public string Email { get; set; }
-        public string UserId { get; set; }
+        public required string Email { get; set; }
+        public required string UserId { get; set; }
     }
 
 

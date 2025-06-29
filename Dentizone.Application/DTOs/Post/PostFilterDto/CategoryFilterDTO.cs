@@ -2,8 +2,8 @@
 {
     public class CategoryFilterDto
     {
-        public string Id { get; set; }
-        public string CategoryName { get; set; }
-        public List<string> Subcategories { get; set; } = new List<string>();
+        public required string Id { get; set; }
+        public required string CategoryName { get; set; }
+        public List<string> Subcategories { get; set; } = new();
     }
 }

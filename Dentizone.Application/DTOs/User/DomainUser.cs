@@ -3,11 +3,11 @@
 public class DomainUserView
 {
     public string Id { get; set; } = string.Empty;
-    public string FullName { get; set; }
+    public required string FullName { get; set; }
     public int AcademicYear { get; set; }
     public long? NationalId { get; set; }
-    public string KycStatus { get; set; }
-    public string Status { get; set; }
-    public string UnversityName { get; set; }
+    public required string KycStatus { get; set; }
+    public required string Status { get; set; }
+    public required string UnversityName { get; set; }
     public string Username { get; set; } = string.Empty;
 }

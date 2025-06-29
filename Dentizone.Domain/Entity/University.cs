@@ -5,11 +5,11 @@ namespace Dentizone.Domain.Entity
     public class University : IBaseEntity, IDeletable, IUpdatable
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public bool IsSupported { get; set; } = true;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public string Domain { get; set; }
+        public string Domain { get; set; } = string.Empty;
 
         public virtual ICollection<AppUser> Users { get; set; } = new List<AppUser>();
         public bool IsDeleted { get; set; }

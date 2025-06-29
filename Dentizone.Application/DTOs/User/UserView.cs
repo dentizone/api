@@ -2,9 +2,9 @@
 {
     public class UserView
     {
-        public string Id { get; set; }
-        public string Username { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
         public int AcademicYear { get; set; }
-        public required string UnversityName { get; set; }
+        public string UniversityName { get; set; } = string.Empty;
     }
 }
