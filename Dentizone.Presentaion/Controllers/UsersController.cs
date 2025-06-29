@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Enums;
 
 namespace Dentizone.Presentaion.Controllers

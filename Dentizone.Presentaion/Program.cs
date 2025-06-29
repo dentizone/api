@@ -21,7 +21,7 @@ namespace Dentizone.Presentaion
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddInfrastructure();
-            builder.Services.AddAutoMapper(typeof(Application.AssemblyReference).Assembly);
+            builder.Services.AddAutoMapper(typeof(Application.IAssemblyReference).Assembly);
 
             builder.Services.AddApplicationServices();
             builder.Services.AddCors(c =>
