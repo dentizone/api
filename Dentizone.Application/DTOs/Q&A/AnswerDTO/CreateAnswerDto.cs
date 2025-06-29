@@ -14,15 +14,7 @@ namespace Dentizone.Application.DTOs.Q_A.AnswerDTO
             RuleFor(x => x.Text)
                 .NotEmpty().WithMessage("Text is required.")
                 .MaximumLength(500).WithMessage("Text cannot exceed 500 characters.")
-                .Must(text => !string.IsNullOrWhiteSpace(text)).WithMessage("Text cannot be whitespace only.")
-                .Must(text => !ContainsProhibitedContent(text)).WithMessage("Text contains prohibited content.");
-        }
-
-        private bool ContainsProhibitedContent(string text)
-        {
-            // Placeholder for prohibited content check. Add logic as needed.
-            // Example: return text.Contains("badword");
-            return false;
+                .Must(text => !string.IsNullOrWhiteSpace(text)).WithMessage("Text cannot be whitespace only.");
         }
     }
 }
