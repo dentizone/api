@@ -2,10 +2,11 @@
 
 namespace Dentizone.Application.DTOs.Q_A.QuestionDTO
 {
+    #nullable enable
     public class CreateQuestionDto
     {
-        public string PostId { get; set; }
-        public string Text { get; set; }
+        public Guid PostId { get; set; }
+        public string? Text { get; set; }
     }
 
     public class CreateQuestionDtoValidator : AbstractValidator<CreateQuestionDto>

@@ -15,9 +15,15 @@ namespace Dentizone.Application.DTOs.Q_A.AnswerDTO
         public AnswerViewDtoValidator()
         {
             RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.");
-            RuleFor(x => x.ResponderName).NotEmpty().WithMessage("ResponderName is required.");
-            RuleFor(x => x.Text).NotEmpty().WithMessage("Text is required.");
-            RuleFor(x => x.CreatedAt).NotEmpty().WithMessage("CreatedAt is required.");
+            RuleFor(x => x.ResponderName)
+                .NotEmpty().WithMessage("ResponderName is required.")
+                .MaximumLength(100).WithMessage("ResponderName cannot exceed 100 characters.");
+            RuleFor(x => x.Text)
+                .NotEmpty().WithMessage("Text is required.")
+                .MaximumLength(500).WithMessage("Text cannot exceed 500 characters.");
+            RuleFor(x => x.CreatedAt)
+                .Must(date => date != default).WithMessage("CreatedAt must be a valid date.")
+                .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("CreatedAt cannot be in the future.");
         }
     }
 }
