@@ -109,7 +109,8 @@ namespace Dentizone.Application.Services
 
         public async Task UpdateAnswerAsync(string answerId, UpdateAnswerDto dto)
         {
-            var answer = await answerRepository.GetByIdAsync(answerId);
+            var answer = await answerRepository.GetByIdAsync(answerId) ??
+                         throw new NotFoundException("No Answer with this ID");
             answer.Text = dto.Text;
             await answerRepository.UpdateAsync(answer);
         }
