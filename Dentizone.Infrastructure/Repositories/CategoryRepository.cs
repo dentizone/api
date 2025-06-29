@@ -17,7 +17,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<Category?> FindBy(Expression<Func<Category, bool>> condition
-                                            , Expression<Func<Category, object>>[]? includes)
+            , Expression<Func<Category, object>>[]? includes)
         {
             IQueryable<Category> query = DbContext.Categories;
             if (includes == null) return await query.FirstOrDefaultAsync(condition);
@@ -33,7 +33,7 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<Category?> GetByIdAsync(string id)
         {
             var category = await DbContext.Categories.Where(c => c.Id == id && !c.IsDeleted)
-                                          .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync();
             return category;
         }
 
@@ -61,8 +61,8 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<IEnumerable<Category>> GetAll()
         {
             return await DbContext.Categories
-                                  .Where(c => !c.IsDeleted)
-                                  .ToListAsync();
+                .Where(c => !c.IsDeleted)
+                .ToListAsync();
         }
     }
 }

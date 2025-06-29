@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Dentizone.Application.DTOs.Withdrawal;
 using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.AutoMapper
 {
-    public class WithdrawalProfile: Profile
+    public class WithdrawalProfile : Profile
     {
         public WithdrawalProfile()
         {
@@ -18,6 +13,5 @@ namespace Dentizone.Application.AutoMapper
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Wallet.UserId.ToString()))
                 .ReverseMap();
         }
-
     }
 }

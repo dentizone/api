@@ -10,7 +10,7 @@ public class OrderStatusRepository(AppDbContext dbContext) : AbstractRepository(
     public async Task<OrderStatus?> GetByIdAsync(string id)
     {
         return await dbContext.OrderStatuses
-                              .FirstOrDefaultAsync(o => o.Id == id);
+            .FirstOrDefaultAsync(o => o.Id == id);
     }
 
 
@@ -22,7 +22,7 @@ public class OrderStatusRepository(AppDbContext dbContext) : AbstractRepository(
     }
 
     public async Task<OrderStatus?> FindBy(Expression<Func<OrderStatus, bool>> condition,
-                                           Expression<Func<OrderStatus, object>>[]? includes)
+        Expression<Func<OrderStatus, object>>[]? includes)
     {
         IQueryable<OrderStatus> query = dbContext.OrderStatuses;
         if (includes != null)
@@ -40,7 +40,7 @@ public class OrderStatusRepository(AppDbContext dbContext) : AbstractRepository(
     public async Task<IEnumerable<OrderStatus>> Find(Expression<Func<OrderStatus, bool>> filter)
     {
         return await dbContext.OrderStatuses
-                              .Where(filter)
-                              .ToListAsync();
+            .Where(filter)
+            .ToListAsync();
     }
 }

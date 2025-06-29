@@ -10,7 +10,7 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<Cart?> GetByIdAsync(string id)
         {
             return await dbContext.Carts
-                                  .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+                .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
         }
 
 
@@ -22,7 +22,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<Cart?> FindBy(Expression<Func<Cart, bool>> condition,
-                                        Expression<Func<Cart, object>>[]? includes)
+            Expression<Func<Cart, object>>[]? includes)
         {
             IQueryable<Cart> query = dbContext.Carts;
             if (includes == null) return await query.FirstOrDefaultAsync(condition);
@@ -48,7 +48,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<Cart>> FindAllBy(Expression<Func<Cart, bool>> condition,
-                                                       Expression<Func<Cart, object>>[]? includes = null)
+            Expression<Func<Cart, object>>[]? includes = null)
         {
             IQueryable<Cart> query = dbContext.Carts;
 
@@ -66,11 +66,11 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<IEnumerable<Cart>> GetCartItemsByUserId(string userId)
         {
             var baseQuery = dbContext.Carts
-                                     .Where(c => c.UserId == userId && !c.IsDeleted)
-                                     .Include(c => c.User)
-                                     .Include(c => c.Post)
-                                     .ThenInclude(p => p.PostAssets)
-                                     .ThenInclude(pa => pa.Asset);
+                .Where(c => c.UserId == userId && !c.IsDeleted)
+                .Include(c => c.User)
+                .Include(c => c.Post)
+                .ThenInclude(p => p.PostAssets)
+                .ThenInclude(pa => pa.Asset);
 
             return await baseQuery.ToListAsync();
         }

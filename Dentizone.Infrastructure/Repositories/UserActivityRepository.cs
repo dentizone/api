@@ -10,7 +10,7 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<UserActivity?> GetByIdAsync(string id)
         {
             return await dbContext.UserActivities
-                                  .FirstOrDefaultAsync(u => u.Id == id);
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
 
@@ -22,7 +22,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<UserActivity?> FindBy(Expression<Func<UserActivity, bool>> condition,
-                                                Expression<Func<UserActivity, object>>[]? includes)
+            Expression<Func<UserActivity, object>>[]? includes)
         {
             IQueryable<UserActivity> query = dbContext.UserActivities;
             if (includes != null)
@@ -45,10 +45,10 @@ namespace Dentizone.Infrastructure.Repositories
             }
 
             return await query
-                         .OrderByDescending(u => u.CreatedAt)
-                         .Skip(CalculatePagination(page))
-                         .Take(DefaultPageSize)
-                         .ToListAsync();
+                .OrderByDescending(u => u.CreatedAt)
+                .Skip(CalculatePagination(page))
+                .Take(DefaultPageSize)
+                .ToListAsync();
         }
     }
 }

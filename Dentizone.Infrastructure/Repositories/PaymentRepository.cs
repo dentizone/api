@@ -15,7 +15,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<Payment?> FindBy(Expression<Func<Payment, bool>> condition,
-                                           Expression<Func<Payment, object>>[]? includes)
+            Expression<Func<Payment, object>>[]? includes)
         {
             IQueryable<Payment> query = dbContext.Payments;
             if (includes != null)

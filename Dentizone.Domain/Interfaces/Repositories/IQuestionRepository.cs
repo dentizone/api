@@ -1,4 +1,5 @@
-﻿using Dentizone.Domain.Entity;
+﻿using System.Linq.Expressions;
+using Dentizone.Domain.Entity;
 
 namespace Dentizone.Domain.Interfaces.Repositories
 {
@@ -6,5 +7,6 @@ namespace Dentizone.Domain.Interfaces.Repositories
     {
         Task<Question> UpdateAsync(Question entity);
         Task<Question?> DeleteAsync(string id);
+        Task<List<Question>> FindAllBy(Expression<Func<Question, bool>> condition, Expression<Func<Question, object>>[]? includes = null);
     }
 }

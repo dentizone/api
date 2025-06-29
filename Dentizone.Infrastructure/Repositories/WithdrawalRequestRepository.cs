@@ -18,7 +18,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<WithdrawalRequest?> FindBy(Expression<Func<WithdrawalRequest, bool>> condition,
-                                                     Expression<Func<WithdrawalRequest, object>>[]? includes)
+            Expression<Func<WithdrawalRequest, object>>[]? includes)
         {
             IQueryable<WithdrawalRequest> query = DbContext.WithdrawalRequests;
             if (includes != null)
@@ -42,10 +42,10 @@ namespace Dentizone.Infrastructure.Repositories
             }
 
             return await query
-                         .OrderByDescending(u => u.CreatedAt)
-                         .Skip(CalculatePagination(page))
-                         .Take(DefaultPageSize)
-                         .ToListAsync();
+                .OrderByDescending(u => u.CreatedAt)
+                .Skip(CalculatePagination(page))
+                .Take(DefaultPageSize)
+                .ToListAsync();
         }
 
         public async Task<WithdrawalRequest?> DeleteAsync(string id)
@@ -62,9 +62,9 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<WithdrawalRequest?> GetByIdAsync(string id)
         {
             var request = await DbContext.WithdrawalRequests.Where(w => w.Id == id)
-                                         .Include(w => w.Wallet)
-                                         .Include(w => w.Wallet.User)
-                                         .FirstOrDefaultAsync();
+                .Include(w => w.Wallet)
+                .Include(w => w.Wallet.User)
+                .FirstOrDefaultAsync();
             return request;
         }
 
