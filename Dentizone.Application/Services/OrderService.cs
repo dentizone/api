@@ -244,10 +244,23 @@ namespace Dentizone.Application.Services
             var orderStatus = new OrderStatus
             {
                 OrderId = order.Id,
-                Status = OrderStatues.Arrived,
+                Status = OrderStatues.Completed,
             };
 
             await orderStatusRepository.CreateAsync(orderStatus);
+
+            // Send review request email to buyer
+            var buyer = await authService.GetById(order.BuyerId);
+
+            if (buyer == null)
+            {
+                throw new NotFoundException("Buyer not found.");
+            }
+
+            var emailContent = $"Your order with ID {order.Id} has been completed. Please review the products. " +
+                               $"through this link https://dentizone.vercel.app/review?orderId={orderId}";
+
+            await mailService.Send(buyer.Email, "Order Completed Waiting for review", emailContent);
         }
 
         public async Task<PagedResultDto<OrderViewDto>> GetOrders(int page, FilterOrderDto filters)
