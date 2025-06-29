@@ -11,7 +11,7 @@ namespace Dentizone.Domain.Entity
         public DateTime UpdatedAt { get; set; }
         public string Domain { get; set; } = string.Empty;
 
-        public virtual ICollection<AppUser> Users { get; set; } = new List<AppUser>();
+        public virtual ICollection<AppUser> Users { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

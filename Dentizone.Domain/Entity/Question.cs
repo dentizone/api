@@ -13,9 +13,9 @@ namespace Dentizone.Domain.Entity
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
-        public virtual required Post Post { get; set; }
-        public virtual required Answer Answer { get; set; }
+        public virtual Post Post { get; set; }
+        public virtual Answer Answer { get; set; }
         public QuestionStatus Status { get; set; }
-        public virtual required AppUser User { get; set; }
+        public virtual AppUser User { get; set; }
     }
 }

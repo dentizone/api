@@ -12,6 +12,6 @@ namespace Dentizone.Domain.Entity
         public DateTime CreatedAt { get; set; }
 
 
-        public virtual OrderItem Item { get; set; } = new();
+        public virtual OrderItem Item { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Dentizone.Domain.Entity
 
 
         // Relationship: Many SubCategories to One Category
-        public virtual Category Category { get; set; } = new();
+        public virtual Category Category { get; set; }
         public string CategoryId { get; set; } = string.Empty;
     }
 }

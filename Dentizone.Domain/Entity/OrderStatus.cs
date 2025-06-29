@@ -9,7 +9,7 @@ namespace Dentizone.Domain.Entity
         public DateTime CreatedAt { get; set; }
 
         public string OrderId { get; set; } = string.Empty;
-        public virtual Order Order { get; set; } = new();
+        public virtual Order Order { get; set; }
         public OrderStatues Status { get; set; }
 
         public string? Comment { get; set; }

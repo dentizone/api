@@ -12,11 +12,11 @@ namespace Dentizone.Domain.Entity
         public bool IsDeleted { get; set; }
 
         // Every UserAsset is associated with a User
-        public virtual required AppUser User { get; set; }
-        public required string UserId { get; set; }
+        public virtual AppUser User { get; set; }
+        public string UserId { get; set; }
 
         // Every UserAsset is associated with an Asset
-        public virtual required Asset Asset { get; set; }
-        public required string AssetId { get; set; }
+        public virtual Asset Asset { get; set; }
+        public string AssetId { get; set; }
     }
 }

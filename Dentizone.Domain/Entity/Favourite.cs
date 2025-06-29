@@ -9,7 +9,7 @@ namespace Dentizone.Domain.Entity
         public required string PostId { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsDeleted { get; set; }
-        public virtual AppUser User { get; set; } = new();
-        public virtual Post Post { get; set; } = new();
+        public virtual AppUser User { get; set; }
+        public virtual Post Post { get; set; }
     }
 }

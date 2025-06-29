@@ -8,10 +8,10 @@ namespace Dentizone.Domain.Entity
         public DateTime CreatedAt { get; set; }
 
         public string PostId { get; set; } = string.Empty;
-        public virtual Post Post { get; set; } = new();
+        public virtual Post Post { get; set; }
         public string OrderId { get; set; } = string.Empty;
-        public virtual Order Order { get; set; } = new();
+        public virtual Order Order { get; set; }
 
-        public ICollection<ShipmentActivity> ShipmentActivities { get; set; } = new List<ShipmentActivity>();
+        public ICollection<ShipmentActivity> ShipmentActivities { get; set; }
     }
 }

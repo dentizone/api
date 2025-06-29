@@ -21,12 +21,12 @@ namespace Dentizone.Domain.Entity
         public string City { get; set; } = string.Empty;
         public virtual AppUser Seller { get; set; }
         public virtual ICollection<Favourite> Favourites { get; set; }
-        public virtual ICollection<PostAsset> PostAssets { get; set; } = new List<PostAsset>();
-        public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
+        public virtual ICollection<PostAsset> PostAssets { get; set; }
+        public virtual ICollection<Question> Questions { get; set; }
         public string CategoryId { set; get; } = string.Empty;
         public string SubCategoryId { set; get; } = string.Empty;
-        public virtual Category Category { get; set; } = new();
-        public virtual SubCategory SubCategory { get; set; } = new();
-        public virtual ICollection<Cart> Carts { get; set; } = [];
+        public virtual Category Category { get; set; }
+        public virtual SubCategory SubCategory { get; set; }
+        public virtual ICollection<Cart> Carts { get; set; }
     }
 }

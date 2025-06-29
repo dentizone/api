@@ -16,7 +16,7 @@ namespace Dentizone.Domain.Entity
         public SaleStatus Status { get; set; }
 
         // Navigation properties
-        public virtual Wallet Wallet { get; set; } = new();
-        public virtual Payment Payment { get; set; } = new();
+        public virtual Wallet Wallet { get; set; }
+        public virtual Payment Payment { get; set; }
     }
 }

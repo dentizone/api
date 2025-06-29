@@ -11,8 +11,8 @@ namespace Dentizone.Domain.Entity
         public string OrderId { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public virtual AppUser User { get; set; } = new();
-        public virtual Order Order { get; set; } = new();
+        public virtual AppUser User { get; set; }
+        public virtual Order Order { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

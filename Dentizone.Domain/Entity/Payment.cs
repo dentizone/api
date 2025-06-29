@@ -15,10 +15,9 @@ namespace Dentizone.Domain.Entity
 
 
         // Navigation properties
-        public virtual AppUser Buyer { get; set; } = new();
-        public virtual Order Order { get; set; } = new();
-
-        public virtual ICollection<SalesTransaction> SalesTransactions { get; set; } = new List<SalesTransaction>();
+        public virtual AppUser Buyer { get; set; }
+        public virtual Order Order { get; set; }
+        public virtual ICollection<SalesTransaction> SalesTransactions { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
 }

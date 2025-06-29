@@ -7,9 +7,9 @@ namespace Dentizone.Domain.Entity
         public string Street { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public string OrderId { get; set; } = string.Empty;
-        public virtual Order Order { get; set; } = new();
-        public string UserId { get; set; } = string.Empty;
-        public virtual AppUser User { get; set; } = new();
+        public virtual Order Order { get; set; }
+        public string UserId { get; set; }
+        public virtual AppUser User { get; set; }
 
 
         public string Id { get; set; } = Guid.NewGuid().ToString();

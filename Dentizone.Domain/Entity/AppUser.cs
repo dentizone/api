@@ -16,9 +16,9 @@ namespace Dentizone.Domain.Entity
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
         public string UniversityId { get; set; } = string.Empty;
-        public virtual University University { get; set; } = new();
-        public Wallet Wallet { get; set; } = new();
-        public ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
+        public virtual University University { get; set; }
+        public virtual Wallet Wallet { get; set; }
+        public ICollection<Favourite> Favourites { get; set; }
         public ICollection<UserAsset> UserAssets { get; set; }
         public ICollection<UserActivity> UserActivities { get; set; }
         public ICollection<Post> Posts { get; set; }
