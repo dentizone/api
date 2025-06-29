@@ -11,7 +11,7 @@ public class SaleTransactionRepository(AppDbContext dbContext)
     public async Task<SalesTransaction?> GetByIdAsync(string id)
     {
         return await dbContext.SalesTransactions
-                              .FirstOrDefaultAsync(st => st.Id == id);
+            .FirstOrDefaultAsync(st => st.Id == id);
     }
 
 
@@ -23,7 +23,7 @@ public class SaleTransactionRepository(AppDbContext dbContext)
     }
 
     public async Task<SalesTransaction?> FindBy(Expression<Func<SalesTransaction, bool>> condition,
-                                                Expression<Func<SalesTransaction, object>>[]? includes)
+        Expression<Func<SalesTransaction, object>>[]? includes)
     {
         IQueryable<SalesTransaction> query = dbContext.SalesTransactions;
         if (includes != null)

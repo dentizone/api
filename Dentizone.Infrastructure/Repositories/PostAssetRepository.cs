@@ -15,7 +15,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<PostAsset?> FindBy(Expression<Func<PostAsset, bool>> condition,
-                                             Expression<Func<PostAsset, object>>[]? includes)
+            Expression<Func<PostAsset, object>>[]? includes)
         {
             IQueryable<PostAsset> query = dbContext.PostAssets;
             if (includes == null) return await query.FirstOrDefaultAsync(condition);

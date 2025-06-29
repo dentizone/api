@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.Interfaces;
-using Dentizone.Application.Interfaces.Order;
+﻿using Dentizone.Application.Interfaces.Order;
 using Dentizone.Application.Services.Authentication;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Repositories;
-using Microsoft.Extensions.Hosting;
 
 namespace Dentizone.Application.Services
 {

@@ -11,15 +11,15 @@ namespace Dentizone.Infrastructure.Repositories
         {
             return await
                 dbContext.AppUsers
-                         .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
+                    .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
         }
 
         public async Task<IEnumerable<AppUser>> GetAllAsync(int page = 1,
-                                                            Expression<Func<AppUser, bool>>? filter = null)
+            Expression<Func<AppUser, bool>>? filter = null)
         {
             var query = dbContext.AppUsers
-                                 .Skip(CalculatePagination(page))
-                                 .Take(DefaultPageSize);
+                .Skip(CalculatePagination(page))
+                .Take(DefaultPageSize);
 
             if (filter != null)
             {
@@ -37,7 +37,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<AppUser?> FindBy(Expression<Func<AppUser, bool>> condition,
-                                           Expression<Func<AppUser, object>>[]? includes)
+            Expression<Func<AppUser, object>>[]? includes)
         {
             IQueryable<AppUser> query = dbContext.AppUsers.Where(u => !u.IsDeleted);
             if (includes != null)
@@ -80,23 +80,23 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<int> GetCount7DaysAsync()
         {
             var count = await dbContext.AppUsers.Where(u => !u.IsDeleted && u.CreatedAt >= DateTime.UtcNow.AddDays(-7))
-                                       .CountAsync();
+                .CountAsync();
             return count;
         }
 
         public async Task<int> GetCount30DaysAsync()
         {
             var count = await dbContext.AppUsers.Where(u => !u.IsDeleted && u.CreatedAt >= DateTime.UtcNow.AddDays(-30))
-                                       .CountAsync();
+                .CountAsync();
             return count;
         }
 
         public async Task<Dictionary<string, int>> GetStudentCountPerUniversityAsync()
         {
             var result = await dbContext.AppUsers
-                                        .Where(a => !a.IsDeleted && a.University != null)
-                                        .GroupBy(a => a.University.Name)
-                                        .ToDictionaryAsync(g => g.Key, g => g.Count());
+                .Where(a => !a.IsDeleted && a.University != null)
+                .GroupBy(a => a.University.Name)
+                .ToDictionaryAsync(g => g.Key, g => g.Count());
 
             return result;
         }

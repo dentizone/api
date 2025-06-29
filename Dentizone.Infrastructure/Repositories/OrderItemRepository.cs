@@ -11,7 +11,7 @@ public class OrderItemRepository(AppDbContext dbContext) : AbstractRepository(db
     {
         return
             await dbContext.OrderItems
-                           .FirstOrDefaultAsync(o => o.Id == id);
+                .FirstOrDefaultAsync(o => o.Id == id);
     }
 
 
@@ -23,7 +23,7 @@ public class OrderItemRepository(AppDbContext dbContext) : AbstractRepository(db
     }
 
     public async Task<OrderItem?> FindBy(Expression<Func<OrderItem, bool>> condition,
-                                         Expression<Func<OrderItem, object>>[]? includes)
+        Expression<Func<OrderItem, object>>[]? includes)
     {
         IQueryable<OrderItem> query = dbContext.OrderItems;
         if (includes != null)

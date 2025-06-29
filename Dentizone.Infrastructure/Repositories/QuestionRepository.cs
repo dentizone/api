@@ -15,7 +15,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<Question?> FindBy(Expression<Func<Question, bool>> condition,
-                                            Expression<Func<Question, object>>[]? includes)
+            Expression<Func<Question, object>>[]? includes)
         {
             IQueryable<Question> query = dbContext.Questions;
             if (includes != null)
@@ -45,7 +45,9 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<Question?> GetByIdAsync(string id)
         {
-            return await dbContext.Questions.FindAsync(id);
+            return await dbContext.Questions
+                .Include(p => p.Post)
+                .Where(q => q.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Question> UpdateAsync(Question entity)
@@ -54,6 +56,22 @@ namespace Dentizone.Infrastructure.Repositories
             await dbContext.SaveChangesAsync();
 
             return entity;
+        }
+
+        public async Task<List<Question>> FindAllBy(Expression<Func<Question, bool>> condition,
+            Expression<Func<Question, object>>[]? includes = null)
+        {
+            IQueryable<Question> query = dbContext.Questions;
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.Where(condition).ToListAsync();
         }
     }
 }
