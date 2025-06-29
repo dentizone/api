@@ -21,6 +21,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet("questions/{postId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetQuestionsForPost(string postId)
         {
             var questions = await qaService.GetQuestionsForPostAsync(postId);

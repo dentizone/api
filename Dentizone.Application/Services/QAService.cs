@@ -102,10 +102,7 @@ namespace Dentizone.Application.Services
             var questions = await questionRepository.FindAllBy(
                 q => q.PostId == postId && !q.IsDeleted,
                 includes);
-            if (questions == null || !questions.Any())
-            {
-                return [];
-            }
+
 
             return mapper.Map<IEnumerable<QuestionViewDto>>(questions);
         }
