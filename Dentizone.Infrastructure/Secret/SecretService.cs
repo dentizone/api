@@ -8,7 +8,7 @@ namespace Dentizone.Infrastructure.Secret
     {
         public GetSecret()
         {
-            Environment = "dev";
+            Environment = System.Environment.GetEnvironmentVariable("env") ?? "unknown";
             ProjectId = System.Environment.GetEnvironmentVariable("ProjectId") ??
                         throw new ArgumentNullException("Can't find the project id");
         }
@@ -33,7 +33,7 @@ namespace Dentizone.Infrastructure.Secret
             try
             {
                 return _cache.GetOrAdd(name,
-                                       n => infisicalClient.GetSecret(CreateSecret(n)).SecretValue);
+                    n => infisicalClient.GetSecret(CreateSecret(n)).SecretValue);
             }
             catch (Exception ex)
             {

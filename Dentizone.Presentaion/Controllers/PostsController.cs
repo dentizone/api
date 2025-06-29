@@ -1,7 +1,6 @@
 ﻿using Dentizone.Application.DTOs.PostDTO;
 using Dentizone.Application.DTOs.PostFilterDTO;
 using Dentizone.Application.Interfaces.Post;
-using Dentizone.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -42,26 +41,19 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> CreatePost([FromBody] CreatePostDto createPostDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new BadActionException("How in the hell you reached here!");
-            }
-
-
             var createdPost = await postService.CreatePost(createPostDto, userId);
             return Ok(createdPost);
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "IsAdmin")]
+        [Authorize(Policy = "IsVerified")]
         public async Task<IActionResult> DeletePost(string id)
         {
             var deletedPost = await postService.DeletePost(id);
             return Ok(deletedPost);
         }
 
-        [Authorize(Policy = "IsAdmin")]
+        [Authorize(Policy = "IsVerified")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePost(string id, [FromBody] UpdatePostDto updatePostDto)
         {

@@ -25,13 +25,9 @@ namespace Dentizone.Infrastructure.DependencyInjection
             services.AddScoped<IWalletRepository, WalletRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<ISaleTransactionRepository, SaleTransactionRepository>();
-
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IWithdrawalRequestRepository, WithdrawalRequestRepository>();
-
-
             services.AddScoped<IReviewRepository, ReviewRepository>();
-
             services.AddScoped<IWithdrawalRequestRepository, WithdrawalRequestRepository>();
 
             return services;
