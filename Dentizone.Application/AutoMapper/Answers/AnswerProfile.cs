@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 
 namespace Dentizone.Application.AutoMapper.Answers
 {
-    public class AnswerProfile :Profile
+    public class AnswerProfile : Profile
     {
         public AnswerProfile()
         {
@@ -19,8 +14,8 @@ namespace Dentizone.Application.AutoMapper.Answers
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Text))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ReverseMap();
-            CreateMap<Dentizone.Application.DTOs.Q_A.AnswerDTO.AnswerViewDto, Dentizone.Domain.Entity.Answer>().ReverseMap();
+            CreateMap<Dentizone.Application.DTOs.Q_A.AnswerDTO.AnswerViewDto, Dentizone.Domain.Entity.Answer>()
+                .ReverseMap();
         }
     }
-   
 }

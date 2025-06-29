@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Dentizone.Application.DTOs.Q_A.AnswerDTO
 {
@@ -11,6 +6,7 @@ namespace Dentizone.Application.DTOs.Q_A.AnswerDTO
     {
         public string Text { get; set; }
     }
+
     public class CreateAnswerDtoValidator : AbstractValidator<CreateAnswerDto>
     {
         public CreateAnswerDtoValidator()

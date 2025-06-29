@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dentizone.Application.DTOs.Q_A.AnswerDTO;
+﻿using Dentizone.Application.DTOs.Q_A.AnswerDTO;
 using FluentValidation;
 
 namespace Dentizone.Application.DTOs.Q_A.QuestionDTO
@@ -16,6 +11,7 @@ namespace Dentizone.Application.DTOs.Q_A.QuestionDTO
         public AnswerViewDto? Answer { get; set; }
         public DateTime CreatedAt { get; set; }
     }
+
     public class QuestionViewDtoValidator : AbstractValidator<QuestionViewDto>
     {
         public QuestionViewDtoValidator()
