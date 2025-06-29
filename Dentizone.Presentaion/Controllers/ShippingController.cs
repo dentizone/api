@@ -1,8 +1,6 @@
 ﻿using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Enums;
-using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers

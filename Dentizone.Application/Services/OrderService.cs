@@ -2,7 +2,6 @@
 using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Order;
 using Dentizone.Application.Interfaces;
-using Dentizone.Application.Services.Payment;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
@@ -10,6 +9,7 @@ using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
 using System.Linq.Expressions;
+using Dentizone.Application.DTOs.Payment;
 using Microsoft.AspNetCore.Http;
 
 namespace Dentizone.Application.Services

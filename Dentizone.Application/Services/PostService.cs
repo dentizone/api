@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.Post;
-using Dentizone.Application.DTOs.PostFilterDTO;
+using Dentizone.Application.DTOs.Post.PostFilterDto;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;

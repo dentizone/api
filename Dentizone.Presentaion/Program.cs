@@ -1,13 +1,10 @@
 using Dentizone.Application.DI;
 using Dentizone.Application.Interfaces;
-using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.DependencyInjection;
 using Dentizone.Infrastructure.Filters;
-using Dentizone.Infrastructure.Identity;
 using Dentizone.Presentaion.Context;
 using Dentizone.Presentaion.Extensions;
 using Dentizone.Presentaion.Middlewares;
-using Microsoft.AspNetCore.Identity;
 using Scalar.AspNetCore;
 
 namespace Dentizone.Presentaion

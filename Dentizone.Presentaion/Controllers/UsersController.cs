@@ -1,5 +1,4 @@
 ﻿using Dentizone.Application.DTOs.User;
-using Dentizone.Application.Interfaces.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

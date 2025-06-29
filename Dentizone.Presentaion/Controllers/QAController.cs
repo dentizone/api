@@ -1,11 +1,8 @@
-﻿using System.Runtime.CompilerServices;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Dentizone.Application.DTOs.Q_A.AnswerDTO;
 using Dentizone.Application.DTOs.Q_A.QuestionDTO;
 using Dentizone.Application.Interfaces;
-using Dentizone.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers

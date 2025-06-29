@@ -1,8 +1,8 @@
-﻿using Dentizone.Application.DTOs.PostFilterDTO;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Dentizone.Application.DTOs.Post;
+using Dentizone.Application.DTOs.Post.PostFilterDto;
 using Dentizone.Application.Interfaces;
 
 namespace Dentizone.Presentaion.Controllers

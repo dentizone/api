@@ -1,6 +1,6 @@
 ﻿namespace Dentizone.Application
 {
-    public static class AssemblyReference
+    public interface IAssemblyReference
     {
     }
 }

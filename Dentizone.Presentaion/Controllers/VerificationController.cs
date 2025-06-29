@@ -1,5 +1,4 @@
 ﻿using Dentizone.Application.Interfaces;
-using Dentizone.Application.Interfaces.User;
 using Dentizone.Application.Services.Authentication;
 using Dentizone.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
