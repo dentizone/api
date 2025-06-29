@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.Catalog;
-using Dentizone.Application.Interfaces.Catalog;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
@@ -72,7 +72,7 @@ namespace Dentizone.Application.Services
             return relatedSubCategories.Select(mapper.Map<SubCategoryView>);
         }
 
-        public async Task<CreatedSubCategoryDTO> CreateSubCategory(SubCategoryDto createdSubCategoryDto)
+        public async Task<CreatedSubCategoryDto> CreateSubCategory(SubCategoryDto createdSubCategoryDto)
         {
             var category = await categoryRepository.GetByIdAsync(createdSubCategoryDto.CategoryId);
             if (category == null)
@@ -80,7 +80,7 @@ namespace Dentizone.Application.Services
 
             var subCategory = mapper.Map<SubCategory>(createdSubCategoryDto);
             var createdSubCategory = await subCategoryRepository.CreateAsync(subCategory);
-            return mapper.Map<CreatedSubCategoryDTO>(createdSubCategory);
+            return mapper.Map<CreatedSubCategoryDto>(createdSubCategory);
         }
 
         public async Task<SubCategoryDto?> GetSubCategoryById(string id)

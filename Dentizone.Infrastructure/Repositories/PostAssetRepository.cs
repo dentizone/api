@@ -9,15 +9,15 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<PostAsset> CreateAsync(PostAsset entity)
         {
-            await dbContext.PostAssets.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.PostAssets.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<PostAsset?> FindBy(Expression<Func<PostAsset, bool>> condition,
             Expression<Func<PostAsset, object>>[]? includes)
         {
-            IQueryable<PostAsset> query = dbContext.PostAssets;
+            IQueryable<PostAsset> query = DbContext.PostAssets;
             if (includes == null) return await query.FirstOrDefaultAsync(condition);
             foreach (var include in includes)
             {
@@ -31,21 +31,21 @@ namespace Dentizone.Infrastructure.Repositories
         {
             var postAsset = await GetByIdAsync(id);
 
-            dbContext.PostAssets.Remove(postAsset);
-            await dbContext.SaveChangesAsync();
+            DbContext.PostAssets.Remove(postAsset);
+            await DbContext.SaveChangesAsync();
             return postAsset;
         }
 
 
         public async Task<PostAsset?> GetByIdAsync(string id)
         {
-            return await dbContext.PostAssets.FindAsync(id);
+            return await DbContext.PostAssets.FindAsync(id);
         }
 
         public async Task<PostAsset> UpdateAsync(PostAsset entity)
         {
-            dbContext.PostAssets.Update(entity);
-            await dbContext.SaveChangesAsync();
+            DbContext.PostAssets.Update(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
     }

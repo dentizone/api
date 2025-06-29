@@ -4,13 +4,13 @@ namespace Dentizone.Application.DTOs.User
 {
     public class CreateAppUser
     {
-        public string
+        public required string
             Id { get; set; }
 
-        public string FullName { get; set; }
-        public string Email { get; set; }
-        public string Username { get; set; }
-        public string UniversityId { get; set; }
+        public required string FullName { get; set; }
+        public required string Email { get; set; }
+        public required string Username { get; set; }
+        public required string UniversityId { get; set; }
         public int AcademicYear { get; set; }
 
         public KycStatus KycStatus { get; set; }

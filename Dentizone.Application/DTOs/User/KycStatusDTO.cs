@@ -3,14 +3,14 @@ using FluentValidation;
 
 namespace Dentizone.Application.DTOs.User
 {
-    public class KycStatusDTO
+    public class KycStatusDto
     {
         public KycStatus KycStatus { get; set; }
     }
 
-    public class KycStatusDTOValidator : AbstractValidator<KycStatusDTO>
+    public class KycStatusDtoValidator : AbstractValidator<KycStatusDto>
     {
-        public KycStatusDTOValidator()
+        public KycStatusDtoValidator()
         {
             RuleFor(x => x.KycStatus)
                 .IsInEnum()

@@ -1,7 +1,6 @@
 ﻿using Dentizone.Application.DTOs.Auth;
 using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces;
-using Dentizone.Application.Interfaces.User;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -29,7 +28,7 @@ namespace Dentizone.Presentaion.Controllers
 
 
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, loggedInUser.User.Email,
-                loggedInUser.role.ToString());
+                loggedInUser.Role.ToString());
             var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);
             return Ok(new RefreshTokenResponse()
             {
@@ -48,7 +47,7 @@ namespace Dentizone.Presentaion.Controllers
                 FullName = registerPayloadDto.FullName,
                 AcademicYear = registerPayloadDto.AcademicYear,
                 UniversityId = registerPayloadDto.UniversityId,
-                KycStatus = KycStatus.PENDING,
+                KycStatus = KycStatus.Pending,
                 Username = registerPayloadDto.Username,
                 Status = UserState.PendingVerification,
                 Id = loggedInUser.User.Id, // IdentityServer uses string IDs for users
@@ -57,7 +56,7 @@ namespace Dentizone.Presentaion.Controllers
             var userData = await userService.CreateAsync(userDataDto);
 
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, registerPayloadDto.Email,
-                loggedInUser.role.ToString());
+                loggedInUser.Role.ToString());
             var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);
             return Ok(new RefreshTokenResponse()
             {

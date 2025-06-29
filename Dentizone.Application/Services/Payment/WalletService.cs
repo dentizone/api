@@ -8,9 +8,9 @@ namespace Dentizone.Application.Services.Payment
 {
     public class WalletView
     {
-        public string Id { get; set; }
+        public required string Id { get; set; }
         public decimal Balance { get; set; }
-        public string UserId { get; set; }
+        public required string UserId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
@@ -69,7 +69,7 @@ namespace Dentizone.Application.Services.Payment
 
         public async Task<WalletView> AddToBalance(decimal amount, string walletId)
         {
-            var wallet = await walletRepository.FindBy(w => w.Id == walletId && w.Status == UserWallet.ACTIVE);
+            var wallet = await walletRepository.FindBy(w => w.Id == walletId && w.Status == UserWallet.Active);
 
             if (wallet is null)
             {

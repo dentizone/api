@@ -2,8 +2,7 @@
 {
     public enum UserWallet
     {
-        ACTIVE,
-        SUSPENDED,
-
+        Active,
+        Suspended,
     }
 }

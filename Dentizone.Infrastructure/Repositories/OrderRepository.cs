@@ -10,28 +10,28 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<Order?> GetByIdAsync(string id)
         {
-            return await dbContext.Orders
+            return await DbContext.Orders
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public async Task<Order> UpdateAsync(Order entity)
         {
-            dbContext.Orders.Update(entity);
-            await dbContext.SaveChangesAsync();
+            DbContext.Orders.Update(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<Order> CreateAsync(Order entity)
         {
-            await dbContext.Orders.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.Orders.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<Order?> FindBy(Expression<Func<Order, bool>> condition,
             Expression<Func<Order, object>>[]? includes = null)
         {
-            IQueryable<Order> query = dbContext.Orders;
+            IQueryable<Order> query = DbContext.Orders;
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -68,7 +68,7 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<PagedResult<Order>> GetAllAsync(int? page, Expression<Func<Order, bool>> filter)
         {
-            var query = dbContext.Orders.AsQueryable();
+            var query = DbContext.Orders.AsQueryable();
             if (page is not null)
             {
                 query = BuildPagedQuery(page.Value, filter, query);
@@ -99,7 +99,7 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<Order?> GetOrderDetails(string orderId, string buyerId)
         {
-            var query = dbContext.Orders
+            var query = DbContext.Orders
                 .AsNoTracking()
                 .Where(o => o.Id == orderId && o.BuyerId == buyerId)
                 .Include(o => o.Buyer)
@@ -112,7 +112,7 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<IReadOnlyCollection<Order>> GetOrdersWithDetails(string buyerId)
         {
-            return await dbContext.Orders
+            return await DbContext.Orders
                 .AsNoTracking()
                 .Where(o => o.BuyerId == buyerId)
                 .Include(o => o.Buyer)
@@ -126,13 +126,13 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<int> CountTotalOrders()
         {
-            var result = await dbContext.Orders.Where(o => !o.IsDeleted).AsNoTracking().CountAsync();
+            var result = await DbContext.Orders.Where(o => !o.IsDeleted).AsNoTracking().CountAsync();
             return result;
         }
 
         public async Task<decimal> AverageValueOfOrders()
         {
-            var average = await dbContext.Orders
+            var average = await DbContext.Orders
                 .AsNoTracking()
                 .Where(o => !o.IsDeleted)
                 .AverageAsync(o => (decimal?)o.TotalAmount);

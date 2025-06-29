@@ -9,14 +9,14 @@ namespace Dentizone.Domain.Entity
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        public string WalletId { get; set; }
-        public string PaymentId { get; set; }
+        public string WalletId { get; set; } = string.Empty;
+        public string PaymentId { get; set; } = string.Empty;
         public decimal Amount { get; set; }
 
         public SaleStatus Status { get; set; }
 
         // Navigation properties
-        public virtual Wallet Wallet { get; set; }
-        public virtual Payment Payment { get; set; }
+        public virtual Wallet Wallet { get; set; } = new();
+        public virtual Payment Payment { get; set; } = new();
     }
 }

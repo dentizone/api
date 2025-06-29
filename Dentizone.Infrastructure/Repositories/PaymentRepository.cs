@@ -9,15 +9,15 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<Payment> CreateAsync(Payment entity)
         {
-            await dbContext.Payments.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.Payments.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<Payment?> FindBy(Expression<Func<Payment, bool>> condition,
             Expression<Func<Payment, object>>[]? includes)
         {
-            IQueryable<Payment> query = dbContext.Payments;
+            IQueryable<Payment> query = DbContext.Payments;
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -32,15 +32,15 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<Payment?> GetByIdAsync(string id)
         {
-            var payment = await dbContext.Payments.Where(w => w.Id == id).FirstOrDefaultAsync();
+            var payment = await DbContext.Payments.Where(w => w.Id == id).FirstOrDefaultAsync();
             return payment;
         }
 
         public async Task<Payment> UpdateAsync(Payment entity)
         {
-            dbContext.Payments.Update(entity);
+            DbContext.Payments.Update(entity);
 
-            await dbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync();
 
             return entity;
         }

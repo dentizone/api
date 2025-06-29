@@ -1,8 +1,8 @@
 ﻿using Dentizone.Application.DTOs.User;
-using Dentizone.Application.Interfaces.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Enums;
 
 namespace Dentizone.Presentaion.Controllers
@@ -93,7 +93,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpPatch("{id}/state")]
-        public async Task<IActionResult> SetUserState(string id, [FromBody] UserStateDTO userStateDto)
+        public async Task<IActionResult> SetUserState(string id, [FromBody] UserStateDto userStateDto)
         {
             try
             {

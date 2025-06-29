@@ -5,6 +5,6 @@ namespace Dentizone.Application.DTOs.User;
 
 public class LoggedInUser
 {
-    public ApplicationUser User { get; set; }
-    public UserRoles role { get; set; }
+    public required ApplicationUser User { get; set; }
+    public UserRoles Role { get; set; }
 }

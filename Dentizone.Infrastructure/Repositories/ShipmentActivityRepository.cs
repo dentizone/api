@@ -11,22 +11,22 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<ShipmentActivity?> GetByIdAsync(string id)
         {
             return await
-                dbContext.ShipmentActivities
+                DbContext.ShipmentActivities
                     .FirstOrDefaultAsync(s => s.Id == id);
         }
 
 
         public async Task<ShipmentActivity> CreateAsync(ShipmentActivity entity)
         {
-            await dbContext.ShipmentActivities.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.ShipmentActivities.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<ShipmentActivity?> FindBy(Expression<Func<ShipmentActivity, bool>> condition,
             Expression<Func<ShipmentActivity, object>>[]? includes)
         {
-            IQueryable<ShipmentActivity> query = dbContext.ShipmentActivities;
+            IQueryable<ShipmentActivity> query = DbContext.ShipmentActivities;
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -47,8 +47,8 @@ namespace Dentizone.Infrastructure.Repositories
                 return null;
             }
 
-            dbContext.ShipmentActivities.Remove(toBeDeleted);
-            await dbContext.SaveChangesAsync();
+            DbContext.ShipmentActivities.Remove(toBeDeleted);
+            await DbContext.SaveChangesAsync();
             return toBeDeleted;
         }
     }

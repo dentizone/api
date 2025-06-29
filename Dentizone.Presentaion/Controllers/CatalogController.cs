@@ -1,5 +1,5 @@
 ﻿using Dentizone.Application.DTOs.Catalog;
-using Dentizone.Application.Interfaces.Catalog;
+using Dentizone.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

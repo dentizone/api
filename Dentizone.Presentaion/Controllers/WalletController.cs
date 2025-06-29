@@ -25,9 +25,9 @@ namespace Dentizone.Presentaion.Controllers
         [HttpPost("withdraw")]
         public async Task<IActionResult> RequestWithdrawal([FromBody] WithdrawalRequestDto withdrawalRequestDto)
         {
-            var UserId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
-            var request = await withdrawalService.CreateWithdrawalRequestAsync(UserId, withdrawalRequestDto);
+            var request = await withdrawalService.CreateWithdrawalRequestAsync(userId, withdrawalRequestDto);
             return Ok(request);
         }
 
@@ -35,8 +35,25 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> GetWithdrawalHistory(int page = 1)
         {
             var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            var history = await withdrawalService.GetWithdrawalHistoryAsync(userId, page);
+            var history = await withdrawalService.GetWithdrawalHistoryAsync(userId);
             return Ok(history);
+        }
+
+        [Authorize("IsAdmin")]
+        [HttpPost("withdrawal/{id}/approve")]
+        public async Task<IActionResult> ApproveWithdrawal(string id, [FromBody] string note = "")
+        {
+            var approvedRequest = await withdrawalService.ApproveWithdrawalAsync(id, note);
+
+            return Ok(approvedRequest);
+        }
+
+        [Authorize("IsAdmin")]
+        [HttpPost("withdrawal/{id}/reject")]
+        public async Task<IActionResult> RejectWithdrawal(string id, [FromBody] string note = "")
+        {
+            var rejectedRequest = await withdrawalService.RejectWithdrawalAsync(id, note);
+            return Ok(rejectedRequest);
         }
     }
 }

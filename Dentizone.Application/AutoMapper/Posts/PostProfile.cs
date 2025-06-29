@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Dentizone.Application.DTOs.PostDTO;
+using Dentizone.Application.DTOs.Post;
 using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.AutoMapper.Posts
@@ -12,7 +12,7 @@ namespace Dentizone.Application.AutoMapper.Posts
                 .ReverseMap();
             CreateMap<UpdatePostDto, Post>().ReverseMap();
             CreateMap<PostAsset, PostAssetView>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AssetId))    // Map AssetId to Id
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AssetId)) // Map AssetId to Id
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(src => src.Asset.Url)) // Map Asset.Url to Url
                 .ReverseMap();
             CreateMap<Post, PostViewDto>()

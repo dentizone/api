@@ -1,6 +1,10 @@
 ﻿namespace Dentizone.Application
 {
-    public static class AssemblyReference
+    /// <summary>
+    /// Marker interface for the Application assembly,
+    /// used by AutoMapper to locate and load its profiles.
+    /// </summary>
+    public interface IAssemblyReference
     {
     }
 }

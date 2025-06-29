@@ -10,22 +10,22 @@ public class OrderItemRepository(AppDbContext dbContext) : AbstractRepository(db
     public async Task<OrderItem?> GetByIdAsync(string id)
     {
         return
-            await dbContext.OrderItems
+            await DbContext.OrderItems
                 .FirstOrDefaultAsync(o => o.Id == id);
     }
 
 
     public async Task<OrderItem> CreateAsync(OrderItem entity)
     {
-        await dbContext.OrderItems.AddAsync(entity);
-        await dbContext.SaveChangesAsync();
+        await DbContext.OrderItems.AddAsync(entity);
+        await DbContext.SaveChangesAsync();
         return entity;
     }
 
     public async Task<OrderItem?> FindBy(Expression<Func<OrderItem, bool>> condition,
         Expression<Func<OrderItem, object>>[]? includes)
     {
-        IQueryable<OrderItem> query = dbContext.OrderItems;
+        IQueryable<OrderItem> query = DbContext.OrderItems;
         if (includes != null)
         {
             foreach (var include in includes)

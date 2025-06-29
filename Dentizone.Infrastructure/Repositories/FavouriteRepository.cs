@@ -9,22 +9,22 @@ public class FavouriteRepository(AppDbContext dbContext) : AbstractRepository(db
 {
     public async Task<Favourite?> GetByIdAsync(string id)
     {
-        return await dbContext.Favourites
+        return await DbContext.Favourites
             .FirstOrDefaultAsync(f => f.Id == id && !f.IsDeleted);
     }
 
 
     public async Task<Favourite> CreateAsync(Favourite entity)
     {
-        await dbContext.Favourites.AddAsync(entity);
-        await dbContext.SaveChangesAsync();
+        await DbContext.Favourites.AddAsync(entity);
+        await DbContext.SaveChangesAsync();
         return entity;
     }
 
     public async Task<Favourite?> FindBy(Expression<Func<Favourite, bool>> condition,
         Expression<Func<Favourite, object>>[]? incldues)
     {
-        IQueryable<Favourite> query = dbContext.Favourites;
+        IQueryable<Favourite> query = DbContext.Favourites;
         if (incldues != null)
         {
             foreach (var include in incldues)
@@ -44,14 +44,14 @@ public class FavouriteRepository(AppDbContext dbContext) : AbstractRepository(db
             return null;
         }
 
-        dbContext.Favourites.Remove(toBeDeleted);
-        await dbContext.SaveChangesAsync();
+        DbContext.Favourites.Remove(toBeDeleted);
+        await DbContext.SaveChangesAsync();
         return toBeDeleted;
     }
 
     public async Task<IEnumerable<Favourite>> FindAllByAsync(Expression<Func<Favourite, bool>> condition)
     {
-        IQueryable<Favourite> query = dbContext.Favourites;
+        IQueryable<Favourite> query = DbContext.Favourites;
 
         query = query.Include(f => f.Post)
             .ThenInclude(pa => pa.PostAssets)

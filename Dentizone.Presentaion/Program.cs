@@ -1,13 +1,10 @@
 using Dentizone.Application.DI;
 using Dentizone.Application.Interfaces;
-using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.DependencyInjection;
 using Dentizone.Infrastructure.Filters;
-using Dentizone.Infrastructure.Identity;
 using Dentizone.Presentaion.Context;
 using Dentizone.Presentaion.Extensions;
 using Dentizone.Presentaion.Middlewares;
-using Microsoft.AspNetCore.Identity;
 using Scalar.AspNetCore;
 
 namespace Dentizone.Presentaion
@@ -24,7 +21,7 @@ namespace Dentizone.Presentaion
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddInfrastructure();
-            builder.Services.AddAutoMapper(typeof(Application.AssemblyReference).Assembly);
+            builder.Services.AddAutoMapper(typeof(Application.IAssemblyReference).Assembly);
 
             builder.Services.AddApplicationServices();
             builder.Services.AddCors(c =>

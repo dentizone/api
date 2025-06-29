@@ -1,7 +1,5 @@
 ﻿using Dentizone.Application.DTOs.Assets;
 using Dentizone.Application.Interfaces;
-using Dentizone.Application.Interfaces.Assets;
-using Dentizone.Application.Interfaces.Cloudinary;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;

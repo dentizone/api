@@ -47,13 +47,13 @@ namespace Dentizone.Application.Services
             return withdrawalView;
         }
 
-        public async Task<List<WithdrawalRequestView>> GetWithdrawalHistoryAsync(string userId, int page)
+        public async Task<List<WithdrawalRequestView>> GetWithdrawalHistoryAsync(string userId)
         {
             var wallet = await walletService.GetWalletByUserIdAsync(userId);
             if (wallet == null)
                 throw new NotFoundException("Wallet not found.");
 
-            var withdrawalRequests = await withdrawalRepo.GetAllAsync(page, w => w.WalletId == wallet.Id);
+            var withdrawalRequests = await withdrawalRepo.GetAllAsync(w => w.WalletId == wallet.Id);
             if (!withdrawalRequests.Any())
             {
                 return [];
@@ -109,10 +109,10 @@ namespace Dentizone.Application.Services
             if (updatedRequest == null)
                 throw new NotFoundException("Failed to update withdrawal request.");
 
-            var UserId = updatedRequest.Wallet.UserId;
+            var userId = updatedRequest.Wallet.UserId;
             var subject = "Withdrawal Rejected";
             var body = $"Your withdrawal request of {request.Amount:C} has been rejected. Reason: {adminNote}";
-            await mailService.Send(UserId, subject, body);
+            await mailService.Send(userId, subject, body);
 
             return mapper.Map<WithdrawalRequestView>(updatedRequest);
         }

@@ -2,14 +2,14 @@
 {
     public class OrderViewDto
     {
-        public string Id { get; set; }
-        public string BuyerName { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string BuyerName { get; set; } = string.Empty;
         public int TotalAmount { get; set; }
 
-        public OrderShipInfoDto OrderShipmentAddress { get; set; } = new OrderShipInfoDto();
+        public OrderShipInfoDto OrderShipmentAddress { get; set; } = new();
 
         public DateTime CreatedAt { get; set; }
         public IReadOnlyCollection<OrderStatusTimeline> StatusTimeline { get; set; } = new List<OrderStatusTimeline>();
-        public List<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>();
+        public List<OrderItemDto> OrderItems { get; set; } = new();
     }
 }

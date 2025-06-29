@@ -4,13 +4,13 @@ namespace Dentizone.Application.DTOs.Catalog
 {
     public class CategoryView
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
+        public required string Id { get; set; }
+        public required string Name { get; set; }
     }
 
-    public class CreatedCategoryDTOValidator : AbstractValidator<CategoryView>
+    public class CreatedCategoryDtoValidator : AbstractValidator<CategoryView>
     {
-        public CreatedCategoryDTOValidator()
+        public CreatedCategoryDtoValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Category name is required.")

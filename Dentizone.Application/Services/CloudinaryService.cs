@@ -1,6 +1,6 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using Dentizone.Application.Interfaces.Cloudinary;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Secret;
 
@@ -23,7 +23,8 @@ namespace Dentizone.Application.Services
                 throw new CloudinaryUploadException($"Error uploading image: {uploadResult.Error.Message}");
             }
 
-            return uploadResult.SecureUri.ToString();
+
+            return uploadResult.SecureUrl.ToString();
         }
     }
 }

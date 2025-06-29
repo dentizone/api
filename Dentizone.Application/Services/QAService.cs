@@ -10,8 +10,8 @@ using Dentizone.Domain.Interfaces.Repositories;
 
 namespace Dentizone.Application.Services
 {
-    public class QAService(IMapper mapper, IAnswerRepository answerRepository, IQuestionRepository questionRepository)
-        : IQAService
+    public class QaService(IMapper mapper, IAnswerRepository answerRepository, IQuestionRepository questionRepository)
+        : IQaService
     {
         public async Task<AnswerViewDto> AnswerQuestionAsync(string questionId, CreateAnswerDto dto, string responderId)
         {

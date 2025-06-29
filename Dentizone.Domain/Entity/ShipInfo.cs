@@ -4,12 +4,12 @@ namespace Dentizone.Domain.Entity
 {
     public class ShipInfo : IBaseEntity
     {
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string OrderId { get; set; }
-        public virtual Order Order { get; set; }
-        public string UserId { get; set; }
-        public virtual AppUser User { get; set; }
+        public string Street { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string OrderId { get; set; } = string.Empty;
+        public virtual Order Order { get; set; } = new();
+        public string UserId { get; set; } = string.Empty;
+        public virtual AppUser User { get; set; } = new();
 
 
         public string Id { get; set; } = Guid.NewGuid().ToString();

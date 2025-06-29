@@ -9,22 +9,22 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<UserAsset?> GetByIdAsync(string id)
         {
-            return await dbContext.UserAssets
+            return await DbContext.UserAssets
                 .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
         }
 
 
         public async Task<UserAsset> CreateAsync(UserAsset entity)
         {
-            await dbContext.UserAssets.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.UserAssets.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<UserAsset?> FindBy(Expression<Func<UserAsset, bool>> condition,
             Expression<Func<UserAsset, object>>[]? includes)
         {
-            IQueryable<UserAsset> query = dbContext.UserAssets.Where(u => !u.IsDeleted);
+            IQueryable<UserAsset> query = DbContext.UserAssets.Where(u => !u.IsDeleted);
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -44,14 +44,14 @@ namespace Dentizone.Infrastructure.Repositories
                 return null;
             }
 
-            dbContext.UserAssets.Remove(toBeDeleted);
-            await dbContext.SaveChangesAsync();
+            DbContext.UserAssets.Remove(toBeDeleted);
+            await DbContext.SaveChangesAsync();
             return toBeDeleted;
         }
 
         public async Task<IEnumerable<UserAsset>> GetAllByAsync(int page, Expression<Func<UserAsset, bool>>? condition)
         {
-            IQueryable<UserAsset> query = dbContext.UserAssets.Where(u => !u.IsDeleted);
+            IQueryable<UserAsset> query = DbContext.UserAssets.Where(u => !u.IsDeleted);
             if (condition != null)
             {
                 query = query.Where(condition);

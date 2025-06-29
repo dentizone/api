@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using Dentizone.Application.DTOs.PostDTO;
-using Dentizone.Application.DTOs.PostFilterDTO;
-using Dentizone.Application.Interfaces.Assets;
-using Dentizone.Application.Interfaces.Post;
+using Dentizone.Application.DTOs.Post;
+using Dentizone.Application.DTOs.Post.PostFilterDto;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
@@ -119,6 +118,10 @@ namespace Dentizone.Application.Services
 
                 await repo.UpdateAsync(post);
                 await transaction.CommitAsync();
+
+                // Invalidate The Cache
+                var cacheKey = CacheHelper.GenerateCacheKey("SidebarFilter");
+                await redisService.InvalidateCache(cacheKey);
 
                 return mapper.Map<PostViewDto>(post);
             }

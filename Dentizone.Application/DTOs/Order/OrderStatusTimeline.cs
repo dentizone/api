@@ -2,6 +2,6 @@
 
 public class OrderStatusTimeline
 {
-    public string Status { get; set; }
+    public required string Status { get; set; }
     public DateTime Timestamp { get; set; }
 }

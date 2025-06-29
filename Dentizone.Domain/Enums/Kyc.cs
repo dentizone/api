@@ -2,12 +2,12 @@
 {
     public enum KycStatus
     {
-        APPROVED = 1,
-        PENDING = 2,
-        REJECTED = 3,
-        EXPIRED = 4,
-        UNDER_REVIEW = 5,
-        NOT_SUBMITTED = 6,
-        BLOCKED = 7
+        Approved = 1,
+        Pending = 2,
+        Rejected = 3,
+        Expired = 4,
+        UnderReview = 5,
+        NotSubmitted = 6,
+        Blocked = 7
     }
 }

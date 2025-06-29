@@ -2,6 +2,6 @@
 {
     public class ApproveWithdrawalDto
     {
-        public string AdminNote { get; set; }
+        public required string AdminNote { get; set; }
     }
 }

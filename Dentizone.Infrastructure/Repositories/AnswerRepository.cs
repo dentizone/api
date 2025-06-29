@@ -9,27 +9,26 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<Answer> CreateAsync(Answer entity)
         {
-            await dbContext.Answers.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.Answers.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
 
-        public async Task<Answer?> FindBy(Expression<Func<Answer, bool>> condition,
-            Expression<Func<Answer, object>>[]? includes)
+        public async Task<Answer?> FindBy(
+            Expression<Func<Answer, bool>> condition,
+            Expression<Func<Answer, object>>[]? includes = null)
         {
-            var query = dbContext.Answers.AsQueryable();
+            var query = DbContext.Answers.AsQueryable();
 
             if (includes == null)
-                return await dbContext.Answers
+                return await DbContext.Answers
                     .FirstOrDefaultAsync(condition);
-
 
             foreach (var include in includes)
             {
                 query = query.Include(include);
             }
-
 
             return await query
                 .FirstOrDefaultAsync(condition);
@@ -41,21 +40,21 @@ namespace Dentizone.Infrastructure.Repositories
             var answer = await GetByIdAsync(id);
 
 
-            dbContext.Answers.Remove(answer);
-            await dbContext.SaveChangesAsync();
+            DbContext.Answers.Remove(answer);
+            await DbContext.SaveChangesAsync();
             return answer;
         }
 
 
         public async Task<Answer?> GetByIdAsync(string id)
         {
-            return await dbContext.Answers.FindAsync(id);
+            return await DbContext.Answers.FindAsync(id);
         }
 
         public async Task<Answer> UpdateAsync(Answer entity)
         {
-            dbContext.Answers.Update(entity);
-            await dbContext.SaveChangesAsync();
+            DbContext.Answers.Update(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
     }

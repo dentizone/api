@@ -3,7 +3,7 @@ using Dentizone.Application.DTOs.Q_A.QuestionDTO;
 
 namespace Dentizone.Application.Interfaces
 {
-    public interface IQAService
+    public interface IQaService
     {
         Task<QuestionViewDto> AskQuestionAsync(CreateQuestionDto dto, string askerId);
         Task<IEnumerable<QuestionViewDto>> GetQuestionsForPostAsync(string postId);

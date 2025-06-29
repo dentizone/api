@@ -18,13 +18,13 @@ namespace Dentizone.Application.AutoMapper
             CreateMap<CreateAppUser, AppUser>()
                 .ReverseMap();
 
-            CreateMap<KycStatusDTO, AppUser>().ReverseMap();
-            CreateMap<UserStateDTO, AppUser>()
+            CreateMap<KycStatusDto, AppUser>().ReverseMap();
+            CreateMap<UserStateDto, AppUser>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ReverseMap()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
             CreateMap<UserView, AppUser>()
-                .ForPath(dest => dest.University.Name, opt => opt.MapFrom(src => src.UnversityName))
+                .ForPath(dest => dest.University.Name, opt => opt.MapFrom(src => src.UniversityName))
                 .ReverseMap();
 
             CreateMap<DomainUserView, AppUser>()

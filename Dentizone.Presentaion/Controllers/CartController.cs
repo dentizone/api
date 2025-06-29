@@ -1,5 +1,5 @@
 ﻿using Dentizone.Application.DTOs.Cart;
-using Dentizone.Application.Interfaces.Cart;
+using Dentizone.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using AuthorizeAttribute = Microsoft.AspNetCore.Authorization.AuthorizeAttribute;

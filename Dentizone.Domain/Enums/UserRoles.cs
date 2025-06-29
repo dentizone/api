@@ -2,10 +2,10 @@
 {
     public enum UserRoles
     {
-        GHOST,
-        ADMIN,
-        VERIFIED,
-        PARTILY_VERIFIED,
-        BLACKLISTED,
+        Ghost,
+        Admin,
+        Verified,
+        PartilyVerified,
+        Blacklisted,
     }
 }

@@ -2,6 +2,6 @@
 
 public class ConfirmEmailRequestDto
 {
-    public string Token { get; set; }
-    public string UserId { get; set; }
+    public required string Token { get; set; }
+    public required string UserId { get; set; }
 }

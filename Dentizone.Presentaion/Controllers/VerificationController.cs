@@ -1,5 +1,4 @@
 ﻿using Dentizone.Application.Interfaces;
-using Dentizone.Application.Interfaces.User;
 using Dentizone.Application.Services.Authentication;
 using Dentizone.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -33,15 +32,15 @@ namespace Dentizone.Presentaion.Controllers
             // Check if the user already verified
             var user = await userService.GetByIdAsync(userId);
 
-            if (user.KycStatus.Equals(KycStatus.PENDING.ToString(), StringComparison.OrdinalIgnoreCase) ||
-                user.KycStatus.Equals(KycStatus.APPROVED.ToString(), StringComparison.OrdinalIgnoreCase))
+            if (user.KycStatus.Equals(KycStatus.Pending.ToString(), StringComparison.OrdinalIgnoreCase) ||
+                user.KycStatus.Equals(KycStatus.Approved.ToString(), StringComparison.OrdinalIgnoreCase))
 
             {
                 return BadRequest("KYC process already in progress or completed.");
             }
 
             var session = await verificationService.StartSessionAsync(userId);
-            await userService.SetKycStatusAsync(user.Id, KycStatus.NOT_SUBMITTED);
+            await userService.SetKycStatusAsync(user.Id, KycStatus.NotSubmitted);
 
             return Ok(session);
         }
@@ -99,12 +98,12 @@ namespace Dentizone.Presentaion.Controllers
                 switch (verification.Status.ToLower())
                 {
                     case "approved":
-                        await authService.AlternateUserRoleAsync(UserRoles.VERIFIED, userId);
+                        await authService.AlternateUserRoleAsync(UserRoles.Verified, userId);
                         await verificationService.UpdateUserNationalId(userId,
                             verification.IdVerification.PersonalNumber);
                         break;
                     case "declined":
-                        await authService.AlternateUserRoleAsync(UserRoles.BLACKLISTED, userId);
+                        await authService.AlternateUserRoleAsync(UserRoles.Blacklisted, userId);
                         break;
 
                     default:

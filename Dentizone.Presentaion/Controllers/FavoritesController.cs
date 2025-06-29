@@ -1,5 +1,5 @@
 ﻿using Dentizone.Application.DTOs.Favorites;
-using Dentizone.Application.Interfaces.Favorites;
+using Dentizone.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

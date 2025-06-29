@@ -34,7 +34,7 @@ namespace Dentizone.Application.Services.Authentication
                 throw new NotFoundException("User does not have any roles assigned");
             }
 
-            return Enum.Parse<UserRoles>(currentRoles.FirstOrDefault() ?? UserRoles.GHOST.ToString());
+            return Enum.Parse<UserRoles>(currentRoles.FirstOrDefault() ?? UserRoles.Ghost.ToString());
         }
 
         public async Task AlternateUserRoleAsync(UserRoles newRole, string userId)
@@ -69,7 +69,7 @@ namespace Dentizone.Application.Services.Authentication
 
             if (isLockedOut)
             {
-                await userActivityService.CreateAsync(UserActivities.LOCKDOUT, DateTime.Now, user.Id);
+                await userActivityService.CreateAsync(UserActivities.Lockdout, DateTime.Now, user.Id);
                 throw new
                     UserLockedOutException(
                         "User is locked out due to too many failed login attempts. Please try again later.");
@@ -97,7 +97,7 @@ namespace Dentizone.Application.Services.Authentication
 
             // 4. Check if user is in role
 
-            if (roles.Contains(UserRoles.BLACKLISTED.ToString()))
+            if (roles.Contains(UserRoles.Blacklisted.ToString()))
             {
                 throw new BadActionException("You're banned from using our platform.");
             }
@@ -105,11 +105,11 @@ namespace Dentizone.Application.Services.Authentication
             // 5. Generate token
 
             await userManager.ResetAccessFailedCountAsync(user);
-            await userActivityService.CreateAsync(UserActivities.LOGIN, DateTime.Now, user.Id);
+            await userActivityService.CreateAsync(UserActivities.Login, DateTime.Now, user.Id);
             return new LoggedInUser()
             {
                 User = user,
-                role = Enum.Parse<UserRoles>(roles.FirstOrDefault())
+                Role = Enum.Parse<UserRoles>(roles.FirstOrDefault())
             };
         }
 
@@ -137,7 +137,7 @@ namespace Dentizone.Application.Services.Authentication
 
 
             // 3. Assign default role
-            await userManager.AddToRoleAsync(user, UserRoles.GHOST.ToString());
+            await userManager.AddToRoleAsync(user, UserRoles.Ghost.ToString());
 
 
             // 4. Send Verification Email 
@@ -146,7 +146,7 @@ namespace Dentizone.Application.Services.Authentication
             return new LoggedInUser()
             {
                 User = user,
-                role = UserRoles.GHOST
+                Role = UserRoles.Ghost
             };
         }
 
@@ -174,10 +174,10 @@ namespace Dentizone.Application.Services.Authentication
             }
 
             // 4. Assign verified role
-            await AlternateUserRoleAsync(UserRoles.PARTILY_VERIFIED, user);
-            await userActivityService.CreateAsync(UserActivities.EMAIL_CONFIRMED, DateTime.Now, user.Id);
+            await AlternateUserRoleAsync(UserRoles.PartilyVerified, user);
+            await userActivityService.CreateAsync(UserActivities.EmailConfirmed, DateTime.Now, user.Id);
             // 4. Generate token
-            return GenerateToken(user.Id, user.Email, UserRoles.PARTILY_VERIFIED.ToString());
+            return GenerateToken(user.Id, user.Email, UserRoles.PartilyVerified.ToString());
         }
 
         public async Task SendVerificationEmail(string email)
@@ -248,7 +248,7 @@ namespace Dentizone.Application.Services.Authentication
                 throw new NotFoundException("User does not have any roles assigned");
             }
 
-            await userActivityService.CreateAsync(UserActivities.PASSWORD_RESET);
+            await userActivityService.CreateAsync(UserActivities.PasswordReset);
             // 3. Generate token
             return GenerateToken(user.Id, user.Email, roles.FirstOrDefault());
         }

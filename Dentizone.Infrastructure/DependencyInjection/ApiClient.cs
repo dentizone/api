@@ -11,7 +11,7 @@ namespace Dentizone.Infrastructure.DependencyInjection
         {
             services.AddRefitClient<IDiditApi>()
                 .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://verification.didit.me"); });
-            services.AddRefitClient<ITruboSMTP>()
+            services.AddRefitClient<ITruboSmtp>()
                 .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://api.turbo-smtp.com/api/v2"); });
             return services;
         }

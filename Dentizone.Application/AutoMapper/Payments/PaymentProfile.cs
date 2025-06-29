@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Dentizone.Application.Services.Payment;
+using Dentizone.Application.DTOs.Payment;
 using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.AutoMapper.Payments

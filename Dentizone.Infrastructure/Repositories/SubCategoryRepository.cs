@@ -10,22 +10,22 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<SubCategory?> GetByIdAsync(string id)
         {
-            return await dbContext.SubCategories
+            return await DbContext.SubCategories
                 .FirstOrDefaultAsync(sc => sc.Id == id);
         }
 
 
         public async Task<SubCategory> CreateAsync(SubCategory entity)
         {
-            await dbContext.SubCategories.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.SubCategories.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<SubCategory?> FindBy(Expression<Func<SubCategory, bool>> condition,
             Expression<Func<SubCategory, object>>[]? includes)
         {
-            IQueryable<SubCategory> query = dbContext.SubCategories;
+            IQueryable<SubCategory> query = DbContext.SubCategories;
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -46,23 +46,23 @@ namespace Dentizone.Infrastructure.Repositories
                 return null;
             }
 
-            dbContext.SubCategories.Remove(toBeDeleted);
-            await dbContext.SaveChangesAsync();
+            DbContext.SubCategories.Remove(toBeDeleted);
+            await DbContext.SaveChangesAsync();
 
             return toBeDeleted;
         }
 
         public async Task<ICollection<SubCategory>> GetAll()
         {
-            return await dbContext.SubCategories
+            return await DbContext.SubCategories
                 .Include(sc => sc.Category)
                 .ToListAsync();
         }
 
         public async Task<SubCategory?> Update(SubCategory entity)
         {
-            dbContext.SubCategories.Update(entity);
-            await dbContext.SaveChangesAsync();
+            DbContext.SubCategories.Update(entity);
+            await DbContext.SaveChangesAsync();
 
             return entity;
         }
