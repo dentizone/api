@@ -15,7 +15,7 @@ public class OrderPickupRepository(AppDbContext dbContext) : AbstractRepository(
     }
 
     public async Task<OrderPickup?> FindBy(Expression<Func<OrderPickup, bool>> condition,
-                                           Expression<Func<OrderPickup, object>>[]? includes)
+        Expression<Func<OrderPickup, object>>[]? includes)
     {
         IQueryable<OrderPickup> query = dbContext.OrderPickups;
         if (includes != null)
@@ -55,6 +55,6 @@ public class OrderPickupRepository(AppDbContext dbContext) : AbstractRepository(
     public async Task<OrderPickup?> GetByIdAsync(string id)
     {
         return await dbContext.OrderPickups
-                              .FirstOrDefaultAsync(o => o.Id == id && !o.IsDeleted);
+            .FirstOrDefaultAsync(o => o.Id == id && !o.IsDeleted);
     }
 }

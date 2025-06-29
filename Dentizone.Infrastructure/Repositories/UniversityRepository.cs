@@ -22,7 +22,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<University?> FindBy(Expression<Func<University, bool>> condition,
-                                              Expression<Func<University, object>>[]? includes)
+            Expression<Func<University, object>>[]? includes)
         {
             IQueryable<University> query = dbContext.Universities.Where(u => !u.IsDeleted);
             if (includes != null)
@@ -62,17 +62,17 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<IReadOnlyCollection<University>> GetAll()
         {
             return await dbContext.Universities
-                                  .Where(u => !u.IsDeleted)
-                                  .OrderByDescending(u => u.CreatedAt)
-                                  .AsNoTracking()
-                                  .ToListAsync();
+                .Where(u => !u.IsDeleted)
+                .OrderByDescending(u => u.CreatedAt)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<PagedResult<University>> GetAll(int page, Expression<Func<University, bool>>? filter)
         {
             var query = dbContext.Universities.AsQueryable();
             query = query.Where(u => !u.IsDeleted)
-                         .OrderByDescending(u => u.CreatedAt);
+                .OrderByDescending(u => u.CreatedAt);
 
             var totalCount = await query.CountAsync();
 
@@ -83,9 +83,9 @@ namespace Dentizone.Infrastructure.Repositories
             }
 
             var items = await query
-                              .Skip(CalculatePagination(page))
-                              .Take(DefaultPageSize)
-                              .ToListAsync();
+                .Skip(CalculatePagination(page))
+                .Take(DefaultPageSize)
+                .ToListAsync();
             return new PagedResult<University>
             {
                 Items = items,

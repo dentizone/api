@@ -10,7 +10,7 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<ShipInfo?> GetByIdAsync(string id)
         {
             return await dbContext.ShipInfos
-                                  .FirstOrDefaultAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
 
@@ -22,7 +22,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<ShipInfo?> FindBy(Expression<Func<ShipInfo, bool>> condition,
-                                            Expression<Func<ShipInfo, object>>[]? includes)
+            Expression<Func<ShipInfo, object>>[]? includes)
         {
             IQueryable<ShipInfo> query = dbContext.ShipInfos;
             if (includes != null)

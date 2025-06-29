@@ -1,11 +1,12 @@
-﻿using FluentValidation;
+﻿using Dentizone.Application.Validators;
+using FluentValidation;
 
 namespace Dentizone.Application.DTOs.Q_A.QuestionDTO
 {
-    #nullable enable
+#nullable enable
     public class CreateQuestionDto
     {
-        public Guid PostId { get; set; }
+        public string PostId { get; set; }
         public string? Text { get; set; }
     }
 
@@ -13,7 +14,7 @@ namespace Dentizone.Application.DTOs.Q_A.QuestionDTO
     {
         public CreateQuestionDtoValidator()
         {
-            RuleFor(x => x.PostId).NotEmpty().WithMessage("PostId is required.");
+            RuleFor(x => x.PostId).NotEmpty().WithMessage("PostId is required.").MustBeParsableGuid();
             RuleFor(x => x.Text).NotEmpty().WithMessage("Text is required.");
         }
     }
