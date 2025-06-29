@@ -12,76 +12,58 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QAController(IQAService iQAService) : ControllerBase
+    [Authorize]
+    public class QAController(IQAService QAService) : ControllerBase
     {
-        [Authorize]
-        [HttpPost("/api/questions")]
-        public IActionResult AskQuestion([FromBody] CreateQuestionDto dto)
+        [HttpPost()]
+        public async Task<IActionResult> AskQuestion([FromBody] CreateQuestionDto dto)
         {
             var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            if (dto == null || string.IsNullOrEmpty(dto.PostId) || string.IsNullOrEmpty(dto.Text))
-            {
-                return BadRequest("Invalid question data.");
-            }
-            var question = iQAService.AskQuestionAsync(dto, userId).Result;
+            var question = await QAService.AskQuestionAsync(dto, userId);
             return Ok(question);
         }
-        [HttpGet("/api/posts/{postId}/questions")]
+
+        [HttpGet("questions/{postId}")]
         public async Task<IActionResult> GetQuestionsForPost(string postId)
         {
-            var questions = await iQAService.GetQuestionsForPostAsync(postId);
+            var questions = await QAService.GetQuestionsForPostAsync(postId);
             return Ok(questions);
         }
 
-        [Authorize]
-        [HttpPost("/api/questions/{questionId}/answers")]
+        [HttpPost("answer/{questionId}")]
         public async Task<IActionResult> AnswerQuestion(string questionId, [FromBody] CreateAnswerDto dto)
         {
             var responderId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            if (responderId == null)
-                return Unauthorized();
 
-            var answer = await iQAService.AnswerQuestionAsync(questionId, dto, responderId);
+            var answer = await QAService.AnswerQuestionAsync(questionId, dto, responderId);
             return Ok(answer);
         }
 
-        [Authorize]
-        [HttpPut("/api/questions/{questionId}")]
+        [HttpPut("{questionId}")]
         public async Task<IActionResult> UpdateQuestion(string questionId, [FromBody] UpdateQuestionDto dto)
         {
-            if (dto == null || string.IsNullOrEmpty(dto.Text))
-            {
-                return BadRequest("Invalid question data.");
-            }
-            await iQAService.UpdateQuestionAsync(questionId, dto);
+            await QAService.UpdateQuestionAsync(questionId, dto);
             return NoContent();
         }
 
-        [Authorize]
-        [HttpDelete("/api/questions/{questionId}")]
+        [HttpDelete("questionId}")]
         public async Task<IActionResult> DeleteQuestion(string questionId)
         {
-            await iQAService.DeleteQuestionAsync(questionId);
+            await QAService.DeleteQuestionAsync(questionId);
             return NoContent();
         }
 
-        [Authorize]
-        [HttpPut("/api/answers/{answerId}")]
+        [HttpPut("answers/{answerId}")]
         public async Task<IActionResult> UpdateAnswer(string answerId, [FromBody] UpdateAnswerDto dto)
         {
-            if (dto == null || string.IsNullOrEmpty(dto.Text))
-            {
-                return BadRequest("Invalid answer data.");
-            }
-            await iQAService.UpdateAnswerAsync(answerId, dto);
+            await QAService.UpdateAnswerAsync(answerId, dto);
             return NoContent();
         }
 
-        [Authorize]
-        [HttpDelete("/api/answers/{answerId}")]
+        [HttpDelete("answers/{answerId}")]
         public async Task<IActionResult> DeleteAnswer(string answerId)
         {
-            await iQAService.DeleteAnswerAsync(answerId);
+            await QAService.DeleteAnswerAsync(answerId);
             return NoContent();
         }
     }
