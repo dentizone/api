@@ -8,7 +8,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "IsPartilyVerified")]
     public class CartController(ICartService cartService) : ControllerBase
     {
         [HttpGet]

@@ -44,12 +44,11 @@ namespace Dentizone.Presentaion
             {
                 opt.Title = "Dentizone API";
                 opt.Theme = ScalarTheme.Mars;
-                opt.DefaultHttpClient = new(ScalarTarget.JavaScript, ScalarClient.Fetch);
             });
 
             app.MapGet("/", context =>
             {
-                context.Response.Redirect("/scalar", permanent: false);
+                context.Response.Redirect("/scalar", permanent: true);
                 return Task.CompletedTask;
             });
 
@@ -61,19 +60,7 @@ namespace Dentizone.Presentaion
 
 
             app.MapControllers();
-            //RoleSeeder.SeedRolesAsync(app.Services).Wait();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-                // Seed the database with initial data
-                //UniversitySeeder.SeedAsync(dbContext).Wait();
-                //CatalogSeeder.SeedCategoriesAndSubCategoriesAsync(dbContext).Wait();
-                //DataSeeder.SeedAsync(dbContext, userManager).Wait();
-            }
 
             app.Run();
         }

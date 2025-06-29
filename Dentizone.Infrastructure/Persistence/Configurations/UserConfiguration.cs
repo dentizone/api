@@ -17,7 +17,10 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
 
             builder.Property(u => u.UniversityId)
                 .IsRequired();
-
+            builder.Property(u => u.Email)
+                .IsRequired()
+                .HasMaxLength(255)
+                .IsUnicode(false);
 
             builder.Property(u => u.NationalId);
 

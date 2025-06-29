@@ -8,7 +8,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "IsPartilyVerified")]
     public class FavoritesController(IFavoritesService favoritesService) : ControllerBase
     {
         [HttpGet]
@@ -23,8 +23,8 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> AddToFavorites([FromBody] FavoriteDto dto)
         {
             var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            var favorite = await favoritesService.AddToFavoritesAsync(userId, dto.PostId);
-            return CreatedAtAction(nameof(GetFavorites), null, favorite);
+            await favoritesService.AddToFavoritesAsync(userId, dto.PostId);
+            return Ok();
         }
 
         [HttpDelete("{favoriteId}")]

@@ -26,8 +26,7 @@ namespace Dentizone.Infrastructure.Identity
         public static LockoutOptions LockoutOptions { get; } = new()
         {
             AllowedForNewUsers = true,
-            DefaultLockoutTimeSpan =
-                                                                       TimeSpan.FromMinutes(15),
+            DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15),
             MaxFailedAccessAttempts = 3,
         };
 
@@ -44,10 +43,10 @@ namespace Dentizone.Infrastructure.Identity
                 ValidIssuer = secretService.GetSecret("JwtIssuer"),
                 ValidAudience = secretService.GetSecret("JwtAudience"),
                 IssuerSigningKey = new SymmetricSecurityKey(
-                                                                   Encoding.UTF8
-                                                                           .GetBytes(secretService
-                                                                                    .GetSecret("JwtSecret"))
-                                                                  ),
+                    Encoding.UTF8
+                        .GetBytes(secretService
+                            .GetSecret("JwtSecret"))
+                ),
             };
         }
 
@@ -62,9 +61,9 @@ namespace Dentizone.Infrastructure.Identity
                 ValidateIssuerSigningKey = true,
 
                 IssuerSigningKey = new SymmetricSecurityKey(
-                                                                   Encoding.UTF8
-                                                                           .GetBytes(secret)
-                                                                  ),
+                    Encoding.UTF8
+                        .GetBytes(secret)
+                ),
             };
         }
     }

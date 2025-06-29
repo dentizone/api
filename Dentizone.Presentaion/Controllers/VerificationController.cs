@@ -101,7 +101,7 @@ namespace Dentizone.Presentaion.Controllers
                     case "approved":
                         await authService.AlternateUserRoleAsync(UserRoles.VERIFIED, userId);
                         await verificationService.UpdateUserNationalId(userId,
-                                                                       verification.IdVerification.PersonalNumber);
+                            verification.IdVerification.PersonalNumber);
                         break;
                     case "declined":
                         await authService.AlternateUserRoleAsync(UserRoles.BLACKLISTED, userId);

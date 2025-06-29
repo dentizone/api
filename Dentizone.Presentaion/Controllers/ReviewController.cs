@@ -8,7 +8,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Policy = "IsVerified")]
     public class ReviewController(IReviewService reviewService) : ControllerBase
     {
         [HttpPost]
@@ -20,14 +20,16 @@ namespace Dentizone.Presentaion.Controllers
             return Ok();
         }
 
-        [HttpPut("{reviewId}")] // ADMIN ONLY
+        [HttpPut("{reviewId}")]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> UpdateReview(string reviewId, [FromBody] UpdateReviewDto updateReviewDto)
         {
             await reviewService.UpdateReviewAsync(reviewId, updateReviewDto);
             return Ok();
         }
 
-        [HttpDelete("{reviewId}")] // ADMIN ONLY
+        [HttpDelete("{reviewId}")]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> DeleteReview(string reviewId)
         {
             await reviewService.DeleteReviewAsync(reviewId);

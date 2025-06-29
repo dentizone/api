@@ -1,5 +1,6 @@
 ﻿using Dentizone.Application.DTOs.Catalog;
 using Dentizone.Application.Interfaces.Catalog;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers
@@ -30,6 +31,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpPost("categories")]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryDto categoryDto)
         {
             var createdCategory = await catalogService.CreateCategory(categoryDto);
@@ -37,6 +39,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpPut("categories/{categoryId}")]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> UpdateCategory(
             string categoryId,
             [FromBody] CategoryDto categoryDto)
@@ -46,6 +49,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpDelete("categories/{categoryId}")]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> DeleteCategory(string categoryId)
         {
             var deletedCategory = await catalogService.DeleteCategory(categoryId);
@@ -73,14 +77,16 @@ namespace Dentizone.Presentaion.Controllers
             return Ok(subCategory);
         }
 
+        [Authorize(Policy = "IsAdmin")]
         [HttpPost("subcategories")]
         public async Task<IActionResult> CreateSubCategory([FromBody] SubCategoryDto subCategoryDto)
         {
             var createdSubCategory = await catalogService.CreateSubCategory(subCategoryDto);
             return CreatedAtAction(nameof(GetSubCategoryById), new { subCategoryId = createdSubCategory.Id },
-                                   createdSubCategory);
+                createdSubCategory);
         }
 
+        [Authorize(Policy = "IsAdmin")]
         [HttpPut("subcategories")]
         public async Task<IActionResult> UpdateSubCategory([FromBody] SubCategoryDto subCategoryDto)
         {
@@ -88,6 +94,7 @@ namespace Dentizone.Presentaion.Controllers
             return Ok(updatedSubCategory);
         }
 
+        [Authorize(Policy = "IsAdmin")]
         [HttpDelete("subcategories/{subCategoryId}")]
         public async Task<IActionResult> DeleteSubCategory(string subCategoryId)
         {

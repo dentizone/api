@@ -8,7 +8,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "IsVerified")]
     public class UploadController(IUploadService uploadService) : ControllerBase
     {
         [HttpPost("image")]
@@ -41,22 +41,13 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> GetAssetById(string id)
         {
             var asset = await uploadService.FindAssetById(id);
-
             return Ok(asset);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAssetById(string id)
         {
-            var asset = await uploadService.FindAssetById(id);
-            if (asset == null)
-            {
-                throw new NotFoundException("Asset not found");
-            }
-
-            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-
-            await uploadService.DeleteAssetById(id, userId);
+            await uploadService.DeleteAssetById(id);
             return NoContent();
         }
     }

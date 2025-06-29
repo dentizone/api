@@ -29,7 +29,7 @@ namespace Dentizone.Presentaion.Controllers
 
 
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, loggedInUser.User.Email,
-                                                         loggedInUser.role.ToString());
+                loggedInUser.role.ToString());
             var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);
             return Ok(new RefreshTokenResponse()
             {
@@ -52,11 +52,12 @@ namespace Dentizone.Presentaion.Controllers
                 Username = registerPayloadDto.Username,
                 Status = UserState.PendingVerification,
                 Id = loggedInUser.User.Id, // IdentityServer uses string IDs for users
+                Email = registerPayloadDto.Email
             };
             var userData = await userService.CreateAsync(userDataDto);
 
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, registerPayloadDto.Email,
-                                                         loggedInUser.role.ToString());
+                loggedInUser.role.ToString());
             var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);
             return Ok(new RefreshTokenResponse()
             {
@@ -100,7 +101,7 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
             var result = await authenticationService.ResetPassword(resetPasswordDto.Email, resetPasswordDto.Token,
-                                                                   resetPasswordDto.NewPassword);
+                resetPasswordDto.NewPassword);
 
 
             return Ok(new { Message = result });

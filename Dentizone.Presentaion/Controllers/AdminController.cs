@@ -1,9 +1,11 @@
 ﻿using Dentizone.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize("IsAdmin")]
     [ApiController]
     public class AdminController(IWithdrawalService withdrawalService) : ControllerBase
     {

@@ -8,6 +8,7 @@ namespace Dentizone.Domain.Entity
         public string FullName { get; set; }
         public string Username { get; set; }
         public int AcademicYear { get; set; }
+        public required string Email { get; set; }
         public long? NationalId { get; set; }
         public KycStatus KycStatus { get; set; }
         public UserState Status { get; set; }

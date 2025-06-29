@@ -1,14 +1,17 @@
 ﻿using Dentizone.Application.DTOs.University;
 using Dentizone.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "IsAdmin")]
     public class UniversitiesController(IUniversityService universityService) : ControllerBase
     {
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll([FromQuery] int page = 1)
         {
             var universities = await universityService.GetAllUniversitiesAsync(page);
@@ -16,6 +19,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet("supported")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllUniversities()
         {
             var universities = await universityService.GetSupportedUniversitiesAsync();
