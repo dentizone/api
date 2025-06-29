@@ -39,3 +39,4 @@ msbuild.wrn
 /Dentizone.Tests/Dentizone.Tests.csproj
 /Dentizone.Tests
 
+/Dentizone.Infrastructure/Migrations
