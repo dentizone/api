@@ -2,15 +2,15 @@
 
 namespace Dentizone.Application.DTOs.Catalog
 {
-    public class CreatedSubCategoryDTO
+    public class CreatedSubCategoryDto
     {
         public string Id { get; set; }
         public string Name { get; set; }
     }
 
-    public class CreatedSubCategoryDTOValidator : AbstractValidator<CreatedSubCategoryDTO>
+    public class CreatedSubCategoryDtoValidator : AbstractValidator<CreatedSubCategoryDto>
     {
-        public CreatedSubCategoryDTOValidator()
+        public CreatedSubCategoryDtoValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("SubCategory name is required.")

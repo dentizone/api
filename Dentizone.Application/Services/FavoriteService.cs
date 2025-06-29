@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.Favorites;
-using Dentizone.Application.Interfaces.Favorites;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;

@@ -4,22 +4,22 @@ using Dentizone.Infrastructure.ApiClient;
 
 namespace Dentizone.Application.Services
 {
-    internal class MailService(ITruboSMTP smtpApi, ISecretService secretService) : IMailService
+    internal class MailService(ITruboSmtp smtpApi, ISecretService secretService) : IMailService
     {
         public async Task<object?> Send(string to, string subject, string body)
         {
             var mailSecrets = new MailSecrets(secretService.GetSecret("TurboSmtpAuthUser"),
-                                              secretService.GetSecret("TurboSmtpAuthPass"),
-                                              secretService.GetSecret("TurboSmtpFrom"));
+                secretService.GetSecret("TurboSmtpAuthPass"),
+                secretService.GetSecret("TurboSmtpFrom"));
 
 
             var response = await smtpApi.SendEmailAsync(
-                                                        new TurboSmtpEmailRequest(mailSecrets)
-                                                        {
-                                                            To = to,
-                                                            Subject = subject,
-                                                            Content = body
-                                                        });
+                new TurboSmtpEmailRequest(mailSecrets)
+                {
+                    To = to,
+                    Subject = subject,
+                    Content = body
+                });
             return response.Content;
         }
 

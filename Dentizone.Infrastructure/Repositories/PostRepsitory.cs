@@ -10,15 +10,15 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<Post> CreateAsync(Post entity)
         {
-            await dbContext.Posts.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.Posts.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<Post?> FindBy(Expression<Func<Post, bool>> condition,
             Expression<Func<Post, object>>[]? includes)
         {
-            IQueryable<Post> query = dbContext.Posts;
+            IQueryable<Post> query = DbContext.Posts;
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -40,15 +40,15 @@ namespace Dentizone.Infrastructure.Repositories
             }
 
 
-            dbContext.Posts.Remove(post);
-            await dbContext.SaveChangesAsync();
+            DbContext.Posts.Remove(post);
+            await DbContext.SaveChangesAsync();
             return post;
         }
 
         public async Task<IEnumerable<Post>> GetAllAsync(int page)
         {
             int skippedPages = CalculatePagination(page);
-            return await dbContext.Posts
+            return await DbContext.Posts
                 .Skip(skippedPages)
                 .Take(DefaultPageSize)
                 .ToListAsync();
@@ -58,7 +58,7 @@ namespace Dentizone.Infrastructure.Repositories
             Expression<Func<Post, object>>? orderBy,
             Expression<Func<Post, object>>[]? includes = null)
         {
-            IQueryable<Post> query = dbContext.Posts;
+            IQueryable<Post> query = DbContext.Posts;
             if (filter != null)
             {
                 query = query.Where(filter);
@@ -85,7 +85,7 @@ namespace Dentizone.Infrastructure.Repositories
             Expression<Func<Post, object>>? orderBy = null,
             Expression<Func<Post, object>>[]? includes = null)
         {
-            IQueryable<Post> query = dbContext.Posts;
+            IQueryable<Post> query = DbContext.Posts;
             if (filter != null)
             {
                 query = query.Where(filter);
@@ -109,7 +109,7 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<Post?> GetByIdAsync(string id)
         {
-            return await dbContext.Posts
+            return await DbContext.Posts
                 .Include(p => p.Seller)
                 .Include(p => p.Category)
                 .Include(p => p.SubCategory)
@@ -121,8 +121,8 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<Post> UpdateAsync(Post entity)
         {
-            dbContext.Posts.Update(entity);
-            await dbContext.SaveChangesAsync();
+            DbContext.Posts.Update(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
@@ -135,8 +135,8 @@ namespace Dentizone.Infrastructure.Repositories
             }
 
             post.Status = status;
-            dbContext.Posts.Update(post);
-            await dbContext.SaveChangesAsync();
+            DbContext.Posts.Update(post);
+            await DbContext.SaveChangesAsync();
         }
 
         public async Task<IQueryable<Post>> SearchAsync(string? keyword, string? city, string? category,
@@ -144,7 +144,7 @@ namespace Dentizone.Infrastructure.Repositories
             decimal? minPrice, decimal? maxPrice, string? sortBy,
             bool sortDirection, int page)
         {
-            var posts = dbContext.Posts
+            var posts = DbContext.Posts
                 .Where(p => !p.IsDeleted && p.Status == PostStatus.Active)
                 .AsQueryable();
 
@@ -184,14 +184,14 @@ namespace Dentizone.Infrastructure.Repositories
 
         public IQueryable<Post> GetActivePosts()
         {
-            var result = dbContext.Posts.AsNoTracking().Where(p => !p.IsDeleted && p.Status == PostStatus.Active);
+            var result = DbContext.Posts.AsNoTracking().Where(p => !p.IsDeleted && p.Status == PostStatus.Active);
 
             return result;
         }
 
         public IQueryable<Post> GetPendingPosts()
         {
-            return dbContext.Posts.AsNoTracking().Where(p => !p.IsDeleted && p.Status == PostStatus.Pending);
+            return DbContext.Posts.AsNoTracking().Where(p => !p.IsDeleted && p.Status == PostStatus.Pending);
         }
 
         public async Task<decimal> AveragePostsPriceAsync()
@@ -208,7 +208,7 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<Dictionary<string, int>> GetPostCountPerCategoryAsync()
         {
-            var result = await dbContext.Posts
+            var result = await DbContext.Posts
                 .AsNoTracking()
                 .Include(p => p.Category)
                 .Where(p => !p.IsDeleted && !p.Category.IsDeleted)
@@ -221,7 +221,7 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<IEnumerable<Post>> ValidatePostsByState(List<string> postIds, PostStatus state)
         {
-            var posts = await dbContext.Posts
+            var posts = await DbContext.Posts
                 .Where(p => postIds.Contains(p.Id) && p.Status == state)
                 .Include(p => p.Seller)
                 .ThenInclude(s => s.Wallet)

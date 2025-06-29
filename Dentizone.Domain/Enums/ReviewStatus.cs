@@ -5,6 +5,6 @@ public enum ReviewStatus
     Active,
     Flagged,
     Removed,
-    PENDING,
-    REJECTED,
+    Pending,
+    Rejected,
 }

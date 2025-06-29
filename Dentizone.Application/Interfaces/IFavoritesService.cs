@@ -1,6 +1,6 @@
 ﻿using Dentizone.Application.DTOs.Favorites;
 
-namespace Dentizone.Application.Interfaces.Favorites
+namespace Dentizone.Application.Interfaces
 {
     public interface IFavoritesService
     {

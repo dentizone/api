@@ -1,9 +1,9 @@
-﻿using Dentizone.Application.DTOs.PostDTO;
-using Dentizone.Application.DTOs.PostFilterDTO;
-using Dentizone.Application.Interfaces.Post;
+﻿using Dentizone.Application.DTOs.PostFilterDTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Dentizone.Application.DTOs.Post;
+using Dentizone.Application.Interfaces;
 
 namespace Dentizone.Presentaion.Controllers
 {
@@ -71,9 +71,9 @@ namespace Dentizone.Presentaion.Controllers
 
         [AllowAnonymous]
         [HttpGet("search")]
-        public async Task<IActionResult> Search([FromQuery] UserPreferenceDto userPreferenceDTO)
+        public async Task<IActionResult> Search([FromQuery] UserPreferenceDto userPreferenceDto)
         {
-            var searchResult = await postService.Search(userPreferenceDTO);
+            var searchResult = await postService.Search(userPreferenceDto);
             return Ok(searchResult);
         }
     }

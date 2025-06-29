@@ -9,22 +9,22 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<Cart?> GetByIdAsync(string id)
         {
-            return await dbContext.Carts
+            return await DbContext.Carts
                 .FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
         }
 
 
         public async Task<Cart> CreateAsync(Cart entity)
         {
-            await dbContext.Carts.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.Carts.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<Cart?> FindBy(Expression<Func<Cart, bool>> condition,
             Expression<Func<Cart, object>>[]? includes)
         {
-            IQueryable<Cart> query = dbContext.Carts;
+            IQueryable<Cart> query = DbContext.Carts;
             if (includes == null) return await query.FirstOrDefaultAsync(condition);
             foreach (var include in includes)
             {
@@ -42,15 +42,15 @@ namespace Dentizone.Infrastructure.Repositories
                 return null;
             }
 
-            dbContext.Carts.Remove(cart);
-            await dbContext.SaveChangesAsync();
+            DbContext.Carts.Remove(cart);
+            await DbContext.SaveChangesAsync();
             return cart;
         }
 
         public async Task<IEnumerable<Cart>> FindAllBy(Expression<Func<Cart, bool>> condition,
             Expression<Func<Cart, object>>[]? includes = null)
         {
-            IQueryable<Cart> query = dbContext.Carts;
+            IQueryable<Cart> query = DbContext.Carts;
 
             if (includes != null)
             {
@@ -65,7 +65,7 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<IEnumerable<Cart>> GetCartItemsByUserId(string userId)
         {
-            var baseQuery = dbContext.Carts
+            var baseQuery = DbContext.Carts
                 .Where(c => c.UserId == userId && !c.IsDeleted)
                 .Include(c => c.User)
                 .Include(c => c.Post)

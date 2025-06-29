@@ -1,9 +1,9 @@
 ﻿using Dentizone.Domain.Enums;
 using FluentValidation;
 
-namespace Dentizone.Application.DTOs.UserActivityDTO
+namespace Dentizone.Application.DTOs.UserActivity
 {
-    public class UserActivityDTO
+    public class UserActivityDto
     {
         public string Id { get; set; }
         public string UserName { get; set; }
@@ -16,9 +16,9 @@ namespace Dentizone.Application.DTOs.UserActivityDTO
         public UserActivities ActivityType { get; set; }
     }
 
-    public class UserActivityDTOValidator : AbstractValidator<UserActivityDTO>
+    public class UserActivityDtoValidator : AbstractValidator<UserActivityDto>
     {
-        public UserActivityDTOValidator()
+        public UserActivityDtoValidator()
         {
             RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.");
             RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required.");

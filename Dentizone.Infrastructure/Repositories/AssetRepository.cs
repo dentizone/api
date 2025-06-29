@@ -9,15 +9,15 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<Asset> CreateAsync(Asset entity)
         {
-            await dbContext.Assets.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.Assets.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<Asset?> FindBy(Expression<Func<Asset, bool>> condition,
             Expression<Func<Asset, object>>[]? includes = null)
         {
-            var query = dbContext.Assets.AsQueryable();
+            var query = DbContext.Assets.AsQueryable();
             if (includes == null)
                 return await query
                     .FirstOrDefaultAsync(condition);
@@ -40,22 +40,22 @@ namespace Dentizone.Infrastructure.Repositories
                 return;
             }
 
-            dbContext.Assets.Remove(asset);
+            DbContext.Assets.Remove(asset);
 
-            await dbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync();
         }
 
 
         public async Task<Asset?> GetByIdAsync(string id)
         {
-            return await dbContext.Assets
+            return await DbContext.Assets
                 .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
         }
 
         public async Task<Asset> UpdateAsync(Asset entity)
         {
-            dbContext.Assets.Update(entity);
-            await dbContext.SaveChangesAsync();
+            DbContext.Assets.Update(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
     }

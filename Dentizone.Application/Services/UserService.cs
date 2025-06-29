@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using Dentizone.Application.DTOs.User;
-using Dentizone.Application.Interfaces.User;
+using Dentizone.Application.Interfaces;
 using Dentizone.Application.Services.Payment;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
@@ -83,7 +83,7 @@ namespace Dentizone.Application.Services
         }
 
 
-        public async Task SetUserStateAsync(string userId, UserStateDTO userStateDto)
+        public async Task SetUserStateAsync(string userId, UserStateDto userStateDto)
         {
             var user = await userRepository.GetByIdAsync(userId);
             if (user == null)
@@ -106,9 +106,9 @@ namespace Dentizone.Application.Services
 
             user.Status = status switch
             {
-                KycStatus.APPROVED => UserState.Active,
-                KycStatus.REJECTED => UserState.Banned,
-                KycStatus.NOT_SUBMITTED => UserState.PendingVerification,
+                KycStatus.Approved => UserState.Active,
+                KycStatus.Rejected => UserState.Banned,
+                KycStatus.NotSubmitted => UserState.PendingVerification,
                 _ => user.Status
             };
 

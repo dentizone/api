@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.Review;
-using Dentizone.Application.Interfaces.Order;
 using Dentizone.Application.Interfaces.Review;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Interfaces.Repositories;

@@ -1,13 +1,4 @@
 ﻿using Dentizone.Application.Interfaces;
-using Dentizone.Application.Interfaces.Analytics;
-using Dentizone.Application.Interfaces.Assets;
-using Dentizone.Application.Interfaces.Cart;
-using Dentizone.Application.Interfaces.Catalog;
-using Dentizone.Application.Interfaces.Cloudinary;
-using Dentizone.Application.Interfaces.Favorites;
-using Dentizone.Application.Interfaces.Order;
-using Dentizone.Application.Interfaces.Post;
-using Dentizone.Application.Interfaces.Review;
 using Dentizone.Application.Interfaces.User;
 using Dentizone.Application.Services;
 using Dentizone.Application.Services.Authentication;
@@ -45,7 +36,7 @@ namespace Dentizone.Application.DI
             services.AddScoped<IReviewService, ReviewService>();
 
             services.AddScoped<IWithdrawalService, WithdrawalService>();
-            services.AddScoped<IQAService, QAService>();
+            services.AddScoped<IQaService, QaService>();
             return services;
         }
     }

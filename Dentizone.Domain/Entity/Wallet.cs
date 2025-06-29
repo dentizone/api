@@ -9,7 +9,7 @@ namespace Dentizone.Domain.Entity
 
 
         public decimal Balance { get; set; } = 0.0m;
-        public UserWallet Status { get; set; } = UserWallet.ACTIVE;
+        public UserWallet Status { get; set; } = UserWallet.Active;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 

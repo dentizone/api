@@ -1,6 +1,6 @@
 ﻿using Dentizone.Application.DTOs.User;
 
-namespace Dentizone.Application.DTOs.PostDTO
+namespace Dentizone.Application.DTOs.Post
 {
     public class PostViewDto
     {

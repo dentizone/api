@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs.Cart;
-using Dentizone.Application.Interfaces.Cart;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;

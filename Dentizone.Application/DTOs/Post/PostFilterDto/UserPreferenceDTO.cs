@@ -1,7 +1,7 @@
 ﻿using Dentizone.Domain.Enums;
 using FluentValidation;
 
-namespace Dentizone.Application.DTOs.PostFilterDTO
+namespace Dentizone.Application.DTOs.Post.PostFilterDto
 {
     public class UserPreferenceDto
     {

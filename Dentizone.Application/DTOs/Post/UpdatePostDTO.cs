@@ -1,6 +1,6 @@
 ﻿using Dentizone.Domain.Enums;
 
-namespace Dentizone.Application.DTOs.PostDTO
+namespace Dentizone.Application.DTOs.Post
 {
     public class UpdatePostDto
     {

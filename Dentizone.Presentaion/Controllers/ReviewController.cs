@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using Dentizone.Application.DTOs.Review;
-using Dentizone.Application.Interfaces.Review;
+using Dentizone.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

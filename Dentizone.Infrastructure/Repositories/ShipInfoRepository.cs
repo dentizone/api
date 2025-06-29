@@ -9,22 +9,22 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<ShipInfo?> GetByIdAsync(string id)
         {
-            return await dbContext.ShipInfos
+            return await DbContext.ShipInfos
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 
 
         public async Task<ShipInfo> CreateAsync(ShipInfo entity)
         {
-            await dbContext.ShipInfos.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.ShipInfos.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<ShipInfo?> FindBy(Expression<Func<ShipInfo, bool>> condition,
             Expression<Func<ShipInfo, object>>[]? includes)
         {
-            IQueryable<ShipInfo> query = dbContext.ShipInfos;
+            IQueryable<ShipInfo> query = DbContext.ShipInfos;
             if (includes != null)
             {
                 foreach (var include in includes)

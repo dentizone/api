@@ -1,5 +1,5 @@
 ﻿using Dentizone.Application.DTOs.Analytics;
-using Dentizone.Application.Interfaces.Analytics;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure.Cache;

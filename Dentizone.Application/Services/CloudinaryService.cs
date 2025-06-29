@@ -1,6 +1,6 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using Dentizone.Application.Interfaces.Cloudinary;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Secret;
 

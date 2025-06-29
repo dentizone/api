@@ -8,9 +8,9 @@ namespace Dentizone.Application.DTOs.Catalog
         public string Name { get; set; }
     }
 
-    public class CreatedCategoryDTOValidator : AbstractValidator<CategoryView>
+    public class CreatedCategoryDtoValidator : AbstractValidator<CategoryView>
     {
-        public CreatedCategoryDTOValidator()
+        public CreatedCategoryDtoValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Category name is required.")

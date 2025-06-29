@@ -9,15 +9,15 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<Question> CreateAsync(Question entity)
         {
-            await dbContext.Questions.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.Questions.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<Question?> FindBy(Expression<Func<Question, bool>> condition,
             Expression<Func<Question, object>>[]? includes)
         {
-            IQueryable<Question> query = dbContext.Questions;
+            IQueryable<Question> query = DbContext.Questions;
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -37,23 +37,23 @@ namespace Dentizone.Infrastructure.Repositories
                 return null;
             }
 
-            dbContext.Questions.Remove(question);
-            await dbContext.SaveChangesAsync();
+            DbContext.Questions.Remove(question);
+            await DbContext.SaveChangesAsync();
             return question;
         }
 
 
         public async Task<Question?> GetByIdAsync(string id)
         {
-            return await dbContext.Questions
+            return await DbContext.Questions
                 .Include(p => p.Post)
                 .Where(q => q.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Question> UpdateAsync(Question entity)
         {
-            dbContext.Questions.Update(entity);
-            await dbContext.SaveChangesAsync();
+            DbContext.Questions.Update(entity);
+            await DbContext.SaveChangesAsync();
 
             return entity;
         }
@@ -61,7 +61,7 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<List<Question>> FindAllBy(Expression<Func<Question, bool>> condition,
             Expression<Func<Question, object>>[]? includes = null)
         {
-            IQueryable<Question> query = dbContext.Questions;
+            IQueryable<Question> query = DbContext.Questions;
 
             if (includes != null)
             {

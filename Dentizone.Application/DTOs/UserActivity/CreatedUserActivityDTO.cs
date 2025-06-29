@@ -1,7 +1,7 @@
 ﻿using Dentizone.Domain.Enums;
 using FluentValidation;
 
-namespace Dentizone.Application.DTOs.UserActivityDTO
+namespace Dentizone.Application.DTOs.UserActivity
 {
     public class CreatedUserActivityDto
     {
@@ -9,9 +9,9 @@ namespace Dentizone.Application.DTOs.UserActivityDTO
         public UserActivities ActivityType { get; set; }
     }
 
-    public class CreatedUserActivityDTOValidator : AbstractValidator<CreatedUserActivityDto>
+    public class CreatedUserActivityDtoValidator : AbstractValidator<CreatedUserActivityDto>
     {
-        public CreatedUserActivityDTOValidator()
+        public CreatedUserActivityDtoValidator()
         {
             RuleFor(x => x.DetectedAt).NotEmpty().WithMessage("DetectedAt is required.");
             RuleFor(x => x.ActivityType).IsInEnum().WithMessage("ActivityType must be a valid enum value.");

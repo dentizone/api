@@ -1,6 +1,6 @@
 ﻿using Dentizone.Application.DTOs.Assets;
 
-namespace Dentizone.Application.Interfaces.Assets;
+namespace Dentizone.Application.Interfaces;
 
 public interface IAssetService
 {

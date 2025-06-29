@@ -14,7 +14,7 @@ namespace Dentizone.Application.AutoMapper
             CreateMap<CategoryView, Category>().ReverseMap();
             CreateMap<SubCategoryView, SubCategory>().ReverseMap();
             CreateMap<SubCategoryDto, SubCategory>().ReverseMap();
-            CreateMap<CreatedSubCategoryDTO, SubCategory>().ReverseMap();
+            CreateMap<CreatedSubCategoryDto, SubCategory>().ReverseMap();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Dentizone.Application.Interfaces.Order;
+﻿using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;

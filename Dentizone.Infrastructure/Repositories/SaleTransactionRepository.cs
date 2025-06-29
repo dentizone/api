@@ -10,22 +10,22 @@ public class SaleTransactionRepository(AppDbContext dbContext)
 {
     public async Task<SalesTransaction?> GetByIdAsync(string id)
     {
-        return await dbContext.SalesTransactions
+        return await DbContext.SalesTransactions
             .FirstOrDefaultAsync(st => st.Id == id);
     }
 
 
     public async Task<SalesTransaction> CreateAsync(SalesTransaction entity)
     {
-        await dbContext.SalesTransactions.AddAsync(entity);
-        await dbContext.SaveChangesAsync();
+        await DbContext.SalesTransactions.AddAsync(entity);
+        await DbContext.SaveChangesAsync();
         return entity;
     }
 
     public async Task<SalesTransaction?> FindBy(Expression<Func<SalesTransaction, bool>> condition,
         Expression<Func<SalesTransaction, object>>[]? includes)
     {
-        IQueryable<SalesTransaction> query = dbContext.SalesTransactions;
+        IQueryable<SalesTransaction> query = DbContext.SalesTransactions;
         if (includes != null)
         {
             foreach (var include in includes)
@@ -40,8 +40,8 @@ public class SaleTransactionRepository(AppDbContext dbContext)
 
     public async Task<SalesTransaction> UpdateAsync(SalesTransaction entity)
     {
-        dbContext.SalesTransactions.Update(entity);
-        await dbContext.SaveChangesAsync();
+        DbContext.SalesTransactions.Update(entity);
+        await DbContext.SaveChangesAsync();
         return entity;
     }
 }

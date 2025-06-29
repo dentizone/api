@@ -9,15 +9,15 @@ public class OrderPickupRepository(AppDbContext dbContext) : AbstractRepository(
 {
     public async Task<OrderPickup> CreateAsync(OrderPickup entity)
     {
-        await dbContext.OrderPickups.AddAsync(entity);
-        await dbContext.SaveChangesAsync();
+        await DbContext.OrderPickups.AddAsync(entity);
+        await DbContext.SaveChangesAsync();
         return entity;
     }
 
     public async Task<OrderPickup?> FindBy(Expression<Func<OrderPickup, bool>> condition,
         Expression<Func<OrderPickup, object>>[]? includes)
     {
-        IQueryable<OrderPickup> query = dbContext.OrderPickups;
+        IQueryable<OrderPickup> query = DbContext.OrderPickups;
         if (includes != null)
         {
             foreach (var include in includes)
@@ -33,8 +33,8 @@ public class OrderPickupRepository(AppDbContext dbContext) : AbstractRepository(
 
     public async Task<OrderPickup> UpdateAsync(OrderPickup entity)
     {
-        dbContext.OrderPickups.Update(entity);
-        await dbContext.SaveChangesAsync();
+        DbContext.OrderPickups.Update(entity);
+        await DbContext.SaveChangesAsync();
         return entity;
     }
 
@@ -46,15 +46,15 @@ public class OrderPickupRepository(AppDbContext dbContext) : AbstractRepository(
             return null;
         }
 
-        dbContext.OrderPickups.Remove(toBeDeleted);
-        await dbContext.SaveChangesAsync();
+        DbContext.OrderPickups.Remove(toBeDeleted);
+        await DbContext.SaveChangesAsync();
         return toBeDeleted;
     }
 
 
     public async Task<OrderPickup?> GetByIdAsync(string id)
     {
-        return await dbContext.OrderPickups
+        return await DbContext.OrderPickups
             .FirstOrDefaultAsync(o => o.Id == id && !o.IsDeleted);
     }
 }

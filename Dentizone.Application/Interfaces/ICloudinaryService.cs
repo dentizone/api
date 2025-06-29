@@ -1,4 +1,4 @@
-﻿namespace Dentizone.Application.Interfaces.Cloudinary;
+﻿namespace Dentizone.Application.Interfaces;
 
 public interface ICloudinaryService
 {

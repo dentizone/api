@@ -93,7 +93,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpPatch("{id}/state")]
-        public async Task<IActionResult> SetUserState(string id, [FromBody] UserStateDTO userStateDto)
+        public async Task<IActionResult> SetUserState(string id, [FromBody] UserStateDto userStateDto)
         {
             try
             {

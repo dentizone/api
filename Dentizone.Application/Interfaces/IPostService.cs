@@ -1,8 +1,8 @@
-﻿using Dentizone.Application.DTOs.PostDTO;
-using Dentizone.Application.DTOs.PostFilterDTO;
+﻿using Dentizone.Application.DTOs.Post;
+using Dentizone.Application.DTOs.Post.PostFilterDto;
 using Dentizone.Domain.Enums;
 
-namespace Dentizone.Application.Interfaces.Post
+namespace Dentizone.Application.Interfaces
 {
     public interface IPostService
     {

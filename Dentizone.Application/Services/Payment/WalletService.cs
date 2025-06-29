@@ -69,7 +69,7 @@ namespace Dentizone.Application.Services.Payment
 
         public async Task<WalletView> AddToBalance(decimal amount, string walletId)
         {
-            var wallet = await walletRepository.FindBy(w => w.Id == walletId && w.Status == UserWallet.ACTIVE);
+            var wallet = await walletRepository.FindBy(w => w.Id == walletId && w.Status == UserWallet.Active);
 
             if (wallet is null)
             {

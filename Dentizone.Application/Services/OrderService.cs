@@ -2,9 +2,6 @@
 using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Order;
 using Dentizone.Application.Interfaces;
-using Dentizone.Application.Interfaces.Cart;
-using Dentizone.Application.Interfaces.Order;
-using Dentizone.Application.Interfaces.Post;
 using Dentizone.Application.Services.Payment;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
@@ -136,7 +133,7 @@ namespace Dentizone.Application.Services
                     OrderId = result.Id,
                     BuyerId = buyerId,
                     Amount = result.TotalAmount,
-                    PaymentMethod = PaymentMethod.COD
+                    PaymentMethod = PaymentMethod.Cod
                 };
 
                 var payment = await paymentService.CreatePaymentAsync(paymentDto);

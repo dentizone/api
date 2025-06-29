@@ -2,7 +2,7 @@
 {
     public enum WalletActivityTypes
     {
-        WITHDRAW,
-        DEPOSIT,
+        Withdraw,
+        Deposit,
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces;
-using Dentizone.Application.Interfaces.User;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Secret;
@@ -28,15 +27,15 @@ namespace Dentizone.Application.Services.Authentication
         private static Dictionary<string, KycStatus> MapVerificationStatusToEnum()
         {
             return new Dictionary<string, KycStatus>
-                   {
-                       { "approved", KycStatus.APPROVED },
-                       { "declined", KycStatus.REJECTED },
-                       { "pending", KycStatus.PENDING }
-                   };
+            {
+                { "approved", KycStatus.Approved },
+                { "declined", KycStatus.Rejected },
+                { "pending", KycStatus.Pending }
+            };
         }
 
         public VerificationService(IDiditApi diditApi, ISecretService secretService, IAuthService authService,
-                                   IUserService userService)
+            IUserService userService)
         {
             _diditApi = diditApi;
             _secretService = secretService;
@@ -69,12 +68,12 @@ namespace Dentizone.Application.Services.Authentication
             };
 
             var session = await _diditApi.CreateSessionAsync(request, _secretService.GetSecret("DiditApi"));
-            await _userService.SetKycStatusAsync(userId, KycStatus.NOT_SUBMITTED);
+            await _userService.SetKycStatusAsync(userId, KycStatus.NotSubmitted);
             await _mailService.Send(user.Email, "Dentizone: Verification Started",
-                                    "Thank you for starting the email verification process." +
-                                    " You can use this url to verify your identity" +
-                                    $" <a href=\"{session.Url}\">Verify Now</a>"
-                                   );
+                "Thank you for starting the email verification process." +
+                " You can use this url to verify your identity" +
+                $" <a href=\"{session.Url}\">Verify Now</a>"
+            );
             return session;
         }
 

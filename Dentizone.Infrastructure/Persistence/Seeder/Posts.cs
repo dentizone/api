@@ -49,7 +49,7 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
                 var result = await userManager.CreateAsync(user, "Password123!");
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(user, UserRoles.GHOST.ToString());
+                    await userManager.AddToRoleAsync(user, UserRoles.Ghost.ToString());
                     identityUsersToCreate.Add(user);
                 }
                 else

@@ -1,4 +1,4 @@
-﻿namespace Dentizone.Application.DTOs.PostFilterDTO
+﻿namespace Dentizone.Application.DTOs.Post.PostFilterDto
 {
     public class SidebarFilterDto
     {

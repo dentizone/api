@@ -1,4 +1,4 @@
-﻿namespace Dentizone.Application.DTOs.UserActivityDTO
+﻿namespace Dentizone.Application.DTOs.UserActivity
 {
     public class UniversitiesByUserDto
     {

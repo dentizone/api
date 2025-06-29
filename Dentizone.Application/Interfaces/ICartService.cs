@@ -1,6 +1,6 @@
 ﻿using Dentizone.Application.DTOs.Cart;
 
-namespace Dentizone.Application.Interfaces.Cart
+namespace Dentizone.Application.Interfaces
 {
     public interface ICartService
     {

@@ -8,19 +8,19 @@ namespace Dentizone.Infrastructure.Repositories
     internal class WithdrawalRequestRepository(AppDbContext dbContext)
         : AbstractRepository(dbContext), IWithdrawalRequestRepository
     {
-        private AppDbContext DbContext = dbContext;
+        private AppDbContext _dbContext = dbContext;
 
         public async Task<WithdrawalRequest> CreateAsync(WithdrawalRequest entity)
         {
-            await DbContext.WithdrawalRequests.AddAsync(entity);
-            await DbContext.SaveChangesAsync();
+            await _dbContext.WithdrawalRequests.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<WithdrawalRequest?> FindBy(Expression<Func<WithdrawalRequest, bool>> condition,
             Expression<Func<WithdrawalRequest, object>>[]? includes)
         {
-            IQueryable<WithdrawalRequest> query = DbContext.WithdrawalRequests;
+            IQueryable<WithdrawalRequest> query = _dbContext.WithdrawalRequests;
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -35,7 +35,7 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<IEnumerable<WithdrawalRequest>> GetAllAsync(
             int page, Expression<Func<WithdrawalRequest, bool>>? condition)
         {
-            IQueryable<WithdrawalRequest> query = DbContext.WithdrawalRequests;
+            IQueryable<WithdrawalRequest> query = _dbContext.WithdrawalRequests;
             if (condition != null)
             {
                 query = query.Where(condition);
@@ -50,18 +50,18 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<WithdrawalRequest?> DeleteAsync(string id)
         {
-            var deleted_request = await GetByIdAsync(id);
-            DbContext.WithdrawalRequests.Remove(deleted_request);
+            var deletedRequest = await GetByIdAsync(id);
+            _dbContext.WithdrawalRequests.Remove(deletedRequest);
 
 
-            await DbContext.SaveChangesAsync();
-            return deleted_request;
+            await _dbContext.SaveChangesAsync();
+            return deletedRequest;
         }
 
 
         public async Task<WithdrawalRequest?> GetByIdAsync(string id)
         {
-            var request = await DbContext.WithdrawalRequests.Where(w => w.Id == id)
+            var request = await _dbContext.WithdrawalRequests.Where(w => w.Id == id)
                 .Include(w => w.Wallet)
                 .Include(w => w.Wallet.User)
                 .FirstOrDefaultAsync();
@@ -70,10 +70,10 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<WithdrawalRequest> UpdateAsync(WithdrawalRequest entity)
         {
-            DbContext.WithdrawalRequests.Update(entity);
+            _dbContext.WithdrawalRequests.Update(entity);
 
 
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return entity;
         }

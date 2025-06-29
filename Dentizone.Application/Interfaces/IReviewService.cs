@@ -1,6 +1,6 @@
 ﻿using Dentizone.Application.DTOs.Review;
 
-namespace Dentizone.Application.Interfaces.Review
+namespace Dentizone.Application.Interfaces
 {
     public interface IReviewService
     {

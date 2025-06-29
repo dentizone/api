@@ -40,18 +40,18 @@ namespace Dentizone.Infrastructure.DependencyInjection
             {
                 // Policy for actions that require a fully verified (KYC) user
                 options.AddPolicy("IsVerified", policy =>
-                    policy.RequireRole(UserRoles.VERIFIED.ToString()));
+                    policy.RequireRole(UserRoles.Verified.ToString()));
 
                 // Policy for actions that require at least an email-verified user
                 options.AddPolicy("IsPartilyVerified", policy =>
                     policy.RequireRole(
-                        UserRoles.PARTILY_VERIFIED.ToString(),
-                        UserRoles.VERIFIED.ToString() // A verified user is also partially verified
+                        UserRoles.PartilyVerified.ToString(),
+                        UserRoles.Verified.ToString() // A verified user is also partially verified
                     ));
 
                 // Policy for admin-only actions
                 options.AddPolicy("IsAdmin", policy =>
-                    policy.RequireRole(UserRoles.ADMIN.ToString()));
+                    policy.RequireRole(UserRoles.Admin.ToString()));
             });
 
 

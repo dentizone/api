@@ -9,22 +9,22 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<Review?> GetByIdAsync(string id)
         {
-            return await dbContext.Reviews
+            return await DbContext.Reviews
                 .FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
         }
 
 
         public async Task<Review> CreateAsync(Review entity)
         {
-            await dbContext.Reviews.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.Reviews.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<Review?> FindBy(Expression<Func<Review, bool>> condition,
             Expression<Func<Review, object>>[]? includes)
         {
-            IQueryable<Review> query = dbContext.Reviews;
+            IQueryable<Review> query = DbContext.Reviews;
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -44,20 +44,20 @@ namespace Dentizone.Infrastructure.Repositories
                 return null;
             }
 
-            dbContext.Reviews.Remove(toBeDeleted);
+            DbContext.Reviews.Remove(toBeDeleted);
             return toBeDeleted;
         }
 
         public async Task<Review> Update(Review entity)
         {
-            dbContext.Reviews.Update(entity);
-            await dbContext.SaveChangesAsync();
+            DbContext.Reviews.Update(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public IQueryable<Review> FindAllBy(Expression<Func<Review, bool>> condition)
         {
-            return dbContext.Reviews
+            return DbContext.Reviews
                 .Where(condition).AsQueryable();
         }
     }

@@ -1,7 +1,7 @@
 ﻿using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Order;
 
-namespace Dentizone.Application.Interfaces.Order
+namespace Dentizone.Application.Interfaces
 {
     public interface IOrderService
     {

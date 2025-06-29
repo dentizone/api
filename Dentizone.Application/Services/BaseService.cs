@@ -22,7 +22,7 @@ public abstract class BaseService
     protected bool IsAdmin()
     {
         var userRole = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Role);
-        return Enum.TryParse<UserRoles>(userRole, out var role) && role == UserRoles.ADMIN;
+        return Enum.TryParse<UserRoles>(userRole, out var role) && role == UserRoles.Admin;
     }
 
     /// <summary>

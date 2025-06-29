@@ -1,4 +1,4 @@
-﻿using Dentizone.Application.DTOs.PostDTO;
+﻿using Dentizone.Application.DTOs.Post;
 
 namespace Dentizone.Application.DTOs.Favorites
 {

@@ -7,7 +7,7 @@ using FluentValidation;
 
 namespace Dentizone.Application.Validators
 {
-    public static class GUIDValidator
+    public static class GuidValidator
     {
         public static IRuleBuilderOptions<T, string> MustBeParsableGuid<T>(this IRuleBuilder<T, string> ruleBuilder)
         {

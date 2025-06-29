@@ -25,9 +25,9 @@ namespace Dentizone.Presentaion.Controllers
         [HttpPost("withdraw")]
         public async Task<IActionResult> RequestWithdrawal([FromBody] WithdrawalRequestDto withdrawalRequestDto)
         {
-            var UserId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
-            var request = await withdrawalService.CreateWithdrawalRequestAsync(UserId, withdrawalRequestDto);
+            var request = await withdrawalService.CreateWithdrawalRequestAsync(userId, withdrawalRequestDto);
             return Ok(request);
         }
 

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Dentizone.Application.DTOs.UserActivityDTO;
+using Dentizone.Application.DTOs.UserActivity;
 using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.AutoMapper
@@ -9,7 +9,7 @@ namespace Dentizone.Application.AutoMapper
         public UserActivityProfile()
         {
             CreateMap<CreatedUserActivityDto, UserActivity>().ReverseMap();
-            CreateMap<UserActivityDTO, UserActivity>()
+            CreateMap<UserActivityDto, UserActivity>()
                 .ReverseMap()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username));
         }

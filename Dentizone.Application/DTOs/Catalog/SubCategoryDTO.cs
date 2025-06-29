@@ -8,9 +8,9 @@ namespace Dentizone.Application.DTOs.Catalog
         public string CategoryId { get; set; }
     }
 
-    public class SubCategoryDTOValidator : AbstractValidator<SubCategoryDto>
+    public class SubCategoryDtoValidator : AbstractValidator<SubCategoryDto>
     {
-        public SubCategoryDTOValidator()
+        public SubCategoryDtoValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("SubCategory name is required.")

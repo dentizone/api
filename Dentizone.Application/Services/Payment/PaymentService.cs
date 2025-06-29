@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Dentizone.Application.DTOs.Payment;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
@@ -7,27 +9,6 @@ using Dentizone.Infrastructure;
 
 namespace Dentizone.Application.Services.Payment
 {
-    public class PaymentDto
-    {
-        public string OrderId { get; set; }
-        public string BuyerId { get; set; }
-        public decimal Amount { get; set; }
-        public PaymentMethod PaymentMethod { get; set; }
-    }
-
-    public class PaymentView
-    {
-        public string Id { get; set; }
-        public string OrderId { get; set; }
-        public string BuyerId { get; set; }
-        public string BuyerName { get; set; }
-        public decimal Amount { get; set; }
-        public PaymentMethod Method { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
-
-
     public class PaymentService(
         IMapper mapper,
         IPaymentRepository repo,
@@ -44,7 +25,7 @@ namespace Dentizone.Application.Services.Payment
                 BuyerId = payment.BuyerId,
                 Amount = payment.Amount,
                 Status = PaymentStatus.Pending,
-                Method = PaymentMethod.COD
+                Method = PaymentMethod.Cod
             };
 
             var createdPayment = await repo.CreateAsync(paymentEntity);
@@ -188,16 +169,5 @@ namespace Dentizone.Application.Services.Payment
                 throw;
             }
         }
-    }
-
-    public interface IPaymentService
-    {
-        Task<PaymentView> CreatePaymentAsync(PaymentDto payment);
-        Task<PaymentView> GetPaymentByIdAsync(string paymentId);
-        Task CreateSaleTransaction(string paymentId, string walletId, decimal amount);
-
-        Task<PaymentView> ConfirmPaymentAsync(string orderId);
-
-        Task CancelPaymentByOrderId(string orderId);
     }
 }

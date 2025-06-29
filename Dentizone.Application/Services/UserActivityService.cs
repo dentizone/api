@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Dentizone.Application.DTOs.UserActivityDTO;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
 using System.Linq.Expressions;
+using Dentizone.Application.DTOs.UserActivity;
 
 namespace Dentizone.Application.Services
 {
@@ -16,7 +16,7 @@ namespace Dentizone.Application.Services
         : IUserActivityService
     {
         public async Task<CreatedUserActivityDto> CreateAsync(UserActivities activity,
-                                                              DateTime? detectedAt = null, string? userId = null)
+            DateTime? detectedAt = null, string? userId = null)
         {
             var userActivity = new UserActivity
             {
@@ -33,21 +33,21 @@ namespace Dentizone.Application.Services
             return mapper.Map<CreatedUserActivityDto>(newUserActivity);
         }
 
-        public async Task<UserActivityDTO?> GetByIdAsync(string id)
+        public async Task<UserActivityDto?> GetByIdAsync(string id)
         {
             var userActivity = await userActivityRepository.GetByIdAsync(id);
             if (userActivity == null) throw new NotFoundException("There's no user activity with this id ");
-            return mapper.Map<UserActivityDTO>(userActivity);
+            return mapper.Map<UserActivityDto>(userActivity);
         }
 
-        public async Task<ICollection<UserActivityDTO>> GetAllByActivityTypeAndUserIdAsync(
+        public async Task<ICollection<UserActivityDto>> GetAllByActivityTypeAndUserIdAsync(
             int page, string userId, UserActivities activityType)
         {
             Expression<Func<UserActivity, bool>> filter = ua => ua.UserId == userId && ua.ActivityType == activityType;
             var filteredActivities = await userActivityRepository.GetAllBy(page, filter);
             if (!filteredActivities.Any())
                 throw new NotFoundException($"No activities found for user {userId} with activity type {activityType}");
-            var mapped = mapper.Map<ICollection<UserActivityDTO>>(filteredActivities);
+            var mapped = mapper.Map<ICollection<UserActivityDto>>(filteredActivities);
             return mapped;
         }
     }

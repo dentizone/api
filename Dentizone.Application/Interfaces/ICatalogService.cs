@@ -1,6 +1,6 @@
 ﻿using Dentizone.Application.DTOs.Catalog;
 
-namespace Dentizone.Application.Interfaces.Catalog;
+namespace Dentizone.Application.Interfaces;
 
 public interface ICatalogService
 {
@@ -10,7 +10,7 @@ public interface ICatalogService
     Task<CategoryDto> UpdateCategory(string userId, CategoryDto updatedCategoryDto);
     Task<IEnumerable<SingleCategory>> GetAllCategories();
     Task<IEnumerable<SubCategoryView>> GetSubCategoriesByCategoryId(string id);
-    Task<CreatedSubCategoryDTO> CreateSubCategory(SubCategoryDto createdSubCategoryDto);
+    Task<CreatedSubCategoryDto> CreateSubCategory(SubCategoryDto createdSubCategoryDto);
     Task<SubCategoryDto?> GetSubCategoryById(string id);
     Task<SubCategoryDto> DeleteSubCategory(string id);
     Task<SubCategoryDto> UpdateSubCategory(SubCategoryDto updatedSubCategoryDto);

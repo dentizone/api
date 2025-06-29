@@ -1,6 +1,6 @@
 ﻿using Dentizone.Application.DTOs.Analytics;
 
-namespace Dentizone.Application.Interfaces.Analytics
+namespace Dentizone.Application.Interfaces
 {
     public interface IAnalyticsService
     {

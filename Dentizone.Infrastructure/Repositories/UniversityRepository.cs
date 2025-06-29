@@ -10,21 +10,21 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<University?> GetByIdAsync(string id)
         {
-            return await dbContext.Universities.Where(u => !u.IsDeleted).FirstOrDefaultAsync(u => u.Id == id);
+            return await DbContext.Universities.Where(u => !u.IsDeleted).FirstOrDefaultAsync(u => u.Id == id);
         }
 
 
         public async Task<University> CreateAsync(University entity)
         {
-            await dbContext.Universities.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
+            await DbContext.Universities.AddAsync(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<University?> FindBy(Expression<Func<University, bool>> condition,
             Expression<Func<University, object>>[]? includes)
         {
-            IQueryable<University> query = dbContext.Universities.Where(u => !u.IsDeleted);
+            IQueryable<University> query = DbContext.Universities.Where(u => !u.IsDeleted);
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -45,23 +45,23 @@ namespace Dentizone.Infrastructure.Repositories
                 return null;
             }
 
-            dbContext.Universities.Remove(toBeDeleted);
-            await dbContext.SaveChangesAsync();
+            DbContext.Universities.Remove(toBeDeleted);
+            await DbContext.SaveChangesAsync();
 
             return toBeDeleted;
         }
 
         public async Task<University> Update(University entity)
         {
-            dbContext.Universities.Update(entity);
-            await dbContext.SaveChangesAsync();
+            DbContext.Universities.Update(entity);
+            await DbContext.SaveChangesAsync();
             return entity;
         }
 
 
         public async Task<IReadOnlyCollection<University>> GetAll()
         {
-            return await dbContext.Universities
+            return await DbContext.Universities
                 .Where(u => !u.IsDeleted)
                 .OrderByDescending(u => u.CreatedAt)
                 .AsNoTracking()
@@ -70,7 +70,7 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<PagedResult<University>> GetAll(int page, Expression<Func<University, bool>>? filter)
         {
-            var query = dbContext.Universities.AsQueryable();
+            var query = DbContext.Universities.AsQueryable();
             query = query.Where(u => !u.IsDeleted)
                 .OrderByDescending(u => u.CreatedAt);
 

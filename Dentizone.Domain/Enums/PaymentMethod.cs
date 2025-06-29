@@ -3,6 +3,6 @@
     public enum PaymentMethod
     {
         Card = 0,
-        COD = 1,
+        Cod = 1,
     }
 }

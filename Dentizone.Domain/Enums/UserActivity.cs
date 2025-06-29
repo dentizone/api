@@ -2,16 +2,16 @@
 {
     public enum UserActivities
     {
-        LOGIN,
-        REGISTER,
-        LOGOUT,
-        PASSWORD_RESET,
-        ORDER_PLACED,
-        ORDER_CANCELLED,
-        ORDER_COMPLETED,
-        PROFILE_UPDATED,
-        ACCOUNT_VERIFIED,
-        LOCKDOUT,
-        EMAIL_CONFIRMED
+        Login,
+        Register,
+        Logout,
+        PasswordReset,
+        OrderPlaced,
+        OrderCancelled,
+        OrderCompleted,
+        ProfileUpdated,
+        AccountVerified,
+        Lockdout,
+        EmailConfirmed
     }
 }

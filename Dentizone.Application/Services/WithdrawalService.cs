@@ -109,10 +109,10 @@ namespace Dentizone.Application.Services
             if (updatedRequest == null)
                 throw new NotFoundException("Failed to update withdrawal request.");
 
-            var UserId = updatedRequest.Wallet.UserId;
+            var userId = updatedRequest.Wallet.UserId;
             var subject = "Withdrawal Rejected";
             var body = $"Your withdrawal request of {request.Amount:C} has been rejected. Reason: {adminNote}";
-            await mailService.Send(UserId, subject, body);
+            await mailService.Send(userId, subject, body);
 
             return mapper.Map<WithdrawalRequestView>(updatedRequest);
         }

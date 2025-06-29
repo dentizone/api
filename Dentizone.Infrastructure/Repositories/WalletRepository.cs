@@ -7,19 +7,19 @@ namespace Dentizone.Infrastructure.Repositories
 {
     public class WalletRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IWalletRepository
     {
-        private AppDbContext DbContext = dbContext;
+        private AppDbContext _dbContext = dbContext;
 
         public async Task<Wallet> CreateAsync(Wallet entity)
         {
-            await DbContext.Wallets.AddAsync(entity);
-            await DbContext.SaveChangesAsync();
+            await _dbContext.Wallets.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<Wallet?> FindBy(Expression<Func<Wallet, bool>> condition,
             Expression<Func<Wallet, object>>[]? includes)
         {
-            IQueryable<Wallet> query = DbContext.Wallets;
+            IQueryable<Wallet> query = _dbContext.Wallets;
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -34,15 +34,15 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<Wallet?> GetByIdAsync(string id)
         {
-            var wallet = await DbContext.Wallets.Where(w => w.Id == id)
+            var wallet = await _dbContext.Wallets.Where(w => w.Id == id)
                 .FirstOrDefaultAsync();
             return wallet;
         }
 
         public async Task<Wallet> UpdateAsync(Wallet entity)
         {
-            DbContext.Wallets.Update(entity);
-            await DbContext.SaveChangesAsync();
+            _dbContext.Wallets.Update(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
     }

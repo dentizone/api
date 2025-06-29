@@ -1,6 +1,6 @@
 ﻿using Dentizone.Domain.Enums;
 
-namespace Dentizone.Application.Interfaces.Order
+namespace Dentizone.Application.Interfaces
 {
     public interface IShippingService
     {
