@@ -35,7 +35,7 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> GetWithdrawalHistory(int page = 1)
         {
             var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            var history = await withdrawalService.GetWithdrawalHistoryAsync(userId, page);
+            var history = await withdrawalService.GetWithdrawalHistoryAsync(userId);
             return Ok(history);
         }
 

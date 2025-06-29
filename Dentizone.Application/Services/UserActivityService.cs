@@ -25,8 +25,7 @@ namespace Dentizone.Application.Services
                 UserAgent = requestContextService.GetUserAgent(),
                 Device = requestContextService.GetDeviceType(),
                 ActivityType = activity,
-                UserId = (requestContextService.GetUserId() ?? userId) ??
-                         throw new InvalidOperationException("Can't find the UserID"),
+                UserId = requestContextService.GetUserId() ?? userId,
                 DetectedAt = detectedAt ?? DateTime.UtcNow
             };
 

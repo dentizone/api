@@ -31,7 +31,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<WithdrawalRequest>> GetAllAsync(
-            int page, Expression<Func<WithdrawalRequest, bool>>? condition)
+            Expression<Func<WithdrawalRequest, bool>>? condition)
         {
             IQueryable<WithdrawalRequest> query = dbContext.WithdrawalRequests;
             if (condition != null)
@@ -41,7 +41,6 @@ namespace Dentizone.Infrastructure.Repositories
 
             return await query
                 .OrderByDescending(u => u.CreatedAt)
-                .Skip(CalculatePagination(page))
                 .Take(DefaultPageSize)
                 .ToListAsync();
         }
