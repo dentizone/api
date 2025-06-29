@@ -13,7 +13,7 @@ namespace Dentizone.Domain.Entity
         public DateTime? ExpireDate { get; set; }
         public PostItemCondition Condition { get; set; }
         public PostStatus Status { get; set; } = PostStatus.Active;
-        public string Slug { get; set; }
+        public required string Slug { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
