@@ -8,7 +8,7 @@ namespace Dentizone.Infrastructure.Secret
     {
         public GetSecret()
         {
-            Environment = System.Environment.GetEnvironmentVariable("env") ?? "dev";
+            Environment = System.Environment.GetEnvironmentVariable("ENV") ?? "dev";
             ProjectId = System.Environment.GetEnvironmentVariable("ProjectId") ??
                         throw new ArgumentNullException("Can't find the project id");
         }
