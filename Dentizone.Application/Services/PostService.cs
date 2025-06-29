@@ -119,6 +119,10 @@ namespace Dentizone.Application.Services
                 await repo.UpdateAsync(post);
                 await transaction.CommitAsync();
 
+                // Invalidate The Cache
+                var cacheKey = CacheHelper.GenerateCacheKey("SidebarFilter");
+                await redisService.InvalidateCache(cacheKey);
+
                 return mapper.Map<PostViewDto>(post);
             }
             catch
