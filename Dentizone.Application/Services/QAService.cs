@@ -102,17 +102,15 @@ namespace Dentizone.Application.Services
             var questions = await questionRepository.FindAllBy(
                 q => q.PostId == postId && !q.IsDeleted,
                 includes);
-            if (questions == null || !questions.Any())
-            {
-                return [];
-            }
+
 
             return mapper.Map<IEnumerable<QuestionViewDto>>(questions);
         }
 
         public async Task UpdateAnswerAsync(string answerId, UpdateAnswerDto dto)
         {
-            var answer = await answerRepository.GetByIdAsync(answerId);
+            var answer = await answerRepository.GetByIdAsync(answerId) ??
+                         throw new NotFoundException("No Answer with this ID");
             answer.Text = dto.Text;
             await answerRepository.UpdateAsync(answer);
         }
