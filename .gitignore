@@ -40,3 +40,4 @@ msbuild.wrn
 /Dentizone.Tests
 
 /Dentizone.Infrastructure/Migrations
+/Dentizone.Infrastructure/Persistence/Seeder/UpdateCatalogScript.cs
