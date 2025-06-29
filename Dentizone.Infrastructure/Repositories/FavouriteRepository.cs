@@ -10,7 +10,7 @@ public class FavouriteRepository(AppDbContext dbContext) : AbstractRepository(db
     public async Task<Favourite?> GetByIdAsync(string id)
     {
         return await dbContext.Favourites
-                              .FirstOrDefaultAsync(f => f.Id == id && !f.IsDeleted);
+            .FirstOrDefaultAsync(f => f.Id == id && !f.IsDeleted);
     }
 
 
@@ -22,7 +22,7 @@ public class FavouriteRepository(AppDbContext dbContext) : AbstractRepository(db
     }
 
     public async Task<Favourite?> FindBy(Expression<Func<Favourite, bool>> condition,
-                                         Expression<Func<Favourite, object>>[]? incldues)
+        Expression<Func<Favourite, object>>[]? incldues)
     {
         IQueryable<Favourite> query = dbContext.Favourites;
         if (incldues != null)
@@ -54,10 +54,10 @@ public class FavouriteRepository(AppDbContext dbContext) : AbstractRepository(db
         IQueryable<Favourite> query = dbContext.Favourites;
 
         query = query.Include(f => f.Post)
-                     .ThenInclude(pa => pa.PostAssets)
-                     .ThenInclude(pa => pa.Asset)
-                     .AsNoTracking()
-                     .AsSplitQuery();
+            .ThenInclude(pa => pa.PostAssets)
+            .ThenInclude(pa => pa.Asset)
+            .AsNoTracking()
+            .AsSplitQuery();
         query = query.Include(f => f.Post.Seller);
 
         return await query.Where(condition).ToListAsync();

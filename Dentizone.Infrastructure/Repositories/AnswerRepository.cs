@@ -16,13 +16,13 @@ namespace Dentizone.Infrastructure.Repositories
 
 
         public async Task<Answer?> FindBy(Expression<Func<Answer, bool>> condition,
-                                          Expression<Func<Answer, object>>[]? includes)
+            Expression<Func<Answer, object>>[]? includes)
         {
             var query = dbContext.Answers.AsQueryable();
 
             if (includes == null)
                 return await dbContext.Answers
-                                      .FirstOrDefaultAsync(condition);
+                    .FirstOrDefaultAsync(condition);
 
 
             foreach (var include in includes)

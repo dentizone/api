@@ -10,7 +10,7 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<UserAsset?> GetByIdAsync(string id)
         {
             return await dbContext.UserAssets
-                                  .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
+                .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
         }
 
 
@@ -22,7 +22,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<UserAsset?> FindBy(Expression<Func<UserAsset, bool>> condition,
-                                             Expression<Func<UserAsset, object>>[]? includes)
+            Expression<Func<UserAsset, object>>[]? includes)
         {
             IQueryable<UserAsset> query = dbContext.UserAssets.Where(u => !u.IsDeleted);
             if (includes != null)
@@ -58,10 +58,10 @@ namespace Dentizone.Infrastructure.Repositories
             }
 
             return await query
-                         .OrderByDescending(u => u.CreatedAt)
-                         .Skip(CalculatePagination(page))
-                         .Take(DefaultPageSize)
-                         .ToListAsync();
+                .OrderByDescending(u => u.CreatedAt)
+                .Skip(CalculatePagination(page))
+                .Take(DefaultPageSize)
+                .ToListAsync();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<Asset?> FindBy(Expression<Func<Asset, bool>> condition,
-                                         Expression<Func<Asset, object>>[]? includes = null)
+            Expression<Func<Asset, object>>[]? includes = null)
         {
             var query = dbContext.Assets.AsQueryable();
             if (includes == null)
@@ -49,7 +49,7 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<Asset?> GetByIdAsync(string id)
         {
             return await dbContext.Assets
-                                  .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
+                .FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
         }
 
         public async Task<Asset> UpdateAsync(Asset entity)

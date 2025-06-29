@@ -12,7 +12,7 @@ namespace Dentizone.Infrastructure.Repositories
         {
             return await
                 dbContext.ShipmentActivities
-                         .FirstOrDefaultAsync(s => s.Id == id);
+                    .FirstOrDefaultAsync(s => s.Id == id);
         }
 
 
@@ -24,7 +24,7 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
         public async Task<ShipmentActivity?> FindBy(Expression<Func<ShipmentActivity, bool>> condition,
-                                                    Expression<Func<ShipmentActivity, object>>[]? includes)
+            Expression<Func<ShipmentActivity, object>>[]? includes)
         {
             IQueryable<ShipmentActivity> query = dbContext.ShipmentActivities;
             if (includes != null)
