@@ -72,7 +72,7 @@ namespace Dentizone.Application.Services.Authentication
                 await userActivityService.CreateAsync(UserActivities.Lockdout, DateTime.Now, user.Id);
                 throw new
                     UserLockedOutException(
-                        "User is locked out due to too many failed login attempts. Please try again later.");
+                                           "User is locked out due to too many failed login attempts. Please try again later.");
             }
 
 
@@ -109,7 +109,7 @@ namespace Dentizone.Application.Services.Authentication
             return new LoggedInUser()
             {
                 User = user,
-                Role = Enum.Parse<UserRoles>(roles.FirstOrDefault())
+                Role = Enum.Parse<UserRoles>(roles.LastOrDefault())
             };
         }
 
@@ -199,7 +199,7 @@ namespace Dentizone.Application.Services.Authentication
             var verificationLink = $"https://dentizone.vercel.app/auth/mail-verify?userId={user.Id}&token={token}";
             // 3. Send Verification Email
             await mailService.Send(email, "Dentizone: Verify your email",
-                $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
+                                   $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
         }
 
         public async Task SendForgetPasswordEmail(string email)
@@ -216,7 +216,7 @@ namespace Dentizone.Application.Services.Authentication
             var resetLink = $"https://dentizone.vercel.app/auth/forgot-password?email={user.Email}&token={token}";
             // 3. Send Reset Password Email
             await mailService.Send(email, "Dentizone: Reset your password",
-                $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
+                                   $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
         }
 
         public async Task<ApplicationUser> GetById(string userId)

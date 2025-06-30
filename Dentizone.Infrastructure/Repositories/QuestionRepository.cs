@@ -9,15 +9,15 @@ namespace Dentizone.Infrastructure.Repositories
     {
         public async Task<Question> CreateAsync(Question entity)
         {
-            await DbContext.Questions.AddAsync(entity);
-            await DbContext.SaveChangesAsync();
+            await dbContext.Questions.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
             return entity;
         }
 
         public async Task<Question?> FindBy(Expression<Func<Question, bool>> condition,
-            Expression<Func<Question, object>>[]? includes)
+                                            Expression<Func<Question, object>>[]? includes)
         {
-            IQueryable<Question> query = DbContext.Questions;
+            IQueryable<Question> query = dbContext.Questions;
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -37,31 +37,31 @@ namespace Dentizone.Infrastructure.Repositories
                 return null;
             }
 
-            DbContext.Questions.Remove(question);
-            await DbContext.SaveChangesAsync();
+            dbContext.Questions.Remove(question);
+            await dbContext.SaveChangesAsync();
             return question;
         }
 
 
         public async Task<Question?> GetByIdAsync(string id)
         {
-            return await DbContext.Questions
-                .Include(p => p.Post)
-                .Where(q => q.Id == id).FirstOrDefaultAsync();
+            return await dbContext.Questions
+                                  .Include(p => p.Post)
+                                  .Where(q => q.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Question> UpdateAsync(Question entity)
         {
-            DbContext.Questions.Update(entity);
-            await DbContext.SaveChangesAsync();
+            dbContext.Questions.Update(entity);
+            await dbContext.SaveChangesAsync();
 
             return entity;
         }
 
         public async Task<List<Question>> FindAllBy(Expression<Func<Question, bool>> condition,
-            Expression<Func<Question, object>>[]? includes = null)
+                                                    Expression<Func<Question, object>>[]? includes = null)
         {
-            IQueryable<Question> query = DbContext.Questions;
+            IQueryable<Question> query = dbContext.Questions;
 
             if (includes != null)
             {
