@@ -81,11 +81,11 @@ namespace Dentizone.Application.Services
             await withdrawalRepo.UpdateAsync(request);
 
 
-            //  var UserId = request.Wallet.User.Email ;
+            var email = request.Wallet.User.Email;
 
             var subject = "Withdrawal Approved";
             var body = $"Your withdrawal request of {request.Amount:C} has been approved. Note:{adminNote}";
-            //  await mailService.Send(UserId, subject, body);
+            await mailService.Send(email, subject, body);
 
             return mapper.Map<WithdrawalRequestView>(request);
         }
@@ -109,10 +109,18 @@ namespace Dentizone.Application.Services
             if (updatedRequest == null)
                 throw new NotFoundException("Failed to update withdrawal request.");
 
-            var userId = updatedRequest.Wallet.UserId;
+            // Refund the amount to the wallet
+            var wallet = await walletService.GetWalletByUserIdAsync(request.Wallet.UserId);
+            if (wallet == null)
+                throw new NotFoundException("Wallet not found for the user.");
+
+            wallet.Balance += request.Amount;
+            await walletService.UpdateWallet(wallet);
+
+            var email = request.Wallet.User.Email;
             var subject = "Withdrawal Rejected";
             var body = $"Your withdrawal request of {request.Amount:C} has been rejected. Reason: {adminNote}";
-            await mailService.Send(userId, subject, body);
+            await mailService.Send(email, subject, body);
 
             return mapper.Map<WithdrawalRequestView>(updatedRequest);
         }
