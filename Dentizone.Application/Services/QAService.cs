@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using AutoMapper;
+﻿using AutoMapper;
 using Dentizone.Application.DTOs.Q_A.AnswerDTO;
 using Dentizone.Application.DTOs.Q_A.QuestionDTO;
 using Dentizone.Application.Interfaces;
@@ -7,6 +6,7 @@ using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
+using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services
 {
@@ -47,11 +47,7 @@ namespace Dentizone.Application.Services
 
         public async Task<QuestionViewDto> AskQuestionAsync(CreateQuestionDto dto, string askerId)
         {
-            var post = questionRepository.GetByIdAsync(dto.PostId);
-            if (post == null)
-            {
-                throw new NotFoundException("Post not found");
-            }
+           
 
             var question = mapper.Map<Question>(dto);
             question.AskerId = askerId;
@@ -95,13 +91,13 @@ namespace Dentizone.Application.Services
         public async Task<IEnumerable<QuestionViewDto>> GetQuestionsForPostAsync(string postId)
         {
             var includes = new Expression<Func<Question, object>>[]
-            {
-                q => q.Answer
-            };
+                           {
+                               q => q.Answer
+                           };
 
             var questions = await questionRepository.FindAllBy(
-                q => q.PostId == postId && !q.IsDeleted,
-                includes);
+                                                               q => q.PostId == postId && !q.IsDeleted,
+                                                               includes);
 
 
             return mapper.Map<IEnumerable<QuestionViewDto>>(questions);

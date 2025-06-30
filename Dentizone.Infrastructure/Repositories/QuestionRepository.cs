@@ -5,19 +5,19 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
-    internal class QuestionRepository(AppDbContext dbContext) : AbstractRepository(dbContext), IQuestionRepository
+    internal class QuestionRepository(AppDbContext db) : AbstractRepository(db), IQuestionRepository
     {
         public async Task<Question> CreateAsync(Question entity)
         {
-            await DbContext.Questions.AddAsync(entity);
-            await DbContext.SaveChangesAsync();
+            await db.Questions.AddAsync(entity);
+            await db.SaveChangesAsync();
             return entity;
         }
 
         public async Task<Question?> FindBy(Expression<Func<Question, bool>> condition,
-            Expression<Func<Question, object>>[]? includes)
+                                            Expression<Func<Question, object>>[]? includes)
         {
-            IQueryable<Question> query = DbContext.Questions;
+            IQueryable<Question> query = db.Questions;
             if (includes != null)
             {
                 foreach (var include in includes)
@@ -37,31 +37,31 @@ namespace Dentizone.Infrastructure.Repositories
                 return null;
             }
 
-            DbContext.Questions.Remove(question);
-            await DbContext.SaveChangesAsync();
+            db.Questions.Remove(question);
+            await db.SaveChangesAsync();
             return question;
         }
 
 
         public async Task<Question?> GetByIdAsync(string id)
         {
-            return await DbContext.Questions
-                .Include(p => p.Post)
-                .Where(q => q.Id == id).FirstOrDefaultAsync();
+            return await db.Questions
+                           .Include(p => p.Post)
+                           .Where(q => q.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Question> UpdateAsync(Question entity)
         {
-            DbContext.Questions.Update(entity);
-            await DbContext.SaveChangesAsync();
+            db.Questions.Update(entity);
+            await db.SaveChangesAsync();
 
             return entity;
         }
 
         public async Task<List<Question>> FindAllBy(Expression<Func<Question, bool>> condition,
-            Expression<Func<Question, object>>[]? includes = null)
+                                                    Expression<Func<Question, object>>[]? includes = null)
         {
-            IQueryable<Question> query = DbContext.Questions;
+            IQueryable<Question> query = db.Questions;
 
             if (includes != null)
             {
