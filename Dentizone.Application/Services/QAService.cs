@@ -47,11 +47,7 @@ namespace Dentizone.Application.Services
 
         public async Task<QuestionViewDto> AskQuestionAsync(CreateQuestionDto dto, string askerId)
         {
-            var post = await questionRepository.GetByIdAsync(dto.PostId);
-            if (post == null)
-            {
-                throw new NotFoundException("Post not found");
-            }
+           
 
             var question = mapper.Map<Question>(dto);
             question.AskerId = askerId;
