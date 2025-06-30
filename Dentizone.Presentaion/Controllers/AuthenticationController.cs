@@ -145,15 +145,13 @@ namespace Dentizone.Presentaion.Controllers
                 {
                     case UserState.Active:
                     case UserState.PendingVerification:
+                    case UserState.EmailVerified:
+                    case UserState.KycVerified:
                         break;
-                    case UserState.Inactive:
-                        return Unauthorized(new { message = "User account is inactive" });
-                    case UserState.Suspended:
-                        return Unauthorized(new { message = "User account is suspended" });
+                    case UserState.Blacklisted:
+                        return Unauthorized(new { message = "User account is blacklisted" });
                     case UserState.Deleted:
                         return NotFound(new { message = "User account not found" });
-                    case UserState.Banned:
-                        return Unauthorized(new { message = "User account is banned" });
                     default:
                         return BadRequest(new { message = "Invalid user state" });
                 }

@@ -257,8 +257,23 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
                     var result = await userManager.CreateAsync(identityUser, "UserPassword123!");
                     if (result.Succeeded)
                     {
-                        await userManager.AddToRoleAsync(identityUser, UserRoles.Ghost.ToString());
+                        // Assign a random role (excluding Admin)
+                        var possibleRoles = new[]
+                            { UserRoles.Ghost, UserRoles.PartilyVerified, UserRoles.Verified, UserRoles.Blacklisted };
+                        var assignedRole = userFaker.PickRandom(possibleRoles);
+                        await userManager.AddToRoleAsync(identityUser, assignedRole.ToString());
                         identityUsers.Add(identityUser);
+
+                        // Map role to corresponding state
+                        UserState assignedState = assignedRole switch
+                        {
+                            UserRoles.Ghost => UserState.PendingVerification,
+                            UserRoles.PartilyVerified => UserState.EmailVerified,
+                            UserRoles.Verified => UserState.KycVerified,
+                            UserRoles.Blacklisted => UserState.Blacklisted,
+                            _ => UserState.PendingVerification
+                        };
+
                         appUsers.Add(new AppUser
                         {
                             Id = identityUser.Id,
@@ -267,7 +282,7 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
                             Email = email,
                             AcademicYear = userFaker.Random.Int(1, 5),
                             KycStatus = userFaker.PickRandom<KycStatus>(),
-                            Status = userFaker.PickRandom<UserState>(),
+                            Status = assignedState,
                             UniversityId = userFaker.PickRandom(universityIds),
                             IsDeleted = false,
                             CreatedAt = userFaker.Date.Past(2),
@@ -290,7 +305,7 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
                         Email = adminEmails[i],
                         AcademicYear = 5,
                         KycStatus = KycStatus.Approved,
-                        Status = UserState.Active,
+                        Status = UserState.KycVerified,
                         UniversityId = universityIds[i % universityIds.Count],
                         IsDeleted = false,
                         CreatedAt = DateTime.UtcNow.AddYears(-1),

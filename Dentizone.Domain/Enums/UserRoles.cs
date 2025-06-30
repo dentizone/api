@@ -2,10 +2,10 @@
 {
     public enum UserRoles
     {
-        Ghost,
-        Admin,
-        Verified,
-        PartilyVerified,
-        Blacklisted,
+        Ghost,           // Registered but not verified (No Email Verification or KYC)
+        PartilyVerified, // Registered and JUST mail Verified
+        Verified,        // Registered and KYC Verified
+        Blacklisted,     // Blocked from our system
+        Admin            // Full access
     }
 }
