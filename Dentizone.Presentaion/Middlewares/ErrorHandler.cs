@@ -31,7 +31,7 @@ namespace Dentizone.Presentaion.Middlewares
             var errorResponse = new ErrorResponse
             {
                 Message = "An error occurred while processing your request.",
-                Details = env.IsDevelopment() ? exception.Message : null,
+                Details = exception.Message,
                 StatusCode = (int)HttpStatusCode.InternalServerError
             };
 
@@ -63,10 +63,14 @@ namespace Dentizone.Presentaion.Middlewares
                     errorResponse.Details = expSqlException.Message;
                     errorResponse.StatusCode = (int)HttpStatusCode.InternalServerError;
                     break;
+                case UnauthorizedAccessException:
+                    errorResponse.Message = "You are not authorized to perform this action.";
+                    errorResponse.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    break;
 
 
                 default:
-                    errorResponse.Message = "An unexpected error occurred.";
+                    errorResponse.Message = $"An unexpected error occurred. + {exception.Message}";
                     errorResponse.StatusCode = (int)HttpStatusCode.InternalServerError;
                     break;
             }
