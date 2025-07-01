@@ -53,8 +53,8 @@ public class FavouriteRepository(AppDbContext dbContext) : AbstractRepository(db
     {
         IQueryable<Favourite> query = DbContext.Favourites;
 
-        query = query.Include(f => f.Post)
-            .ThenInclude(pa => pa.PostAssets)
+        query = query.Include(f => f.Post).ThenInclude(p => p.Category)
+            .Include(pa => pa.Post.PostAssets)
             .ThenInclude(pa => pa.Asset)
             .AsNoTracking()
             .AsSplitQuery();
