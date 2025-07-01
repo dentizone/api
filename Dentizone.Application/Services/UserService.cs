@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
+using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces;
 using Dentizone.Application.Services.Payment;
@@ -49,22 +50,22 @@ namespace Dentizone.Application.Services
             return mapper.Map<UserView>(deletedUser);
         }
 
-        public async Task<ICollection<UserView>> GetAllAsync(int page, string? searchByName = null,
+        public async Task<PagedResultDto<UserTableView>> GetAllAsync(int page,
             Expression<Func<AppUser, bool>>? filterExpression = null)
         {
+            // Return Paged Users Result
+            if (page < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(page), "Page number must be greater than 0.");
+            }
+
             var users = await userRepository.GetAllAsync(page, filterExpression);
             if (users == null)
             {
                 throw new NotFoundException("No users found.");
             }
 
-            if (!string.IsNullOrEmpty(searchByName))
-            {
-                users = users.Where(u => u.FullName.Contains(searchByName, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-            }
-
-            return mapper.Map<ICollection<UserView>>(users);
+            return mapper.Map<PagedResultDto<UserTableView>>(users);
         }
 
         public async Task<DomainUserView> GetByIdAsync(string id)
@@ -129,6 +130,26 @@ namespace Dentizone.Application.Services
             var updated = await userRepository.Update(user);
 
             return mapper.Map<UserView>(updated);
+        }
+
+        public async Task<UserStatsView> GetUserStatsAsync()
+        {
+            var userGroups = await userRepository.GetUsersPerStateAsync();
+            if (userGroups == null || !userGroups.Any())
+            {
+                throw new NotFoundException("No user statistics found.");
+            }
+
+
+            var totalUsers = userGroups.Sum(x => x.Value);
+
+            var userStats = new UserStatsView
+            {
+                TotalUsers = totalUsers,
+                UsersPerStatus = userGroups
+            };
+
+            return userStats;
         }
     }
 }

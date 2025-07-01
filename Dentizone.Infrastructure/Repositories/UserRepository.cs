@@ -1,7 +1,8 @@
-﻿using Dentizone.Domain.Entity;
+﻿using System.Linq.Expressions;
+using Dentizone.Domain.Entity;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Dentizone.Infrastructure.Repositories
 {
@@ -14,19 +15,24 @@ namespace Dentizone.Infrastructure.Repositories
                     .FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
         }
 
-        public async Task<IEnumerable<AppUser>> GetAllAsync(int page = 1,
+        public async Task<PagedResult<AppUser>> GetAllAsync(int page = 1,
             Expression<Func<AppUser, bool>>? filter = null)
         {
-            var query = DbContext.AppUsers
-                .Skip(CalculatePagination(page))
-                .Take(DefaultPageSize);
+            var query = DbContext.AppUsers.AsQueryable();
+            var totalCount = await query.CountAsync();
 
-            if (filter != null)
+            query = BuildPagedQuery(page, filter, query);
+
+            query = query.Include(u => u.University);
+
+
+            return new PagedResult<AppUser>
             {
-                query = query.Where(filter);
-            }
-
-            return await query.ToListAsync();
+                Items = await query.AsNoTracking().ToListAsync(),
+                Page = page,
+                PageSize = DefaultPageSize,
+                TotalCount = totalCount
+            };
         }
 
         public async Task<AppUser> CreateAsync(AppUser entity)
@@ -98,6 +104,14 @@ namespace Dentizone.Infrastructure.Repositories
                 .GroupBy(a => a.University.Name)
                 .ToDictionaryAsync(g => g.Key, g => g.Count());
 
+            return result;
+        }
+
+        public async Task<Dictionary<string, int>> GetUsersPerStateAsync()
+        {
+            var result = await DbContext.AppUsers
+                .GroupBy(a => a.Status)
+                .ToDictionaryAsync(g => g.Key.ToString(), g => g.Count());
             return result;
         }
     }

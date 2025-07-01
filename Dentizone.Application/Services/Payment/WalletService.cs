@@ -10,6 +10,9 @@ namespace Dentizone.Application.Services.Payment
     {
         public required string Id { get; set; }
         public decimal Balance { get; set; }
+        public UserWallet Status { get; set; } = UserWallet.Active;
+        public decimal Pending { get; set; }
+        public decimal TotalRevene { get; set; }
         public required string UserId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
@@ -30,8 +33,9 @@ namespace Dentizone.Application.Services.Payment
 
     public class WalletService(
         IWalletRepository walletRepository,
-        IMapper mapper,
-        Infrastructure.AppDbContext dbContext) : IWalletService
+        IWithdrawalRequestRepository withdrawalRequestRepository,
+        IMapper mapper
+    ) : IWalletService
     {
         public async Task CreateWallet(string userId)
         {
@@ -98,7 +102,39 @@ namespace Dentizone.Application.Services.Payment
                 throw new NotFoundException("Wallet not found for the user.");
             }
 
-            var walletView = mapper.Map<WalletView>(wallet);
+            if (wallet.Status != UserWallet.Active)
+            {
+                throw new BadActionException("Wallet is not active.");
+            }
+
+            // Get Pending Withdrawal Requests
+            var pendingWithdrawalRequests = await withdrawalRequestRepository.GetAllAsync(wr =>
+                wr.WalletId == wallet.Id && wr.Status == WithdrawalRequestStatus.Pending);
+
+            var successWithdraw = await withdrawalRequestRepository.GetAllAsync(wr =>
+                wr.WalletId == wallet.Id && wr.Status == WithdrawalRequestStatus.Completed);
+
+            var pendingAmount = pendingWithdrawalRequests.Sum(wr => wr.Amount);
+            var successAmount = successWithdraw.Sum(wr => wr.Amount);
+
+            // Calculate Total Revenue (Wallet Balance - Pending Amount + Success Withdraw)
+            var totalRevenue =
+                wallet.Balance - pendingAmount + successAmount; // Assuming Success Withdraw is not tracked separately
+
+
+            var walletView = new WalletView
+            {
+                Id = wallet.Id,
+                Balance = wallet.Balance,
+                Status = wallet.Status,
+                UserId = wallet.UserId,
+                CreatedAt = wallet.CreatedAt,
+                UpdatedAt = wallet.UpdatedAt,
+                Pending = pendingAmount,
+                TotalRevene = totalRevenue
+            };
+
+
             return walletView;
         }
 
