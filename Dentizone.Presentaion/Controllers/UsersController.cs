@@ -29,21 +29,16 @@ namespace Dentizone.Presentaion.Controllers
             }
         }
 
+        [Authorize(Policy = "IsAdmin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(string id)
         {
-            try
-            {
-                var user = await userService.GetByIdAsync(id);
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var user = await userService.GetByIdAsync(id);
+            return Ok(user);
         }
 
         [HttpGet]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> GetAllUsers(string? search = null, int page = 1)
         {
             var users = await userService.GetAllAsync(page, search);
@@ -51,6 +46,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             try
@@ -64,19 +60,6 @@ namespace Dentizone.Presentaion.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(string id, [FromBody] UserDto userDto)
-        {
-            try
-            {
-                // var updatedUser = await userService.UpdateAsync(id, userDto);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
 
         [HttpPatch("{id}/kyc")]
         public async Task<IActionResult> SetKycStatus(string id, [FromBody] KycStatus status)
@@ -92,18 +75,20 @@ namespace Dentizone.Presentaion.Controllers
             }
         }
 
+        [Authorize(Policy = "IsAdmin")]
         [HttpPatch("{id}/state")]
         public async Task<IActionResult> SetUserState(string id, [FromBody] UserStateDto userStateDto)
         {
-            try
-            {
-                await userService.SetUserStateAsync(id, userStateDto);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await userService.SetUserStateAsync(id, userStateDto);
+            return NoContent();
+        }
+
+        [HttpGet("stats")]
+        [Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> GetUserStats()
+        {
+            var userStats = await userService.GetUserStatsAsync();
+            return Ok(userStats);
         }
     }
 }

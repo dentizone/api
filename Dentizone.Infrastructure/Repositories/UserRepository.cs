@@ -100,5 +100,13 @@ namespace Dentizone.Infrastructure.Repositories
 
             return result;
         }
+
+        public async Task<Dictionary<string, int>> GetUsersPerStateAsync()
+        {
+            var result = await DbContext.AppUsers
+                .GroupBy(a => a.Status)
+                .ToDictionaryAsync(g => g.Key.ToString(), g => g.Count());
+            return result;
+        }
     }
 }

@@ -17,5 +17,7 @@ namespace Dentizone.Application.Interfaces
         Task<UserView> SetKycStatusAsync(string userId, KycStatus status);
         Task SetUserStateAsync(string userId, UserStateDto userStateDto);
         Task<UserView> SetNationalId(string userId, string nationalId);
+
+        Task<UserStatsView> GetUserStatsAsync();
     }
 }

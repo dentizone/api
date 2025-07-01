@@ -130,5 +130,25 @@ namespace Dentizone.Application.Services
 
             return mapper.Map<UserView>(updated);
         }
+
+        public async Task<UserStatsView> GetUserStatsAsync()
+        {
+            var userGroups = await userRepository.GetUsersPerStateAsync();
+            if (userGroups == null || !userGroups.Any())
+            {
+                throw new NotFoundException("No user statistics found.");
+            }
+
+
+            var totalUsers = userGroups.Sum(x => x.Value);
+
+            var userStats = new UserStatsView
+            {
+                TotalUsers = totalUsers,
+                UsersPerStatus = userGroups
+            };
+
+            return userStats;
+        }
     }
 }
