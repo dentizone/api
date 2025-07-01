@@ -43,28 +43,6 @@ namespace Dentizone.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(condition);
         }
 
-        private IQueryable<Order> BuildPagedQuery(int page, Expression<Func<Order, bool>>? filter,
-            IQueryable<Order> query)
-        {
-            if (page < 1)
-            {
-                page = 1;
-            }
-
-            // Always order before pagination
-            query = query.OrderByDescending(o => o.CreatedAt);
-
-            // Apply filter if present
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            // Always apply pagination
-            query = query.Skip(CalculatePagination(page)).Take(DefaultPageSize);
-
-            return query;
-        }
 
         public async Task<PagedResult<Order>> GetAllAsync(int? page, Expression<Func<Order, bool>> filter)
         {
