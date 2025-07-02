@@ -46,13 +46,14 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                      builder.HasMany(a => a.UserAssets)
                             .WithOne(ua => ua.Asset)
                             .HasForeignKey(ua => ua.AssetId)
-                            .OnDelete(DeleteBehavior.Cascade);
+                            .OnDelete(DeleteBehavior.NoAction);
 
 
                      // One-to-Many: Asset to PostAssets
                      builder.HasMany(a => a.PostAssets)
                             .WithOne(pa => pa.Asset)
-                            .HasForeignKey(pa => pa.AssetId);
+                            .HasForeignKey(pa => pa.AssetId)
+                            .OnDelete(DeleteBehavior.NoAction);
               }
        }
 }

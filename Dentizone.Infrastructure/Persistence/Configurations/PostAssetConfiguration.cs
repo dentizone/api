@@ -28,8 +28,7 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                      builder.HasOne(pa => pa.Post)
                             .WithMany(p => p.PostAssets)
                             .HasForeignKey(pa => pa.PostId)
-                            .OnDelete(DeleteBehavior.NoAction)
-                            .IsRequired(false);
+                            .OnDelete(DeleteBehavior.NoAction).IsRequired();
 
                      builder.HasOne(pa => pa.Asset)
                             .WithMany(a => a.PostAssets)
