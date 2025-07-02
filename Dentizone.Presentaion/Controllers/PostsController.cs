@@ -13,10 +13,10 @@ namespace Dentizone.Presentaion.Controllers
     public class PostsController(IPostService postService) : ControllerBase
     {
         [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetAllPosts(int page = 1)
+        public async Task<IActionResult> GetAllPosts()
         {
-            var posts = await postService.GetAllPosts(page);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var posts = await postService.GetAllPosts(userId);
             return Ok(posts);
         }
 
