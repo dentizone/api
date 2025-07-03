@@ -35,6 +35,7 @@ namespace Dentizone.Application.AutoMapper
             CreateMap<UserTableView, AppUser>()
                 .ForMember(d => d.Status, opt => opt.MapFrom(s => s.Status))
                 .ForPath(dest => dest.University.Name, opt => opt.MapFrom(src => src.UniversityName))
+                .ForPath(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ReverseMap();
         }
     }

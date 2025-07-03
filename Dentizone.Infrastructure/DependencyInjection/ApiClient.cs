@@ -14,7 +14,7 @@ namespace Dentizone.Infrastructure.DependencyInjection
             services.AddRefitClient<ITruboSmtp>()
                     .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://api.turbo-smtp.com/api/v2"); });
             services.AddRefitClient<IAILayer>()
-                    .ConfigureHttpClient(c => { c.BaseAddress = new Uri("http://http://localhost:8000"); });
+                    .ConfigureHttpClient(c => { c.BaseAddress = new Uri("http://localhost:8000"); });
             return services;
         }
     }
