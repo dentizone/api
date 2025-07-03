@@ -36,6 +36,15 @@ public class OrderProfile : Profile
                     SellerId = s.Id,
                     SellerName = s.FullName,
                     SellerEmail = s.Email
+                })))
+            .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems
+                .Select(oi => new OrderItemWithPickup
+                {
+                    Id = oi.Id,
+                    PostId = oi.PostId,
+                    PostTitle = oi.Post.Title,
+                    Price = oi.Post.Price,
+                    PickupLocation = $"{oi.Post.Street} - {oi.Post.City}"
                 })));
 
 
