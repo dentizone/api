@@ -6,6 +6,7 @@ namespace Dentizone.Application.DTOs.Order
     {
         public string? OrderId { get; set; }
         public string? BuyerName { get; set; }
+        public string? SellerName { get; set; }
 
         public OrderStatues? Status { get; set; }
     }

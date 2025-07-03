@@ -19,9 +19,10 @@ namespace Dentizone.Infrastructure.Repositories
             Expression<Func<AppUser, bool>>? filter = null)
         {
             var query = DbContext.AppUsers.AsQueryable();
-            var totalCount = await query.CountAsync();
 
-            query = BuildPagedQuery(page, filter, query);
+            var pagedQuery = await BuildPagedQuery(page, filter, query);
+            query = pagedQuery.Query;
+            var totalCount = pagedQuery.TotalCount;
 
             query = query.Include(u => u.University);
 

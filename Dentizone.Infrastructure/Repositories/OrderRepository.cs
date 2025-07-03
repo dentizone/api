@@ -44,33 +44,34 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
 
-        public async Task<PagedResult<Order>> GetAllAsync(int? page, Expression<Func<Order, bool>> filter)
+        public async Task<Domain.Interfaces.PagedResult<Order>> GetAllAsync(int? page,
+            Expression<Func<Order, bool>> filter)
         {
             var query = DbContext.Orders.AsQueryable();
+            var count = await query.CountAsync();
             if (page is not null)
             {
-                query = BuildPagedQuery(page.Value, filter, query);
+                var pagedQuery = await BuildPagedQuery(page.Value, filter, query);
+                query = pagedQuery.Query;
+                count = pagedQuery.TotalCount;
             }
 
-
-            var totalCount = await query.CountAsync();
 
             query = query.Include(o => o.Buyer)
                 .Include(o => o.OrderItems)
                 .ThenInclude(p => p.Post)
+                .ThenInclude(p => p.Seller)
                 .Include(o => o.ShipInfo)
                 .Include(o => o.OrderStatuses)
                 .Include(o => o.Review);
 
-            query = query.Where(filter);
-
 
             return new PagedResult<Order>
             {
-                Items = await query.AsNoTracking().ToListAsync(),
+                Items = await query.AsNoTracking().AsSplitQuery().ToListAsync(),
                 Page = page ?? 1,
                 PageSize = DefaultPageSize,
-                TotalCount = totalCount
+                TotalCount = count
             };
         }
 
