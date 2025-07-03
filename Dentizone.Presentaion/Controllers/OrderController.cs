@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace Dentizone.Presentaion.Controllers
 {
-    //  [Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController(IOrderService orderService) : ControllerBase
@@ -41,13 +41,12 @@ namespace Dentizone.Presentaion.Controllers
         [HttpPut("{orderId}/cancel")]
         public async Task<IActionResult> CancelOrder(string orderId)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var result = await orderService.CancelOrderAsync(orderId);
             return Ok(result);
         }
 
         [HttpPut("{orderId}/confirm")]
-        // [Authorize(Policy = "IsAdmin")]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> ConfirmOrder(string orderId)
         {
             await orderService.CompleteOrder(orderId);
@@ -55,7 +54,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet("all")]
-        //[Authorize(Policy = "IsAdmin")]
+        [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> GetAllOrders([FromQuery] FilterOrderDto filters, [FromQuery] int page = 1)
         {
             var orders = await orderService.GetOrders(page, filters);
