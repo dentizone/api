@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Dentizone.Application.DTOs.Post;
+﻿using Dentizone.Application.DTOs.Post;
 using Dentizone.Application.DTOs.Post.PostFilterDto;
 using Dentizone.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dentizone.Presentaion.Controllers
 {
@@ -75,6 +75,14 @@ namespace Dentizone.Presentaion.Controllers
         {
             var searchResult = await postService.Search(userPreferenceDto);
             return Ok(searchResult);
+        }
+
+        [Authorize("IsAdmin")]
+        [HttpPatch("{postId}/status")]
+        public async Task<IActionResult> AdjustStatus([FromBody] UpdatePostStateDto state)
+        {
+            var updatedPost = await postService.UpdatePostStatus(state.PostId, state.Status, state.Reason);
+            return Ok(updatedPost);
         }
     }
 }

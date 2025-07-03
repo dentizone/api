@@ -6,6 +6,7 @@ using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces;
+using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.Cache;
@@ -24,7 +25,8 @@ namespace Dentizone.Application.Services
         ISubCategoryRepository subCategoryRepository,
         IAssetService assetService,
         AppDbContext dbContext,
-        IRedisService redisService)
+        IRedisService redisService,
+        IMailService mailService)
         : BaseService(accessor), IPostService
     {
         public async Task<List<Post>> ValidatePosts(List<string> postIds)
@@ -202,16 +204,28 @@ namespace Dentizone.Application.Services
             return mapper.Map<PostViewDto>(updatedPost);
         }
 
-        public async Task<PostViewDto> UpdatePostStatus(string postId, PostStatus status)
+        public async Task<PostViewDto> UpdatePostStatus(string postId, PostStatus status, string? reason)
         {
-            var post = await repo.GetByIdAsync(postId);
+            var post = await repo.GetAllAsync(p => p.Id == postId && !p.IsDeleted, includes: [p => p.Seller])
+                                 .FirstOrDefaultAsync();
             if (post == null)
             {
                 throw new NotFoundException("Post not found");
             }
 
+
             post.Status = status;
             var updatedPost = await repo.UpdateAsync(post);
+
+            if (updatedPost == null)
+            {
+                throw new NotFoundException("Post not found");
+            }
+
+            // Notify the seller about the status change
+            await NotifySellerAsync(post, status, reason);
+
+
             return mapper.Map<PostViewDto>(updatedPost);
         }
 
@@ -336,6 +350,27 @@ namespace Dentizone.Application.Services
             }
 
             return post.SellerId;
+        }
+
+        private async Task NotifySellerAsync(Post post, PostStatus status, string? reason)
+        {
+            var email = post.Seller.Email;
+            var postTitle = post.Title;
+
+            switch (status)
+            {
+                case PostStatus.Active:
+                    await mailService.Send(email, "Post Approved", $"Your post '{postTitle}' has been approved");
+                    break;
+
+                case PostStatus.Rejected when !string.IsNullOrEmpty(reason):
+                    await mailService.Send(email, "Post Rejected",
+                                           $"Your post '{postTitle}' has been rejected. Reason: {reason}");
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }
