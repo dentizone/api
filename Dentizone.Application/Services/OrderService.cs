@@ -266,8 +266,10 @@ namespace Dentizone.Application.Services
             Expression<Func<Order, bool>> filterExpression = o =>
                 (string.IsNullOrEmpty(filters.BuyerName) || o.Buyer.FullName.Contains(filters.BuyerName)) &&
                 (string.IsNullOrEmpty(filters.OrderId) || o.Id.ToString().Contains(filters.OrderId)) &&
-                (filters.Status == null ||
-                 o.OrderStatuses.Any(os => os.Status.ToString().Contains(filters.Status.ToString())));
+                (filters.Status == null || o.OrderStatuses.Any(os => os.Status == filters.Status)) &&
+                (filters.OrderDate == null || o.CreatedAt.Date == filters.OrderDate.Value.Date)
+                && (string.IsNullOrEmpty(filters.SellerName) ||
+                    o.OrderItems.Any(oi => oi.Post.Seller.FullName.Contains(filters.SellerName)));
 
 
             var order = await orderRepository.GetAllAsync(

@@ -8,6 +8,9 @@ namespace Dentizone.Application.DTOs.Order
         public string? BuyerName { get; set; }
         public string? SellerName { get; set; }
 
+        public DateTime? OrderDate { get; set; }
+
+
         public OrderStatues? Status { get; set; }
     }
 }
