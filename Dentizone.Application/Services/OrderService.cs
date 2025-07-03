@@ -259,7 +259,7 @@ namespace Dentizone.Application.Services
             await mailService.Send(buyer.Email, "Order Completed Waiting for review", emailContent);
         }
 
-        public async Task<PagedResultDto<OrderViewDto>> GetOrders(int page, FilterOrderDto filters)
+        public async Task<PagedResultDto<OrderViewAll>> GetOrders(int page, FilterOrderDto filters)
         {
             // Apply filters if any
 
@@ -275,7 +275,7 @@ namespace Dentizone.Application.Services
                 filterExpression
             );
 
-            return mapper.Map<PagedResultDto<OrderViewDto>>(order);
+            return mapper.Map<PagedResultDto<OrderViewAll>>(order);
         }
 
         public async Task<IEnumerable<Order>> GetReviewedOrdersByUserId(string userId)

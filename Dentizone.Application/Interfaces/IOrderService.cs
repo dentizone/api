@@ -10,7 +10,7 @@ namespace Dentizone.Application.Interfaces
         Task<List<OrderViewDto>> GetOrdersByBuyerAsync(string buyerId);
         Task<OrderViewDto?> CancelOrderAsync(string orderId);
         Task CompleteOrder(string orderId);
-        Task<PagedResultDto<OrderViewDto>> GetOrders(int page, FilterOrderDto filters);
+        Task<PagedResultDto<OrderViewAll>> GetOrders(int page, FilterOrderDto filters);
 
         Task<IEnumerable<Domain.Entity.Order>> GetReviewedOrdersByUserId(string userId);
     }

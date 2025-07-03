@@ -12,4 +12,11 @@
         public IReadOnlyCollection<OrderStatusTimeline> StatusTimeline { get; set; } = new List<OrderStatusTimeline>();
         public List<OrderItemDto> OrderItems { get; set; } = new();
     }
+
+    public class SellerInfo
+    {
+        public string SellerId { get; set; } = string.Empty;
+        public string SellerName { get; set; } = string.Empty;
+        public string SellerEmail { get; set; } = string.Empty;
+    }
 }

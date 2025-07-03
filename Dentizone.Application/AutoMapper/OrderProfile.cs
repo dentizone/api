@@ -25,6 +25,19 @@ public class OrderProfile : Profile
             .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
             .ForMember(dest => dest.StatusTimeline, opt => opt.MapFrom(src => src.OrderStatuses))
             .ForMember(dest => dest.OrderShipmentAddress, opt => opt.MapFrom(src => src.ShipInfo));
+        CreateMap<Order, OrderViewAll>()
+            .IncludeBase<Order, OrderViewDto>()
+            .ForMember(dest => dest.BuyerId, opt => opt.MapFrom(src => src.Buyer.Id))
+            .ForMember(dest => dest.Sellers, opt => opt.MapFrom(src => src.OrderItems
+                .Select(oi => oi.Post.Seller)
+                .Distinct()
+                .Select(s => new SellerInfo
+                {
+                    SellerId = s.Id,
+                    SellerName = s.FullName,
+                    SellerEmail = s.Email
+                })));
+
 
         CreateMap(typeof(PagedResult<>), typeof(PagedResultDto<>))
             .ForMember("Items", opt => opt.MapFrom("Items"))
