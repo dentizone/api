@@ -11,6 +11,8 @@
         public DateTime CreatedAt { get; set; }
         public IReadOnlyCollection<OrderStatusTimeline> StatusTimeline { get; set; } = new List<OrderStatusTimeline>();
         public List<OrderItemDto> OrderItems { get; set; } = new();
+
+        public bool IsReviewed { get; set; } = false;
     }
 
     public class SellerInfo

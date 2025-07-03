@@ -1,5 +1,6 @@
 ﻿using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Order;
+using Dentizone.Domain.Entity;
 
 namespace Dentizone.Application.Interfaces
 {
@@ -11,7 +12,7 @@ namespace Dentizone.Application.Interfaces
         Task<OrderViewDto?> CancelOrderAsync(string orderId);
         Task CompleteOrder(string orderId);
         Task<PagedResultDto<OrderViewAll>> GetOrders(int page, FilterOrderDto filters);
-
-        Task<IEnumerable<Domain.Entity.Order>> GetReviewedOrdersByUserId(string userId);
+        Task<Order> MarkOrderAsReviewed(string orderId);
+        Task<IEnumerable<Order>> GetReviewedOrdersByUserId(string userId);
     }
 }

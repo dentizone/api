@@ -300,5 +300,24 @@ namespace Dentizone.Application.Services
 
             return order.BuyerId;
         }
+
+        public async Task<Order> MarkOrderAsReviewed(string orderId)
+        {
+            var order = await orderRepository.FindBy(o => o.Id == orderId, [o => o.OrderStatuses]);
+            if (order == null)
+            {
+                throw new NotFoundException("Order not found.");
+            }
+
+            if (order.IsReviewed)
+            {
+                throw new BadActionException("Order is already marked as reviewed.");
+            }
+
+            order.IsReviewed = true;
+
+            await orderRepository.UpdateAsync(order);
+            return order;
+        }
     }
 }

@@ -2,8 +2,8 @@
 using Dentizone.Application.DTOs.Review;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
-using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Domain.Exceptions;
+using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +17,13 @@ namespace Dentizone.Application.Services
     {
         public async Task CreateOrderReviewAsync(string userId, CreateReviewDto createReviewDto)
         {
+            var order = await orderService.GetOrderByIdAsync(createReviewDto.OrderId, userId);
+
+            if (order == null)
+            {
+                throw new NotFoundException("Order with provided id is not found");
+            }
+
             var review = new Review()
             {
                 OrderId = createReviewDto.OrderId,
@@ -25,13 +32,13 @@ namespace Dentizone.Application.Services
             };
 
             await repo.CreateAsync(review);
+            await orderService.MarkOrderAsReviewed(order.Id);
         }
 
-        public async Task<bool> DeleteReviewAsync(string reviewId)
+        public async Task DeleteReviewAsync(string reviewId)
         {
             await AuthorizeAdminOrOwnerAsync(reviewId);
             await repo.DeleteAsync(reviewId);
-            return true;
         }
 
         public async Task<IEnumerable<ReviewDto>> GetSubmittedReviews(string userId)
