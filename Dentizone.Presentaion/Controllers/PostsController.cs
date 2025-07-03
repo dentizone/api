@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Dentizone.Application.DTOs.Post;
 using Dentizone.Application.DTOs.Post.PostFilterDto;
 using Dentizone.Application.Interfaces;
+using Dentizone.Domain.Enums;
 
 namespace Dentizone.Presentaion.Controllers
 {
@@ -75,6 +76,22 @@ namespace Dentizone.Presentaion.Controllers
         {
             var searchResult = await postService.Search(userPreferenceDto);
             return Ok(searchResult);
+        }
+
+        [Authorize("IsAdmin")]
+        [HttpPatch("posts/{postId}/approve")]
+        public async Task<IActionResult> ApprovePost(string postId)
+        {
+            var updatedPost = await postService.UpdatePostStatus(postId, PostStatus.Active);
+            return Ok(updatedPost);
+        }
+
+        [Authorize("IsAdmin")]
+        [HttpPatch("posts/{postId}/reject")]
+        public async Task<IActionResult> RejectPost(string postId)
+        {
+            var updatedPost = await postService.UpdatePostStatus(postId, PostStatus.Rejected);
+            return Ok(updatedPost);
         }
     }
 }

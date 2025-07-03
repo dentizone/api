@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Dentizone.Application.DTOs.Post;
 using Dentizone.Application.DTOs.Post.PostFilterDto;
 using Dentizone.Application.Interfaces;
@@ -6,6 +7,7 @@ using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces;
+using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.Cache;
@@ -24,7 +26,8 @@ namespace Dentizone.Application.Services
         ISubCategoryRepository subCategoryRepository,
         IAssetService assetService,
         AppDbContext dbContext,
-        IRedisService redisService)
+        IRedisService redisService,
+        IMailService mailService)
         : BaseService(accessor), IPostService
     {
         public async Task<List<Post>> ValidatePosts(List<string> postIds)
@@ -212,6 +215,13 @@ namespace Dentizone.Application.Services
 
             post.Status = status;
             var updatedPost = await repo.UpdateAsync(post);
+
+            var email = post.Seller.Email;
+            var subject = "Post Approved";
+            var postTitle = post.Title;
+            var body = $"Your Post '{postTitle}' has been approved.";
+            await mailService.Send(email, subject, body);
+
             return mapper.Map<PostViewDto>(updatedPost);
         }
 
