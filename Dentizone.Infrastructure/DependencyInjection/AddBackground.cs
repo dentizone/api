@@ -1,4 +1,6 @@
-﻿using Dentizone.Domain.Interfaces.Secret;
+﻿using Dentizone.Application.Interfaces;
+using Dentizone.Domain.Interfaces.Secret;
+using Dentizone.Infrastructure.Hangfire;
 using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +15,8 @@ namespace Dentizone.Infrastructure.DependencyInjection
             services.AddHangfire(config =>
                                      config.UseSqlServerStorage(SecretService.GetSecret("HangfireDB")));
             services.AddHangfireServer();
+            services.AddScoped<IBackgroundJobService, HangfireBackgroundJobService>();
+
             return services;
         }
     }
