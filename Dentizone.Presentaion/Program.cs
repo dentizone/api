@@ -5,6 +5,7 @@ using Dentizone.Infrastructure.Filters;
 using Dentizone.Presentaion.Context;
 using Dentizone.Presentaion.Extensions;
 using Dentizone.Presentaion.Middlewares;
+using Hangfire;
 using Scalar.AspNetCore;
 
 namespace Dentizone.Presentaion
@@ -67,15 +68,15 @@ namespace Dentizone.Presentaion
                 {
                     var db = scope.ServiceProvider.GetRequiredService<Infrastructure.AppDbContext>();
                     var userManager = scope.ServiceProvider
-                        .GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<
-                            Infrastructure.Identity.ApplicationUser>>();
+                                           .GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<
+                                               Infrastructure.Identity.ApplicationUser>>();
                     try
                     {
                         Console.WriteLine("[Seeding] Starting full data seeding...");
                         Infrastructure.Persistence.Seeder.FullDataSeeder.SeedingConfig
                             config = new(); // Use default or customize
                         Infrastructure.Persistence.Seeder.FullDataSeeder.SeedAsync(db, userManager, config)
-                            .GetAwaiter().GetResult();
+                                      .GetAwaiter().GetResult();
                         Console.WriteLine("[Seeding] Full data seeding completed.");
                     }
                     catch (Exception ex)
@@ -85,6 +86,7 @@ namespace Dentizone.Presentaion
                 }
             }
 
+            app.UseHangfireDashboard("background");
 
             app.Run();
         }

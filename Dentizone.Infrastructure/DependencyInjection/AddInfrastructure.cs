@@ -14,6 +14,7 @@ namespace Dentizone.Infrastructure.DependencyInjection
             services.AddAppIdentity();
             services.AddSecretManager();
             services.AddScoped<IRedisService, RedisService>();
+            services.AddBackgroundService();
 
 
             return services;
