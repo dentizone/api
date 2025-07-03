@@ -10,9 +10,11 @@ namespace Dentizone.Infrastructure.DependencyInjection
         public static IServiceCollection AddApiClients(this IServiceCollection services)
         {
             services.AddRefitClient<IDiditApi>()
-                .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://verification.didit.me"); });
+                    .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://verification.didit.me"); });
             services.AddRefitClient<ITruboSmtp>()
-                .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://api.turbo-smtp.com/api/v2"); });
+                    .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://api.turbo-smtp.com/api/v2"); });
+            services.AddRefitClient<IAILayer>()
+                    .ConfigureHttpClient(c => { c.BaseAddress = new Uri("http://localhost:8000"); });
             return services;
         }
     }
