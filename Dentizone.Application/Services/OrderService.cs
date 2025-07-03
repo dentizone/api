@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Order;
+using Dentizone.Application.DTOs.Payment;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
@@ -8,9 +9,8 @@ using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Repositories;
 using Dentizone.Infrastructure;
-using System.Linq.Expressions;
-using Dentizone.Application.DTOs.Payment;
 using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services
 {
@@ -32,7 +32,7 @@ namespace Dentizone.Application.Services
         public async Task<OrderViewDto?> CancelOrderAsync(string orderId)
         {
             var order = await orderRepository.FindBy(o => o.Id == orderId,
-                [o => o.OrderStatuses, o => o.OrderItems]);
+                                                     [o => o.OrderStatuses, o => o.OrderItems]);
 
             if (order == null)
             {
@@ -72,10 +72,10 @@ namespace Dentizone.Application.Services
                 var post = await postService.GetPostById(orderItem.PostId);
                 if (post is not null)
                 {
-                    await postService.UpdatePostStatus(post.Id, PostStatus.Active);
+                    await postService.UpdatePostStatus(post.Id, PostStatus.Active, "Order Cancelled");
                     var seller = await authService.GetById(post.Seller.Id);
                     await mailService.Send(seller.Email, "Order Cancelled",
-                        $"Your post {post.Title} has been cancelled by the buyer. we relisted it now for sale again@!");
+                                           $"Your post {post.Title} has been cancelled by the buyer. we relisted it now for sale again@!");
                 }
             }
 
@@ -95,7 +95,7 @@ namespace Dentizone.Application.Services
             foreach (var email in sellerEmails)
             {
                 await mailService.Send(email, "New Order Placed",
-                    $"Your post has been sold. Wait for pickup. Order ID: {orderId}");
+                                       $"Your post has been sold. Wait for pickup. Order ID: {orderId}");
             }
         }
 
@@ -150,7 +150,7 @@ namespace Dentizone.Application.Services
                     await orderItemRepository.CreateAsync(orderItem);
                     // Create a Sale Transaction for each order item
                     await paymentService.CreateSaleTransaction(
-                        payment.Id, post.Seller.Wallet.Id, post.Price);
+                                                               payment.Id, post.Seller.Wallet.Id, post.Price);
                 }
 
                 // Create Ship Info 
@@ -167,7 +167,7 @@ namespace Dentizone.Application.Services
                 // Mark the post as Sold
                 foreach (var post in posts)
                 {
-                    await postService.UpdatePostStatus(post.Id, PostStatus.Sold);
+                    await postService.UpdatePostStatus(post.Id, PostStatus.Sold, "Order Sold");
                 }
 
                 // Get Buyer and Seller Emails
@@ -273,9 +273,9 @@ namespace Dentizone.Application.Services
 
 
             var order = await orderRepository.GetAllAsync(
-                page,
-                filterExpression
-            );
+                                                          page,
+                                                          filterExpression
+                                                         );
 
             return mapper.Map<PagedResultDto<OrderViewAll>>(order);
         }
@@ -283,9 +283,10 @@ namespace Dentizone.Application.Services
         public async Task<IEnumerable<Order>> GetReviewedOrdersByUserId(string userId)
         {
             var orders = await orderRepository.GetAllAsync(
-                null,
-                o => o.IsReviewed && o.OrderItems.Any(oi => oi.Post.SellerId == userId)
-            );
+                                                           null,
+                                                           o => o.IsReviewed &&
+                                                                o.OrderItems.Any(oi => oi.Post.SellerId == userId)
+                                                          );
             return orders.Items;
         }
 
