@@ -86,7 +86,7 @@ namespace Dentizone.Presentaion
                 }
             }
 
-            app.UseHangfireDashboard("background");
+            app.UseHangfireDashboard("/background");
 
             app.Run();
         }
