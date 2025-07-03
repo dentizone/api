@@ -16,6 +16,6 @@ namespace Dentizone.Application.Interfaces
 
         Task<List<PostViewDto>> Search(UserPreferenceDto userPreferenceDto);
         Task<List<Domain.Entity.Post>> ValidatePosts(List<string> postIds);
-        Task<PostViewDto> UpdatePostStatus(string postId, PostStatus status);
+        Task<PostViewDto> UpdatePostStatus(string postId, PostStatus status, string? reason);
     }
 }

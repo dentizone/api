@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Dentizone.Application.DTOs.Post;
+﻿using Dentizone.Application.DTOs.Post;
 using Dentizone.Application.DTOs.Post.PostFilterDto;
 using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dentizone.Presentaion.Controllers
 {
@@ -79,18 +78,10 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [Authorize("IsAdmin")]
-        [HttpPatch("posts/{postId}/approve")]
-        public async Task<IActionResult> ApprovePost(string postId)
+        [HttpPatch("{postId}/status")]
+        public async Task<IActionResult> AdjustStatus([FromBody] UpdatePostStateDto state)
         {
-            var updatedPost = await postService.UpdatePostStatus(postId, PostStatus.Active);
-            return Ok(updatedPost);
-        }
-
-        [Authorize("IsAdmin")]
-        [HttpPatch("posts/{postId}/reject")]
-        public async Task<IActionResult> RejectPost(string postId)
-        {
-            var updatedPost = await postService.UpdatePostStatus(postId, PostStatus.Rejected);
+            var updatedPost = await postService.UpdatePostStatus(state.PostId, state.Status, state.Reason);
             return Ok(updatedPost);
         }
     }
