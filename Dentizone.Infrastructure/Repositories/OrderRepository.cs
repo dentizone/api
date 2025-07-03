@@ -63,7 +63,8 @@ namespace Dentizone.Infrastructure.Repositories
                 .ThenInclude(p => p.Seller)
                 .Include(o => o.ShipInfo)
                 .Include(o => o.OrderStatuses)
-                .Include(o => o.Review);
+                .Include(o => o.Review)
+                .Include(o => o.ShipInfo);
 
 
             return new PagedResult<Order>
