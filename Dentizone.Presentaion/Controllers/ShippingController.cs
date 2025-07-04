@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.Interfaces;
+﻿using Dentizone.Application.DTOs.Shipping;
+using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,10 @@ namespace Dentizone.Presentaion.Controllers
     [Authorize(Policy = "IsAdmin")]
     public class ShippingController(IShippingService shipmentActivity) : ControllerBase
     {
-        [HttpPut]
-        public async Task<IActionResult> UpdateItemShipmentStatus(string orderItemId, ShipmentActivityStatus newStatus,
-            string? comment)
+        [HttpPost]
+        public async Task<IActionResult> UpdateItemShipmentStatus(CreateShipmentStatusDto shipmentStatus)
         {
-            await shipmentActivity.UpdateItemShipmentStatusAsync(orderItemId, newStatus, comment);
+            await shipmentActivity.UpdateItemShipmentStatusAsync(shipmentStatus);
             return Ok();
         }
     }
