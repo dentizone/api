@@ -33,6 +33,7 @@ namespace Dentizone.Infrastructure.Repositories
                     query = query.Include(include);
                 }
             }
+
             query = query.Where(sc => !sc.IsDeleted);
 
             return await query.FirstOrDefaultAsync(condition);
