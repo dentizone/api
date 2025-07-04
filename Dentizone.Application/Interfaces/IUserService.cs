@@ -1,9 +1,6 @@
 ﻿using Dentizone.Application.DTOs.User;
-using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
-using System.Linq.Expressions;
 using Dentizone.Application.DTOs;
-using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Application.Interfaces
 {
