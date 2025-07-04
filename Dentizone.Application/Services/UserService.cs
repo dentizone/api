@@ -55,12 +55,12 @@ namespace Dentizone.Application.Services
             // Return Paged Users Result
             if (filters.Page < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(filters.Page), "Page number must be greater than 0.");
+                throw new BadActionException("Page can't be less than 1");
             }
 
             if (filters.Status is not null && !Enum.IsDefined(typeof(UserState), filters.Status))
             {
-                throw new ArgumentException("Invalid user status.", nameof(filters.Status));
+                throw new BadActionException("Invalid user status provided.");
             }
 
             Expression<Func<AppUser, bool>> filterExpression = u =>
@@ -73,7 +73,7 @@ namespace Dentizone.Application.Services
             var users = await userRepository.GetAllAsync(filters.Page, filterExpression);
             if (users == null)
             {
-                throw new NotFoundException("No users found.");
+                throw new NotFoundException("No users found with this search critira");
             }
 
             return mapper.Map<PagedResultDto<UserTableView>>(users);
