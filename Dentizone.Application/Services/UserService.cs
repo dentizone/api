@@ -118,7 +118,7 @@ namespace Dentizone.Application.Services
 
             user.Status = status switch
             {
-                KycStatus.Approved => UserState.KycVerified,
+                KycStatus.Approved => UserState.Active,
                 KycStatus.Rejected => UserState.Blacklisted,
                 KycStatus.NotSubmitted => UserState.PendingVerification,
                 _ => user.Status
