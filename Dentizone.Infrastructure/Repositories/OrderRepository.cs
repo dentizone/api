@@ -44,32 +44,39 @@ namespace Dentizone.Infrastructure.Repositories
         }
 
 
-        public async Task<Domain.Interfaces.PagedResult<Order>> GetAllAsync(int? page,
+        public async Task<PagedResult<Order>> GetAllAsync(int? page,
             Expression<Func<Order, bool>> filter)
         {
             var query = DbContext.Orders.AsQueryable();
-            var count = await query.CountAsync();
-            if (page is not null)
+
+            if (filter is not null)
             {
-                var pagedQuery = await BuildPagedQuery(page.Value, filter, query);
-                query = pagedQuery.Query;
-                count = pagedQuery.TotalCount;
+                query = query.Where(filter);
             }
 
+            var count = await query.CountAsync();
 
-            query = query.Include(o => o.Buyer)
+            if (page is not null)
+            {
+                query = query
+                    .Skip(CalculatePagination(page.Value))
+                    .Take(DefaultPageSize);
+            }
+
+            query = query
+                .Include(o => o.Buyer)
                 .Include(o => o.OrderItems)
-                .ThenInclude(p => p.Post)
+                .ThenInclude(oi => oi.ShipmentActivities)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Post)
                 .ThenInclude(p => p.Seller)
                 .Include(o => o.ShipInfo)
                 .Include(o => o.OrderStatuses)
-                .Include(o => o.Review)
-                .Include(o => o.ShipInfo);
-
+                .Include(o => o.Review);
 
             return new PagedResult<Order>
             {
-                Items = await query.AsNoTracking().AsSplitQuery().ToListAsync(),
+                Items = await query.AsNoTracking().ToListAsync(),
                 Page = page ?? 1,
                 PageSize = DefaultPageSize,
                 TotalCount = count
