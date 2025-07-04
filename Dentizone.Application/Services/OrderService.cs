@@ -32,7 +32,7 @@ namespace Dentizone.Application.Services
         public async Task<OrderViewDto?> CancelOrderAsync(string orderId)
         {
             var order = await orderRepository.FindBy(o => o.Id == orderId,
-                                                     [o => o.OrderStatuses, o => o.OrderItems]);
+                [o => o.OrderStatuses, o => o.OrderItems]);
 
             if (order == null)
             {
@@ -75,7 +75,7 @@ namespace Dentizone.Application.Services
                     await postService.UpdatePostStatus(post.Id, PostStatus.Active, "Order Cancelled");
                     var seller = await authService.GetById(post.Seller.Id);
                     await mailService.Send(seller.Email, "Order Cancelled",
-                                           $"Your post {post.Title} has been cancelled by the buyer. we relisted it now for sale again@!");
+                        $"Your post {post.Title} has been cancelled by the buyer. we relisted it now for sale again@!");
                 }
             }
 
@@ -95,7 +95,7 @@ namespace Dentizone.Application.Services
             foreach (var email in sellerEmails)
             {
                 await mailService.Send(email, "New Order Placed",
-                                       $"Your post has been sold. Wait for pickup. Order ID: {orderId}");
+                    $"Your post has been sold. Wait for pickup. Order ID: {orderId}");
             }
         }
 
@@ -150,7 +150,7 @@ namespace Dentizone.Application.Services
                     await orderItemRepository.CreateAsync(orderItem);
                     // Create a Sale Transaction for each order item
                     await paymentService.CreateSaleTransaction(
-                                                               payment.Id, post.Seller.Wallet.Id, post.Price);
+                        payment.Id, post.Seller.Wallet.Id, post.Price);
                 }
 
                 // Create Ship Info 
@@ -273,9 +273,9 @@ namespace Dentizone.Application.Services
 
 
             var order = await orderRepository.GetAllAsync(
-                                                          page,
-                                                          filterExpression
-                                                         );
+                page,
+                filterExpression
+            );
 
             return mapper.Map<PagedResultDto<OrderViewAll>>(order);
         }
@@ -283,10 +283,10 @@ namespace Dentizone.Application.Services
         public async Task<IEnumerable<Order>> GetReviewedOrdersByUserId(string userId)
         {
             var orders = await orderRepository.GetAllAsync(
-                                                           null,
-                                                           o => o.IsReviewed &&
-                                                                o.OrderItems.Any(oi => oi.Post.SellerId == userId)
-                                                          );
+                null,
+                o => o.IsReviewed &&
+                     o.OrderItems.Any(oi => oi.Post.SellerId == userId)
+            );
             return orders.Items;
         }
 
@@ -318,6 +318,35 @@ namespace Dentizone.Application.Services
 
             await orderRepository.UpdateAsync(order);
             return order;
+        }
+
+        public async Task UpdateOrderStatus(string orderId, OrderStatues orderStatus)
+        {
+            var order = await orderRepository.FindBy(o => o.Id == orderId, [o => o.OrderStatuses]);
+            if (order == null)
+            {
+                throw new NotFoundException("Order not found.");
+            }
+
+            if (order.OrderStatuses.Any(os => os.Status == orderStatus))
+            {
+                throw new BadActionException($"Order is already in {orderStatus} status.");
+            }
+
+            var newOrderStatus = new OrderStatus
+            {
+                OrderId = order.Id,
+                Status = orderStatus,
+            };
+            await orderStatusRepository.CreateAsync(newOrderStatus);
+
+
+            // If the order is marked as Arrived, we can mark it as completed
+            if (orderStatus == OrderStatues.Arrived || orderStatus == OrderStatues.Completed)
+            {
+                order.CompletedAt = DateTime.UtcNow;
+                await orderRepository.UpdateAsync(order);
+            }
         }
     }
 }
