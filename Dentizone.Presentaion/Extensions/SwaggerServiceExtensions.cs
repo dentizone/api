@@ -11,27 +11,26 @@ namespace Dentizone.Presentaion.Extensions
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     BearerFormat = "JWT",
-                    Description =
-                                                            "JWT Authorization header using the Bearer scheme.",
+                    Description = "JWT Authorization header using the Bearer scheme.",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
                     Scheme = "Bearer"
                 });
                 opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-                                           {
-                                               {
-                                                   new OpenApiSecurityScheme
-                                                   {
-                                                       Reference = new OpenApiReference
-                                                                   {
-                                                                       Id = "Bearer",
-                                                                       Type = ReferenceType.SecurityScheme
-                                                                   }
-                                                   },
-                                                   []
-                                               }
-                                           });
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Id = "Bearer",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        },
+                        []
+                    }
+                });
             });
             return services;
         }
