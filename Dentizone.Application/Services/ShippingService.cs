@@ -1,5 +1,4 @@
 ﻿using Dentizone.Application.Interfaces;
-using Dentizone.Application.Services.Authentication;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
@@ -11,8 +10,8 @@ namespace Dentizone.Application.Services
     internal class ShippingService(
         IOrderItemRepository orderItemRepository,
         IShipmentActivityRepository shipmentActivityRepository,
-        IMailService mailService,
-        AuthService authService)
+        IMailService mailService
+    )
         : IShippingService
     {
         public async Task UpdateItemShipmentStatusAsync(string orderItemId, ShipmentActivityStatus newStatus,
@@ -22,7 +21,7 @@ namespace Dentizone.Application.Services
 
             var item = await orderItemRepository.FindBy(
                 oi => oi.Id == orderItemId,
-                [oi => oi.ShipmentActivities]);
+                [oi => oi.ShipmentActivities, oi => oi.Post.Seller, oi => oi.Order.Buyer]);
 
             if (item == null)
             {
@@ -39,15 +38,11 @@ namespace Dentizone.Application.Services
                 await shipmentActivityRepository.CreateAsync(shipmentActivity);
 
 
-                var seller = await authService.GetById(item.Post.SellerId);
-
-
-                await mailService.Send(seller.Email, $"the Status has been changed to {newStatus}",
+                await mailService.Send(item.Post.Seller.Email, $"the Status has been changed to {newStatus}",
                     "New status update");
 
-                var buyer = await authService.GetById(item.Order.BuyerId);
 
-                await mailService.Send(buyer.Email, $"the Status has been changed to {newStatus}",
+                await mailService.Send(item.Order.Buyer.Email, $"the Status has been changed to {newStatus}",
                     "New status update");
             }
         }
