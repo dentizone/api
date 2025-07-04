@@ -265,7 +265,7 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
                         {
                             UserRoles.Ghost => UserState.PendingVerification,
                             UserRoles.PartilyVerified => UserState.EmailVerified,
-                            UserRoles.Verified => UserState.KycVerified,
+                            UserRoles.Verified => UserState.Active,
                             UserRoles.Blacklisted => UserState.Blacklisted,
                             _ => UserState.PendingVerification
                         };
@@ -301,7 +301,7 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
                         Email = adminEmails[i],
                         AcademicYear = 5,
                         KycStatus = KycStatus.Approved,
-                        Status = UserState.KycVerified,
+                        Status = UserState.Active,
                         UniversityId = universityIds[i % universityIds.Count],
                         IsDeleted = false,
                         CreatedAt = DateTime.UtcNow.AddYears(-1),
