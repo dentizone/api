@@ -8,7 +8,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "IsVerified")]
+    [Authorize]
     public class UploadController(IUploadService uploadService) : ControllerBase
     {
         [HttpPost("image")]
