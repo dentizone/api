@@ -50,19 +50,30 @@ namespace Dentizone.Application.Services
             return mapper.Map<UserView>(deletedUser);
         }
 
-        public async Task<PagedResultDto<UserTableView>> GetAllAsync(int page,
-            Expression<Func<AppUser, bool>>? filterExpression = null)
+        public async Task<PagedResultDto<UserTableView>> GetAllAsync(UserFilterDto filters)
         {
             // Return Paged Users Result
-            if (page < 1)
+            if (filters.Page < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(page), "Page number must be greater than 0.");
+                throw new BadActionException("Page can't be less than 1");
             }
 
-            var users = await userRepository.GetAllAsync(page, filterExpression);
+            if (filters.Status is not null && !Enum.IsDefined(typeof(UserState), filters.Status))
+            {
+                throw new BadActionException("Invalid user status provided.");
+            }
+
+            Expression<Func<AppUser, bool>> filterExpression = u =>
+                (filters.Status == null || u.Status == filters.Status)
+                && (string.IsNullOrWhiteSpace(filters.SearchTerm) ||
+                    u.FullName.Contains(filters.SearchTerm) ||
+                    u.Email.Contains(filters.SearchTerm));
+
+
+            var users = await userRepository.GetAllAsync(filters.Page, filterExpression);
             if (users == null)
             {
-                throw new NotFoundException("No users found.");
+                throw new NotFoundException("No users found with this search critira");
             }
 
             return mapper.Map<PagedResultDto<UserTableView>>(users);
