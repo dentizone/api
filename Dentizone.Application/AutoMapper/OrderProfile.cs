@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Order;
+using Dentizone.Application.DTOs.Shipping;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Interfaces;
 
@@ -45,7 +46,17 @@ public class OrderProfile : Profile
                     PostTitle = oi.Post.Title,
                     Price = oi.Post.Price,
                     PickupLocation = $"{oi.Post.Street} - {oi.Post.City}"
-                })));
+                })))
+            .ForMember(dest => dest.ShipmentStatus, opt => opt.MapFrom(src => src.OrderItems
+                .SelectMany(oi => oi.ShipmentActivities.Select(sa => new ShipView
+                {
+                    id = sa.Id,
+                    ShipmentActivityStatus = sa.Status,
+                    Timestamp = sa.CreatedAt,
+                    Comment = sa.ActivityDescription,
+                    ItemName = oi.Post.Title,
+                }))
+                .DistinctBy(sa => sa.id)));
 
 
         CreateMap(typeof(PagedResult<>), typeof(PagedResultDto<>))
