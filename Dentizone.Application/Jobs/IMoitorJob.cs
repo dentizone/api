@@ -1,6 +1,6 @@
 ﻿namespace Dentizone.Infrastructure.Hangfire
 {
-    internal interface IMoitorJob
+    public interface IMoitorJob
     {
         Task ReviewToxicAndPII(string input, string id, string resourceType);
     }

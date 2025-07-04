@@ -1,9 +1,11 @@
 ﻿using Dentizone.Application.Interfaces;
+using Dentizone.Application.Jobs;
 using Dentizone.Application.Services;
 using Dentizone.Application.Services.Authentication;
 using Dentizone.Application.Services.Payment;
 using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Mail;
+using Dentizone.Infrastructure.Hangfire;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dentizone.Application.DI
@@ -36,6 +38,10 @@ namespace Dentizone.Application.DI
 
             services.AddScoped<IWithdrawalService, WithdrawalService>();
             services.AddScoped<IQaService, QaService>();
+
+
+            services.AddScoped<IMoitorJob, MointerJob>();
+
             return services;
         }
     }
