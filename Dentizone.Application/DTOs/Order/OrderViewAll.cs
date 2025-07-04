@@ -10,7 +10,7 @@ public class OrderViewAll : OrderViewDto
 
     public ICollection<OrderItemWithPickup> OrderItems { get; set; } = new List<OrderItemWithPickup>();
 
-    public ICollection<ShipView> ShipmentStatus = new List<ShipView>();
+    public ICollection<ShipView> ShipmentStatus { get; set; } = new List<ShipView>();
 }
 
 public class OrderItemWithPickup : OrderItemDto
