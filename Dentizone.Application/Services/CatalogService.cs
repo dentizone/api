@@ -47,9 +47,11 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException($"Category with id {id} not found");
 
 
-            var category = mapper.Map<Category>(updatedCategoryDto);
-            category.Id = id;
-            var updatedCategory = await categoryRepository.Update(category);
+            existingCategory.IconUrl = updatedCategoryDto.IconUrl;
+            existingCategory.Name = updatedCategoryDto.Name;
+
+
+            var updatedCategory = await categoryRepository.Update(existingCategory);
             if (updatedCategory == null) throw new NotFoundException("Category not found");
             return mapper.Map<CategoryDto>(updatedCategory);
         }
