@@ -12,8 +12,7 @@ namespace Dentizone.Application.Interfaces
         Task<UserView> CreateAsync(CreateAppUser userDto);
         Task<DomainUserView> GetByIdAsync(string id);
 
-        Task<PagedResultDto<UserTableView>> GetAllAsync(int page,
-            Expression<Func<AppUser, bool>>? filterExpression = null);
+        Task<PagedResultDto<UserTableView>> GetAllAsync(UserFilterDto filters);
 
         Task<UserView> DeleteAsync(string id);
         Task<UserView> SetKycStatusAsync(string userId, KycStatus status);

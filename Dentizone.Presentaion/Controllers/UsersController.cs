@@ -39,9 +39,9 @@ namespace Dentizone.Presentaion.Controllers
 
         [HttpGet]
         [Authorize(Policy = "IsAdmin")]
-        public async Task<IActionResult> GetAllUsers(int page = 1)
+        public async Task<IActionResult> GetAllUsers([FromQuery] UserFilterDto userFilter)
         {
-            var users = await userService.GetAllAsync(page);
+            var users = await userService.GetAllAsync(userFilter);
             return Ok(users);
         }
 

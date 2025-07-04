@@ -26,10 +26,11 @@ namespace Dentizone.Infrastructure.Repositories
 
             query = query.Include(u => u.University);
 
+            query = query.OrderByDescending(u => u.CreatedAt);
 
             return new PagedResult<AppUser>
             {
-                Items = await query.AsNoTracking().ToListAsync(),
+                Items = await query.AsNoTracking().AsSplitQuery().ToListAsync(),
                 Page = page,
                 PageSize = DefaultPageSize,
                 TotalCount = totalCount
