@@ -104,7 +104,7 @@ namespace Dentizone.Application.Services
             {
                 var post = mapper.Map<Post>(createPostDto);
                 post.SellerId = userId;
-                post.Status = PostStatus.Active; // ALERT: FOR DEVELOPMENT PURPOSES, SETTING STATUS TO ACTIVE
+                post.Status = PostStatus.Pending;
                 post.Slug = $"{post.Title.ToLower().Replace(" ", "-")}-{Guid.NewGuid().ToString()[..5]}";
                 await repo.CreateAsync(post);
 

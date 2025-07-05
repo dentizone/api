@@ -8,7 +8,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "IsPartilyVerified")]
+    [Authorize]
     public class FavoritesController(IFavoritesService favoritesService) : ControllerBase
     {
         [HttpGet]
