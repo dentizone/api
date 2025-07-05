@@ -3,6 +3,7 @@ using Dentizone.Application.DTOs.Review;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Exceptions;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ namespace Dentizone.Application.Services
         IHttpContextAccessor accessor,
         IMapper mapper,
         IReviewRepository repo,
-        IOrderService orderService) : BaseService(accessor), IReviewService
+        IOrderService orderService,IBackgroundJobService _backgroundJob) : BaseService(accessor), IReviewService
     {
         public async Task CreateOrderReviewAsync(string userId, CreateReviewDto createReviewDto)
         {
@@ -32,6 +33,7 @@ namespace Dentizone.Application.Services
             };
 
             await repo.CreateAsync(review);
+            _backgroundJob.Enqueue<IMoitorJob>(job =>job.ReviewTheReviewtAsync(review.Id, review.Text));
             await orderService.MarkOrderAsReviewed(order.Id);
         }
 

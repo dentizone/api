@@ -2,6 +2,10 @@
 {
     public interface IMoitorJob
     {
-        Task ReviewToxicAndPII(string input, string id, string resourceType);
+       
+        Task ReviewQuestionAsync(string QId, string input);
+        Task ReviewPostAsync(string PId, string input);
+        Task ReviewAnswerAsync(string AId, string input);
+        Task ReviewTheReviewtAsync(string RId, string input);
     }
 }

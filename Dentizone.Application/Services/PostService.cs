@@ -12,6 +12,7 @@ using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.Cache;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
 namespace Dentizone.Application.Services
@@ -26,7 +27,7 @@ namespace Dentizone.Application.Services
         IAssetService assetService,
         AppDbContext dbContext,
         IRedisService redisService,
-        IMailService mailService)
+        IMailService mailService, IBackgroundJobService _backgroundJob)
         : BaseService(accessor), IPostService
     {
         public async Task<List<Post>> ValidatePosts(List<string> postIds)
@@ -125,6 +126,13 @@ namespace Dentizone.Application.Services
                 var cacheKey = CacheHelper.GenerateCacheKey("SidebarFilter");
                 await redisService.InvalidateCache(cacheKey);
 
+                var fullContent = string.Join(" ", new[]
+           {
+    createPostDto.Title,
+    createPostDto.Description}.Where(s => !string.IsNullOrWhiteSpace(s)));
+
+                _backgroundJob.Enqueue<IMoitorJob>(job => job.ReviewPostAsync(post.Id, fullContent));
+
                 return mapper.Map<PostViewDto>(post);
             }
             catch
@@ -132,6 +140,8 @@ namespace Dentizone.Application.Services
                 await transaction.RollbackAsync();
                 throw;
             }
+
+           
         }
 
 
@@ -142,6 +152,7 @@ namespace Dentizone.Application.Services
             {
                 throw new NotFoundException("Post not found");
             }
+           
 
             return mapper.Map<PostViewDto>(deletedPost);
         }
