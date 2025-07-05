@@ -47,8 +47,6 @@ namespace Dentizone.Application.Services
 
         public async Task<QuestionViewDto> AskQuestionAsync(CreateQuestionDto dto, string askerId)
         {
-           
-
             var question = mapper.Map<Question>(dto);
             question.AskerId = askerId;
             question.Status = QuestionStatus.Unanswered;
@@ -59,12 +57,17 @@ namespace Dentizone.Application.Services
         public async Task DeleteAnswerAsync(string answerId)
         {
             var answer = await answerRepository.GetByIdAsync(answerId);
-            var question = await questionRepository.GetByIdAsync(answer.QuestionId);
-            var post = question.Post;
-            if (post == null)
+            if (answer == null)
             {
-                throw new ArgumentException("Post not found for the question", nameof(answerId));
+                throw new NotFoundException("No Answer with this ID");
             }
+
+            var question = await questionRepository.GetByIdAsync(answer.QuestionId);
+            if (question == null)
+            {
+                throw new NotFoundException("Question not found for the answer");
+            }
+
 
             await answerRepository.DeleteAsync(answerId);
             question.Status = QuestionStatus.Unanswered;
@@ -76,13 +79,13 @@ namespace Dentizone.Application.Services
             var question = await questionRepository.GetByIdAsync(questionId);
             if (question == null)
             {
-                throw new ArgumentException("Question not found", nameof(questionId));
+                throw new NotFoundException("Question not found");
             }
 
             var post = question.Post;
             if (post == null)
             {
-                throw new ArgumentException("Post not found for the question", nameof(questionId));
+                throw new NotFoundException("Post not found for the question");
             }
 
             await questionRepository.DeleteAsync(questionId);
