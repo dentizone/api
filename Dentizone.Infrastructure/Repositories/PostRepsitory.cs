@@ -179,7 +179,7 @@ namespace Dentizone.Infrastructure.Repositories
             }
             var totalCount = await posts.CountAsync();
 
-            posts = posts.Skip(CalculatePagination(page)).Take(DefaultPageSize);
+            posts = posts.Skip(CalculatePagination(page > 0 ? page : 1)).Take(DefaultPageSize);
 
             posts = posts.Include(p => p.PostAssets).ThenInclude(pa => pa.Asset)
                                           .Include(p => p.Seller)

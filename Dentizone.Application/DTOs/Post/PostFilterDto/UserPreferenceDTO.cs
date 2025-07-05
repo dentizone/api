@@ -14,7 +14,7 @@ namespace Dentizone.Application.DTOs.Post.PostFilterDto
         public decimal? MaxPrice { get; set; }
         public string? SortBy { get; set; }
         public bool SortDirection { get; set; }
-        public int PageNumber { get; set; } = 1;
+        public int PageNumber { get; set; }
     }
 
     public class UserPreferenceDtoValidator : AbstractValidator<UserPreferenceDto>
