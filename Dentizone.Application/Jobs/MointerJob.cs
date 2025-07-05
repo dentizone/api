@@ -1,58 +1,52 @@
-﻿using Dentizone.Application.DTOs.Post;
-using Dentizone.Application.Interfaces;
-using Dentizone.Domain.Interfaces;
-using Dentizone.Domain.Interfaces.Repositories;
+﻿using Dentizone.Application.Interfaces;
 using Dentizone.Infrastructure.ApiClient;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Dentizone.Application.Jobs
 {
-    public class MointerJob(IAILayer _ailayer,IQaService _qaService,IReviewService _review, IPostService _post) : IMoitorJob
+    public class MonitorJob(
+        IAiLayer aiLayer,
+        IQaService qaService,
+        IReviewService reviewService,
+        IPostService postService)
+        : IMonitorJob
     {
-        public async Task ReviewAnswerAsync(string AId, string input)
+        public async Task ReviewAnswerAsync(string answerId, string input)
         {
-            var response = await _ailayer.ScanContactToxic(input);
-            if (response.Content.ContactInfo.Emails.Count != 0 && response.Content.ContactInfo.PhoneNumbers.Count != 0 && response.Content.ContactInfo.Addresses.Count != 0 && response.Content.IsInsult != false)
-            {
-              await _qaService.DeleteAnswerAsync(AId);
-
-            }
-
+            if (await IsContentToxicAsync(input))
+                await qaService.DeleteAnswerAsync(answerId);
         }
 
-        public async Task ReviewPostAsync(string PId, string input)
+        public async Task ReviewQuestionAsync(string questionId, string input)
         {
-           var response = await _ailayer.ScanContactToxic(input);
-            if (response.Content.ContactInfo.Emails.Count != 0 && response.Content.ContactInfo.PhoneNumbers.Count != 0 && response.Content.ContactInfo.Addresses.Count != 0 && response.Content.IsInsult != false)
-            {
-                
-              await _post.DeletePost(PId);
-            }
+            if (await IsContentToxicAsync(input))
+                await qaService.DeleteQuestionAsync(questionId);
         }
 
-        public async Task ReviewQuestionAsync(string QId, string input)
+        public async Task ReviewPostAsync(string postId, string input)
         {
-         var response = await _ailayer.ScanContactToxic(input);
-            if (response.Content.ContactInfo.Emails.Count != 0 && response.Content.ContactInfo.PhoneNumbers.Count != 0 && response.Content.ContactInfo.Addresses.Count != 0 && response.Content.IsInsult != false)
-            {
-                await _qaService.DeleteQuestionAsync(QId);
-            }
-            
+            if (await IsContentToxicAsync(input))
+                await postService.DeletePost(postId);
         }
 
-        public  async Task ReviewTheReviewtAsync(string RId, string input)
+        public async Task ReviewReviewAsync(string reviewId, string input)
         {
-            var response = await _ailayer.ScanContactToxic(input);
-            if (response.Content.ContactInfo.Emails.Count != 0 && response.Content.ContactInfo.PhoneNumbers.Count != 0 && response.Content.ContactInfo.Addresses.Count != 0 && response.Content.IsInsult != false)
-            {
-                await _review.DeleteReviewAsync(RId);
-            }
-            
-
+            if (await IsContentToxicAsync(input))
+                await reviewService.DeleteReviewAsync(reviewId);
         }
 
-        
+        private async Task<bool> IsContentToxicAsync(string content)
+        {
+            var response = await aiLayer.ScanContactToxic(content);
 
-       
+            if (response.Content == null)
+                return false;
+
+            var hasContactInfo =
+                response.Content.ContactInfo.Emails.Count > 0 ||
+                response.Content.ContactInfo.PhoneNumbers.Count > 0 ||
+                response.Content.ContactInfo.Addresses.Count > 0;
+
+            return hasContactInfo || response.Content.IsInsult == true;
+        }
     }
 }

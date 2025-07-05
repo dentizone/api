@@ -3,11 +3,12 @@ using System.Text.Json.Serialization;
 
 namespace Dentizone.Infrastructure.ApiClient
 {
-    public interface IAILayer
+    public interface IAiLayer
     {
         [Get("/all")]
         Task<ApiResponse<ScanAllResponse>> ScanAll([AliasAs("text")] string text);
-        [Get("/ contact - toxic")]
+
+        [Get("/contact-toxic")]
         Task<ApiResponse<ScanAllResponse>> ScanContactToxic([AliasAs("text")] string text);
     }
 

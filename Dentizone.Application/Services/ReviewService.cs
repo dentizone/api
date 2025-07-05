@@ -14,7 +14,8 @@ namespace Dentizone.Application.Services
         IHttpContextAccessor accessor,
         IMapper mapper,
         IReviewRepository repo,
-        IOrderService orderService,IBackgroundJobService _backgroundJob) : BaseService(accessor), IReviewService
+        IOrderService orderService,
+        IBackgroundJobService _backgroundJob) : BaseService(accessor), IReviewService
     {
         public async Task CreateOrderReviewAsync(string userId, CreateReviewDto createReviewDto)
         {
@@ -26,14 +27,14 @@ namespace Dentizone.Application.Services
             }
 
             var review = new Review()
-            {
-                OrderId = createReviewDto.OrderId,
-                Text = createReviewDto.Comment,
-                UserId = userId
-            };
+                         {
+                             OrderId = createReviewDto.OrderId,
+                             Text = createReviewDto.Comment,
+                             UserId = userId
+                         };
 
             await repo.CreateAsync(review);
-            _backgroundJob.Enqueue<IMoitorJob>(job =>job.ReviewTheReviewtAsync(review.Id, review.Text));
+            _backgroundJob.Enqueue<IMonitorJob>(job => job.ReviewReviewAsync(review.Id, review.Text));
             await orderService.MarkOrderAsReviewed(order.Id);
         }
 
@@ -77,10 +78,10 @@ namespace Dentizone.Application.Services
 
             // Get the reviews for the orders
             var reviewDtos = reviews.Select(r => new ReviewDto
-            {
-                Comment = r.Review.Text ?? "No Comment",
-                Stars = r.Review.Stars,
-            });
+                                                 {
+                                                     Comment = r.Review.Text ?? "No Comment",
+                                                     Stars = r.Review.Stars,
+                                                 });
 
             return reviewDtos.ToList();
         }

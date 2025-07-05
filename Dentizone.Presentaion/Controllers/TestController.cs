@@ -1,7 +1,6 @@
 ﻿using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Interfaces;
 using Dentizone.Infrastructure.ApiClient;
-using Dentizone.Infrastructure.Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Presentaion.Controllers
@@ -13,7 +12,7 @@ namespace Dentizone.Presentaion.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class TestController(IAILayer ailayer, IBackgroundJobService _backgroundJobService) : ControllerBase
+    public class TestController(IAiLayer ailayer, IBackgroundJobService _backgroundJobService) : ControllerBase
     {
         [HttpPost]
         public async Task<IActionResult> Get([FromBody] TestPayload payload)
@@ -21,9 +20,7 @@ namespace Dentizone.Presentaion.Controllers
             //          var result = await ailayer.ScanAll(payload.text);
             //        return Ok(result.Content);
             // For testing background job
-            // await ailayer.ScanAll("A7a");
-            _backgroundJobService.Enqueue<IMoitorJob>(job => job.ReviewToxicAndPII("This is Hello world",
-                                                           "Resource 123", "Commecnt"));
+            _backgroundJobService.Enqueue<IMonitorJob>((job) => job.ReviewReviewAsync("01802deb-7008-4269-b3b4-a9c2a23fb4ec", "Fuck this product"));
 
             return Ok();
         }

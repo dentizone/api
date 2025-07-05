@@ -27,7 +27,8 @@ namespace Dentizone.Application.Services
         IAssetService assetService,
         AppDbContext dbContext,
         IRedisService redisService,
-        IMailService mailService, IBackgroundJobService _backgroundJob)
+        IMailService mailService,
+        IBackgroundJobService _backgroundJob)
         : BaseService(accessor), IPostService
     {
         public async Task<List<Post>> ValidatePosts(List<string> postIds)
@@ -87,10 +88,10 @@ namespace Dentizone.Application.Services
             await ValidateAssetNotUsed(assetId, postIdToExclude);
 
             var postAsset = new PostAsset
-            {
-                PostId = postId,
-                AssetId = assetId
-            };
+                            {
+                                PostId = postId,
+                                AssetId = assetId
+                            };
 
             await postAssetRepository.CreateAsync(postAsset);
             return postAsset;
@@ -127,11 +128,12 @@ namespace Dentizone.Application.Services
                 await redisService.InvalidateCache(cacheKey);
 
                 var fullContent = string.Join(" ", new[]
-           {
-    createPostDto.Title,
-    createPostDto.Description}.Where(s => !string.IsNullOrWhiteSpace(s)));
+                                                   {
+                                                       createPostDto.Title,
+                                                       createPostDto.Description
+                                                   }.Where(s => !string.IsNullOrWhiteSpace(s)));
 
-                _backgroundJob.Enqueue<IMoitorJob>(job => job.ReviewPostAsync(post.Id, fullContent));
+                _backgroundJob.Enqueue<IMonitorJob>(job => job.ReviewPostAsync(post.Id, fullContent));
 
                 return mapper.Map<PostViewDto>(post);
             }
@@ -140,8 +142,6 @@ namespace Dentizone.Application.Services
                 await transaction.RollbackAsync();
                 throw;
             }
-
-           
         }
 
 
@@ -152,7 +152,7 @@ namespace Dentizone.Application.Services
             {
                 throw new NotFoundException("Post not found");
             }
-           
+
 
             return mapper.Map<PostViewDto>(deletedPost);
         }
@@ -282,23 +282,23 @@ namespace Dentizone.Application.Services
             var categories = availablePosts
                              .GroupBy(p => p.Category.Name)
                              .Select(g => new CategoryFilterDto
-                             {
-                                 Id = g.First().Category.Id,
-                                 CategoryName = g.Key,
-                                 Subcategories = g.Select(p => p.SubCategory.Name)
+                                          {
+                                              Id = g.First().Category.Id,
+                                              CategoryName = g.Key,
+                                              Subcategories = g.Select(p => p.SubCategory.Name)
                                                                .Distinct()
                                                                .OrderBy(s => s).ToList()
-                             })
+                                          })
                              .OrderBy(c => c.CategoryName)
                              .ToList();
 
             var sidebarFilterResults = new SidebarFilterDto
-            {
-                Cities = cities,
-                MinPrice = minPrice,
-                MaxPrice = maxPrice,
-                Categories = categories
-            };
+                                       {
+                                           Cities = cities,
+                                           MinPrice = minPrice,
+                                           MaxPrice = maxPrice,
+                                           Categories = categories
+                                       };
 
 
             // if the sidebarFilterResults is null, we will not cache it

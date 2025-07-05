@@ -12,7 +12,11 @@ using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services
 {
-    public class QaService(IMapper mapper, IAnswerRepository answerRepository, IQuestionRepository questionRepository,IBackgroundJobService _backgroundJob)
+    public class QaService(
+        IMapper mapper,
+        IAnswerRepository answerRepository,
+        IQuestionRepository questionRepository,
+        IBackgroundJobService _backgroundJob)
         : IQaService
     {
         public async Task<AnswerViewDto> AnswerQuestionAsync(string questionId, CreateAnswerDto dto, string responderId)
@@ -45,22 +49,20 @@ namespace Dentizone.Application.Services
             await answerRepository.CreateAsync(answer);
             await questionRepository.UpdateAsync(question);
 
-            _backgroundJob.Enqueue<IMoitorJob>(job =>
-             job.ReviewAnswerAsync(answer.Id, answer.Text));
+            _backgroundJob.Enqueue<IMonitorJob>(job =>
+                                                    job.ReviewAnswerAsync(answer.Id, answer.Text));
             return mapper.Map<AnswerViewDto>(answer);
         }
 
         public async Task<QuestionViewDto> AskQuestionAsync(CreateQuestionDto dto, string askerId)
         {
-           
-
             var question = mapper.Map<Question>(dto);
             question.AskerId = askerId;
             question.Status = QuestionStatus.Unanswered;
             await questionRepository.CreateAsync(question);
 
-            _backgroundJob.Enqueue<IMoitorJob>(job =>
-             job.ReviewQuestionAsync(question.Id, question.Text));
+            _backgroundJob.Enqueue<IMonitorJob>(job =>
+                                                    job.ReviewQuestionAsync(question.Id, question.Text));
 
             return mapper.Map<QuestionViewDto>(question);
         }
