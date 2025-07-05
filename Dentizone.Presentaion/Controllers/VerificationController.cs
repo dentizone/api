@@ -83,17 +83,28 @@ namespace Dentizone.Presentaion.Controllers
 
                 var userId = verification.VendorData.ToString();
 
-                await verificationService.UpdateUserVerificationState(userId, verification.Status);
+
                 switch (verification.Status.ToLower())
                 {
                     case "approved":
                         await authService.AlternateUserRoleAsync(UserRoles.Verified, userId);
                         await verificationService.UpdateUserNationalId(userId,
                             verification.IdVerification.PersonalNumber);
+                        await userService.SetUserStateAsync(userId, new() { Status = UserState.Active });
+                        await userService.SetKycStatusAsync(userId, KycStatus.Approved);
                         break;
                     case "declined":
                         await authService.AlternateUserRoleAsync(UserRoles.Blacklisted, userId);
+                        await userService.SetUserStateAsync(userId, new() { Status = UserState.Blacklisted });
+                        await userService.SetKycStatusAsync(userId, KycStatus.Blocked);
                         break;
+
+                    case "in review":
+                        await userService.SetKycStatusAsync(userId, KycStatus.UnderReview);
+
+                        break;
+
+
 
                     default:
                         break;
