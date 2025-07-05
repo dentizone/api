@@ -1,6 +1,7 @@
 ﻿using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Enums;
+using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Secret;
 using Dentizone.Infrastructure.ApiClient.KYC;
@@ -15,13 +16,14 @@ namespace Dentizone.Application.Services.Authentication
     }
 
 
-    public class VerificationService : IVerificationService
+    public class VerificationService(IDiditApi diditApi, ISecretService secretService, IAuthService authService,
+        IUserService userService, IMailService mailService) : IVerificationService
     {
-        private readonly IDiditApi _diditApi;
-        private readonly ISecretService _secretService;
-        private readonly IAuthService _authService;
-        private readonly IUserService _userService;
-        private readonly IMailService _mailService;
+        private readonly IDiditApi _diditApi = diditApi;
+        private readonly ISecretService _secretService = secretService;
+        private readonly IAuthService _authService = authService;
+        private readonly IUserService _userService = userService;
+
 
 
         private static Dictionary<string, KycStatus> MapVerificationStatusToEnum()
@@ -34,24 +36,27 @@ namespace Dentizone.Application.Services.Authentication
             };
         }
 
-        public VerificationService(IDiditApi diditApi, ISecretService secretService, IAuthService authService,
-            IUserService userService)
-        {
-            _diditApi = diditApi;
-            _secretService = secretService;
-            _authService = authService;
-            _userService = userService;
-        }
-
         public async Task<CreateSessionResponse> StartSessionAsync(string userId)
         {
             var user = await _authService.GetById(userId);
+            var domainUser = await _userService.GetByIdAsync(userId);
+
+            if (domainUser.KycStatus.Equals(KycStatus.NotSubmitted.ToString()))
+
+            {
+                throw new BadActionException("KYC is not submitted yet");
+            }
+            if (domainUser.KycStatus.Equals(KycStatus.Approved.ToString()))
+            {
+                throw new BadActionException("Your account is Already Active");
+            }
+
 
             var request = new CreateSessionRequest
             {
                 WorkflowId = _secretService.GetSecret("DiditWorkflowId"),
                 VendorData = userId,
-                Callback = "https://dentizone.com/auth/kyc/status",
+                Callback = "https://dentizone.vercel.app/auth/kyc/status",
                 Metadata = JsonConvert.SerializeObject(new Metadata()
                 {
                     Email = user.Email,
@@ -69,11 +74,12 @@ namespace Dentizone.Application.Services.Authentication
 
             var session = await _diditApi.CreateSessionAsync(request, _secretService.GetSecret("DiditApi"));
             await _userService.SetKycStatusAsync(userId, KycStatus.NotSubmitted);
-            await _mailService.Send(user.Email, "Dentizone: Verification Started",
+            await mailService.Send(user.Email!, "Dentizone: Verification Started",
                 "Thank you for starting the email verification process." +
                 " You can use this url to verify your identity" +
                 $" <a href=\"{session.Url}\">Verify Now</a>"
             );
+
             return session;
         }
 

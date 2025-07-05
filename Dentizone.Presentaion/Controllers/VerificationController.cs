@@ -1,5 +1,4 @@
 ﻿using Dentizone.Application.Interfaces;
-using Dentizone.Application.Services.Authentication;
 using Dentizone.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +12,7 @@ namespace Dentizone.Presentaion.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class VerificationController(
-        VerificationService verificationService,
+        IVerificationService verificationService,
         IUserService userService,
         IAuthService authService)
         : ControllerBase
@@ -24,23 +23,13 @@ namespace Dentizone.Presentaion.Controllers
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("User ID is required.");
-            }
+
 
             // Check if the user already verified
-            var user = await userService.GetByIdAsync(userId);
 
-            if (user.KycStatus.Equals(KycStatus.Pending.ToString(), StringComparison.OrdinalIgnoreCase) ||
-                user.KycStatus.Equals(KycStatus.Approved.ToString(), StringComparison.OrdinalIgnoreCase))
-
-            {
-                return BadRequest("KYC process already in progress or completed.");
-            }
 
             var session = await verificationService.StartSessionAsync(userId);
-            await userService.SetKycStatusAsync(user.Id, KycStatus.NotSubmitted);
+
 
             return Ok(session);
         }

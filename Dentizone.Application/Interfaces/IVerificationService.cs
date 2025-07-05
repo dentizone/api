@@ -3,10 +3,11 @@ using Dentizone.Infrastructure.ApiClient.KYC;
 
 namespace Dentizone.Application.Interfaces;
 
+
 public interface IVerificationService
 {
-    Task<CreateSessionResponse> StartSessionAsync(string userId);
     Task<SessionDecisionResponse> GetVerificationStatusAsync(string sessionId);
-
+    Task<CreateSessionResponse> StartSessionAsync(string userId);
     Task<UserView> UpdateUserNationalId(string userId, string nationalId);
+    Task<UserView> UpdateUserVerificationState(string userId, string status);
 }
