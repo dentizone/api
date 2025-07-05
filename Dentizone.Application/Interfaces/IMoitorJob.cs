@@ -1,4 +1,4 @@
-﻿namespace Dentizone.Infrastructure.Hangfire
+﻿namespace Dentizone.Application.Interfaces
 {
     public interface IMoitorJob
     {

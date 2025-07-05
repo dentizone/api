@@ -1,4 +1,4 @@
-﻿using Dentizone.Application.Interfaces;
+﻿using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Secret;
 using Dentizone.Infrastructure.Hangfire;
 using Hangfire;

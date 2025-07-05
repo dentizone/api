@@ -1,4 +1,5 @@
 ﻿using Dentizone.Application.Interfaces;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Infrastructure.ApiClient;
 using Dentizone.Infrastructure.Hangfire;
 using Microsoft.AspNetCore.Mvc;

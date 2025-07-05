@@ -1,4 +1,4 @@
-﻿using Dentizone.Infrastructure.Hangfire;
+﻿using Dentizone.Application.Interfaces;
 
 namespace Dentizone.Application.Jobs
 {
