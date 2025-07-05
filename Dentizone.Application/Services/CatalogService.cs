@@ -70,7 +70,7 @@ namespace Dentizone.Application.Services
             if (category == null)
                 throw new NotFoundException("This category doesn't exist ");
 
-            var relatedSubCategories = category.SubCategories;
+            var relatedSubCategories = category.SubCategories.Where(s => !s.IsDeleted);
             return relatedSubCategories.Select(mapper.Map<SubCategoryView>);
         }
 
