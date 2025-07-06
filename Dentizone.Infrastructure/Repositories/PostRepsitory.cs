@@ -1,5 +1,6 @@
 ﻿using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -138,14 +139,14 @@ namespace Dentizone.Infrastructure.Repositories
             await DbContext.SaveChangesAsync();
         }
 
-        public async Task<IQueryable<Post>> SearchAsync(string? keyword, string? city, string? category,
+        public async Task<PagedResult<Post>> SearchAsync(string? keyword, string? city, string? category,
                                                         string? subcategory, PostItemCondition? condition,
                                                         decimal? minPrice, decimal? maxPrice, string? sortBy,
                                                         bool sortDirection, int page)
         {
             var posts = DbContext.Posts
-                                 .Where(p => !p.IsDeleted && p.Status == PostStatus.Active)
-                                 .AsQueryable();
+                                 .Where(p => !p.IsDeleted && p.Status == PostStatus.Active);
+
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {
@@ -176,9 +177,28 @@ namespace Dentizone.Infrastructure.Repositories
             {
                 posts = sortDirection ? posts.OrderBy(p => p.CreatedAt) : posts.OrderByDescending(p => p.CreatedAt);
             }
+            var totalCount = await posts.CountAsync();
 
-            var skippedPages = CalculatePagination(page);
-            return posts.Skip(skippedPages).Take(DefaultPageSize);
+            posts = posts.Skip(CalculatePagination(page > 0 ? page : 1)).Take(DefaultPageSize);
+
+            posts = posts.Include(p => p.PostAssets).ThenInclude(pa => pa.Asset)
+                                          .Include(p => p.Seller)
+                                          .ThenInclude(p => p.University)
+                                          .Include(p => p.Category)
+                                          .Include(p => p.SubCategory);
+            var result = await posts.ToListAsync();
+            return new PagedResult<Post>
+            {
+                Items = result,
+                TotalCount = totalCount,
+                PageSize = DefaultPageSize,
+                Page = page
+
+            };
+
+
+
+
         }
 
         public IQueryable<Post> GetActivePosts()

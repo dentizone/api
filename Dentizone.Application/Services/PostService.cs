@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Post;
 using Dentizone.Application.DTOs.Post.PostFilterDto;
 using Dentizone.Application.Interfaces;
@@ -103,7 +104,7 @@ namespace Dentizone.Application.Services
             {
                 var post = mapper.Map<Post>(createPostDto);
                 post.SellerId = userId;
-                post.Status = PostStatus.Active; // ALERT: FOR DEVELOPMENT PURPOSES, SETTING STATUS TO ACTIVE
+                post.Status = PostStatus.Pending;
                 post.Slug = $"{post.Title.ToLower().Replace(" ", "-")}-{Guid.NewGuid().ToString()[..5]}";
                 await repo.CreateAsync(post);
 
@@ -302,21 +303,21 @@ namespace Dentizone.Application.Services
             return sidebarFilterResults;
         }
 
-        public async Task<List<PostViewDto>> Search(UserPreferenceDto userPreferenceDto)
+        public async Task<PagedResultDto<PostViewDto>> Search(UserPreferenceDto userPreferenceDto)
         {
             var cacheKey = CacheHelper.GenerateCacheKeyHash("SearchPosts",
                                                             userPreferenceDto);
             var cachedValue = await redisService.GetValue(cacheKey);
             if (!string.IsNullOrEmpty(cachedValue))
             {
-                var deserializedValue = JsonConvert.DeserializeObject<List<PostViewDto>>(cachedValue);
+                var deserializedValue = JsonConvert.DeserializeObject<PagedResultDto<PostViewDto>>(cachedValue);
                 if (deserializedValue != null)
                 {
                     return deserializedValue;
                 }
             }
 
-            var postsQuery = await repo.SearchAsync(
+            var posts = await repo.SearchAsync(
                                                     userPreferenceDto.Keyword, userPreferenceDto.City,
                                                     userPreferenceDto.Category, userPreferenceDto.SubCategory,
                                                     userPreferenceDto.Condition, userPreferenceDto.MinPrice,
@@ -325,18 +326,12 @@ namespace Dentizone.Application.Services
                                                     userPreferenceDto.PageNumber
                                                    );
 
-            var postsWithIncludes = await postsQuery
-                                          .Include(p => p.PostAssets).ThenInclude(pa => pa.Asset)
-                                          .Include(p => p.Seller)
-                                          .ThenInclude(p => p.University)
-                                          .Include(p => p.Category)
-                                          .Include(p => p.SubCategory)
-                                          .ToListAsync();
-
-            var mappedPosts = mapper.Map<List<PostViewDto>>(postsWithIncludes);
 
 
-            await redisService.SetValue(cacheKey, JsonConvert.SerializeObject(mappedPosts), TimeSpan.FromMinutes(1));
+            var mappedPosts = mapper.Map<PagedResultDto<PostViewDto>>(posts);
+
+
+            await redisService.SetValue(cacheKey, JsonConvert.SerializeObject(mappedPosts), TimeSpan.FromMinutes(5));
             return mappedPosts;
         }
 
