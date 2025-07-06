@@ -9,7 +9,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize("IsVerified")]
+    [Authorize]
     public class WalletController(IWalletService walletService, IWithdrawalService withdrawalService) : ControllerBase
     {
         [HttpGet("balance")]
