@@ -6,5 +6,6 @@
         Approved, // Request has been approved and is being processed
         Rejected, // Request has been rejected
         Completed, // Withdrawal has been successfully completed
+        Failed
     }
 }
