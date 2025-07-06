@@ -41,18 +41,18 @@ namespace Dentizone.Presentaion.Controllers
 
         [Authorize("IsAdmin")]
         [HttpPost("withdrawal/{id}/approve")]
-        public async Task<IActionResult> ApproveWithdrawal(string id, [FromBody] string note = "")
+        public async Task<IActionResult> ApproveWithdrawal([FromQuery] string id, [FromBody] UpdateWithdrawalDto dto)
         {
-            var approvedRequest = await withdrawalService.ApproveWithdrawalAsync(id, note);
+            var approvedRequest = await withdrawalService.ApproveWithdrawalAsync(id, dto.Note);
 
             return Ok(approvedRequest);
         }
 
         [Authorize("IsAdmin")]
         [HttpPost("withdrawal/{id}/reject")]
-        public async Task<IActionResult> RejectWithdrawal(string id, [FromBody] string note = "")
+        public async Task<IActionResult> RejectWithdrawal([FromQuery] string id, [FromBody] UpdateWithdrawalDto dto)
         {
-            var rejectedRequest = await withdrawalService.RejectWithdrawalAsync(id, note);
+            var rejectedRequest = await withdrawalService.RejectWithdrawalAsync(id, dto.Note);
             return Ok(rejectedRequest);
         }
 
