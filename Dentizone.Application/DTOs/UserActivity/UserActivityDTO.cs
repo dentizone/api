@@ -22,7 +22,7 @@ namespace Dentizone.Application.DTOs.UserActivity
         {
             RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.");
             RuleFor(x => x.UserId).NotEmpty().WithMessage("UserId is required.");
-            RuleFor(x => x.UserName).NotEmpty().WithMessage("UserName is required.");
+            RuleFor(x => x.UserName).NotEmpty().WithMessage("FullName is required.");
             RuleFor(x => x.FingerprintToken).NotEmpty().WithMessage("FingerprintToken is required.");
             RuleFor(x => x.Device).NotEmpty().WithMessage("Device is required.");
             RuleFor(x => x.UserAgent).NotEmpty().WithMessage("UserAgent is required.");

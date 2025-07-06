@@ -58,9 +58,9 @@ namespace Dentizone.Presentaion.Controllers
 
         //[Authorize("IsAdmin")]
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllWithdrawals([FromQuery] int page = 1)
+        public async Task<IActionResult> GetAllWithdrawals([FromQuery] WithdrawalRequestFilterDto dto)
         {
-            var withdrawals = await withdrawalService.GetAllWithdrawalsAsync(page);
+            var withdrawals = await withdrawalService.GetAllWithdrawalsAsync(dto);
             return Ok(withdrawals);
         }
     }

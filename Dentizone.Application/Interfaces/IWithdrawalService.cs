@@ -12,6 +12,7 @@ namespace Dentizone.Application.Interfaces
         Task<WithdrawalRequestView> ApproveWithdrawalAsync(string id, string adminNote);
         Task<WithdrawalRequestView> RejectWithdrawalAsync(string id, string adminNote);
 
-        Task<PagedResultDto<FullWithdrawalRequestView>> GetAllWithdrawalsAsync(int page = 1);
+        Task<PagedResultDto<FullWithdrawalRequestView>> GetAllWithdrawalsAsync(
+            WithdrawalRequestFilterDto dto);
     }
 }

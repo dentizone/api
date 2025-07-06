@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
 using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Withdrawal;
 using Dentizone.Application.Interfaces;
@@ -126,26 +127,20 @@ namespace Dentizone.Application.Services
             return mapper.Map<WithdrawalRequestView>(updatedRequest);
         }
 
-        public async Task<PagedResultDto<FullWithdrawalRequestView>> GetAllWithdrawalsAsync(int page = 1)
+        public async Task<PagedResultDto<FullWithdrawalRequestView>> GetAllWithdrawalsAsync(
+            WithdrawalRequestFilterDto dto)
         {
-            if (page < 1)
-            {
-                throw new BadActionException("Page number must be greater than 0.");
-            }
+            var page = dto.Page < 1 ? 1 : dto.Page;
 
-            var withdrawalRequests = await withdrawalRepo.GetAllAsync(page, null);
+            Expression<Func<WithdrawalRequest, bool>> filters = w =>
+                (string.IsNullOrEmpty(dto.SearchTerm) ||
+                 w.Wallet.User.FullName.Contains(dto.SearchTerm) ||
+                 w.Wallet.User.Email.Contains(dto.SearchTerm)) &&
+                (!dto.RequestStatus.HasValue || w.Status == dto.RequestStatus.Value) &&
+                (!dto.RequestDateTime.HasValue || w.CreatedAt >= dto.RequestDateTime.Value);
 
+            var withdrawalRequests = await withdrawalRepo.GetAllAsync(page, filters);
 
-            if (withdrawalRequests.Items == null || !withdrawalRequests.Items.Any())
-            {
-                return new PagedResultDto<FullWithdrawalRequestView>
-                {
-                    Items = [],
-                    Page = page,
-                    PageSize = withdrawalRequests.PageSize,
-                    TotalCount = 0
-                };
-            }
 
             return mapper.Map<PagedResultDto<FullWithdrawalRequestView>>(withdrawalRequests);
         }
