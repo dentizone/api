@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
+using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Withdrawal;
 using Dentizone.Application.Interfaces;
 using Dentizone.Application.Services.Payment;
@@ -123,6 +125,24 @@ namespace Dentizone.Application.Services
             await mailService.Send(email, subject, body);
 
             return mapper.Map<WithdrawalRequestView>(updatedRequest);
+        }
+
+        public async Task<PagedResultDto<FullWithdrawalRequestView>> GetAllWithdrawalsAsync(
+            WithdrawalRequestFilterDto dto)
+        {
+            var page = dto.Page < 1 ? 1 : dto.Page;
+
+            Expression<Func<WithdrawalRequest, bool>> filters = w =>
+                (string.IsNullOrEmpty(dto.SearchTerm) ||
+                 w.Wallet.User.FullName.Contains(dto.SearchTerm) ||
+                 w.Wallet.User.Email.Contains(dto.SearchTerm)) &&
+                (!dto.RequestStatus.HasValue || w.Status == dto.RequestStatus.Value) &&
+                (!dto.RequestDateTime.HasValue || w.CreatedAt >= dto.RequestDateTime.Value);
+
+            var withdrawalRequests = await withdrawalRepo.GetAllAsync(page, filters);
+
+
+            return mapper.Map<PagedResultDto<FullWithdrawalRequestView>>(withdrawalRequests);
         }
     }
 }
