@@ -63,5 +63,13 @@ namespace Dentizone.Presentaion.Controllers
             var withdrawals = await withdrawalService.GetAllWithdrawalsAsync(dto);
             return Ok(withdrawals);
         }
+
+        [Authorize("IsAdmin")]
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetWithdrawalStats()
+        {
+            var stats = await withdrawalService.GetWithdrawalStatsAsync();
+            return Ok(stats);
+        }
     }
 }

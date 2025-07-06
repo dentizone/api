@@ -1,5 +1,6 @@
 ﻿using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Withdrawal;
+using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.Interfaces
 {
@@ -14,5 +15,7 @@ namespace Dentizone.Application.Interfaces
 
         Task<PagedResultDto<FullWithdrawalRequestView>> GetAllWithdrawalsAsync(
             WithdrawalRequestFilterDto dto);
+
+        Task<Dictionary<WithdrawalRequestStatus, int>> GetWithdrawalStatsAsync();
     }
 }
