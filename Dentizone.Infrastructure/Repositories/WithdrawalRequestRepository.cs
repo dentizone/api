@@ -92,6 +92,13 @@ namespace Dentizone.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<Dictionary<string, int>> GetCountPerStatusAsync()
+        {
+            return await dbContext.WithdrawalRequests
+                .GroupBy(w => w.Status.ToString())
+                .ToDictionaryAsync(g => g.Key, g => g.Count());
+        }
+
         public async Task<WithdrawalRequest> UpdateAsync(WithdrawalRequest entity)
         {
             dbContext.WithdrawalRequests.Update(entity);

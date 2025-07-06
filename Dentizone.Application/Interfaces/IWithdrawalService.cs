@@ -16,6 +16,6 @@ namespace Dentizone.Application.Interfaces
         Task<PagedResultDto<FullWithdrawalRequestView>> GetAllWithdrawalsAsync(
             WithdrawalRequestFilterDto dto);
 
-        Task<Dictionary<WithdrawalRequestStatus, int>> GetWithdrawalStatsAsync();
+        Task<Dictionary<string, int>> GetWithdrawalStatsAsync();
     }
 }

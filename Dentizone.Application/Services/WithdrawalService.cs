@@ -145,24 +145,11 @@ namespace Dentizone.Application.Services
             return mapper.Map<PagedResultDto<FullWithdrawalRequestView>>(withdrawalRequests);
         }
 
-        public async Task<Dictionary<WithdrawalRequestStatus, int>> GetWithdrawalStatsAsync()
+        public async Task<Dictionary<string, int>> GetWithdrawalStatsAsync()
         {
-            var allWithdrawals = await withdrawalRepo.GetAllAsync();
+            var allWithdrawals = await withdrawalRepo.GetCountPerStatusAsync();
 
-            var stats = allWithdrawals
-                .GroupBy(w => w.Status)
-                .ToDictionary(g => g.Key, g => g.Count());
-
-            // Ensure all statuses are included in the dictionary, even if their count is 0
-            foreach (WithdrawalRequestStatus status in Enum.GetValues(typeof(WithdrawalRequestStatus)))
-            {
-                if (!stats.ContainsKey(status))
-                {
-                    stats[status] = 0;
-                }
-            }
-
-            return stats;
+            return allWithdrawals;
         }
     }
 }

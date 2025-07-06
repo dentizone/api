@@ -12,5 +12,7 @@ namespace Dentizone.Domain.Interfaces.Repositories
 
         Task<IEnumerable<WithdrawalRequest>> GetAllAsync(
             Expression<Func<WithdrawalRequest, bool>>? condition = null);
+
+        Task<Dictionary<string, int>> GetCountPerStatusAsync();
     }
 }
