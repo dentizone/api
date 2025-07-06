@@ -7,7 +7,10 @@ namespace Dentizone.Domain.Interfaces.Repositories
     {
         Task<WithdrawalRequest> UpdateAsync(WithdrawalRequest entity);
 
-        Task<IEnumerable<WithdrawalRequest>> GetAllAsync(
+        Task<PagedResult<WithdrawalRequest>> GetAllAsync(int page,
             Expression<Func<WithdrawalRequest, bool>>? condition);
+
+        Task<IEnumerable<WithdrawalRequest>> GetAllAsync(
+            Expression<Func<WithdrawalRequest, bool>>? condition = null);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Withdrawal;
 using Dentizone.Application.Interfaces;
 using Dentizone.Application.Services.Payment;
@@ -123,6 +124,30 @@ namespace Dentizone.Application.Services
             await mailService.Send(email, subject, body);
 
             return mapper.Map<WithdrawalRequestView>(updatedRequest);
+        }
+
+        public async Task<PagedResultDto<FullWithdrawalRequestView>> GetAllWithdrawalsAsync(int page = 1)
+        {
+            if (page < 1)
+            {
+                throw new BadActionException("Page number must be greater than 0.");
+            }
+
+            var withdrawalRequests = await withdrawalRepo.GetAllAsync(page, null);
+
+
+            if (withdrawalRequests.Items == null || !withdrawalRequests.Items.Any())
+            {
+                return new PagedResultDto<FullWithdrawalRequestView>
+                {
+                    Items = [],
+                    Page = page,
+                    PageSize = withdrawalRequests.PageSize,
+                    TotalCount = 0
+                };
+            }
+
+            return mapper.Map<PagedResultDto<FullWithdrawalRequestView>>(withdrawalRequests);
         }
     }
 }

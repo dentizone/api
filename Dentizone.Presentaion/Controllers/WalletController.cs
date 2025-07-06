@@ -9,7 +9,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize("IsVerified")]
+    //[Authorize("IsVerified")]
     public class WalletController(IWalletService walletService, IWithdrawalService withdrawalService) : ControllerBase
     {
         [HttpGet("balance")]
@@ -54,6 +54,14 @@ namespace Dentizone.Presentaion.Controllers
         {
             var rejectedRequest = await withdrawalService.RejectWithdrawalAsync(id, note);
             return Ok(rejectedRequest);
+        }
+
+        //[Authorize("IsAdmin")]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllWithdrawals([FromQuery] int page = 1)
+        {
+            var withdrawals = await withdrawalService.GetAllWithdrawalsAsync(page);
+            return Ok(withdrawals);
         }
     }
 }
