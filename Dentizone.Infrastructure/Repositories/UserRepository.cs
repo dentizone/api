@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -95,6 +96,14 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<int> GetCount30DaysAsync()
         {
             var count = await DbContext.AppUsers.Where(u => !u.IsDeleted && u.CreatedAt >= DateTime.UtcNow.AddDays(-30))
+                .CountAsync();
+            return count;
+        }
+
+        public async Task<int> GetPendingKycCount()
+        {
+            var count = await DbContext.AppUsers
+                .Where(u => !u.IsDeleted && u.KycStatus == KycStatus.Pending)
                 .CountAsync();
             return count;
         }

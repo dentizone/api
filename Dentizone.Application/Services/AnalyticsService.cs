@@ -29,6 +29,8 @@ namespace Dentizone.Application.Services
             }
 
 
+            var total = await postRepository.GetTotalPosts().CountAsync();
+
             var numberOfPosts = await postRepository.GetActivePosts().CountAsync();
             var pendingPosts = await postRepository.GetPendingPosts().CountAsync();
             var averageValueOfOrders = await postRepository.AveragePostsPriceAsync();
@@ -36,7 +38,8 @@ namespace Dentizone.Application.Services
             var returnedDto = new PostAnalyticsDto
             {
                 PendingPosts = pendingPosts,
-                TotalPosts = numberOfPosts,
+                TotalPosts = total,
+                ActivePosts = numberOfPosts,
                 AveragePostPrice = averageValueOfOrders,
                 PostsByCategory = postsByCategory
             };
@@ -64,8 +67,10 @@ namespace Dentizone.Application.Services
 
             var numberOfOrders = await orderRepository.CountTotalOrders();
             var averageValueOfOrders = await orderRepository.AverageValueOfOrders();
+            var totalRevenue = await orderRepository.TotalRevenue();
             var returnedDto = new SalesAnalyticsDto
             {
+                TotalSalesRevenue = totalRevenue,
                 TotalsOrder = numberOfOrders,
                 AveragePostPrice = averageValueOfOrders,
             };
@@ -98,7 +103,8 @@ namespace Dentizone.Application.Services
                 TotalUsers = allUsers,
                 NewUsersLast7Days = allUsersLast7Days,
                 NewUsersLast30Days = allUsersLast30Days,
-                UsersByUniversity = allUsersPerUniversity
+                UsersByUniversity = allUsersPerUniversity,
+                PendingKyc = await userRepository.GetPendingKycCount()
             };
 
             var serialized = JsonConvert.SerializeObject(returnedDto);

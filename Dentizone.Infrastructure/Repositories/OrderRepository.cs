@@ -3,6 +3,7 @@ using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Dentizone.Domain.Enums;
 
 namespace Dentizone.Infrastructure.Repositories
 {
@@ -124,6 +125,16 @@ namespace Dentizone.Infrastructure.Repositories
                 .Where(o => !o.IsDeleted)
                 .AverageAsync(o => (decimal?)o.TotalAmount);
             return average ?? 0m;
+        }
+
+        public async Task<decimal> TotalRevenue()
+        {
+            var total = await DbContext.Orders
+                .AsNoTracking()
+                .Include(o => o.OrderStatuses)
+                .Where(o => !o.IsDeleted && o.OrderStatuses.Any(os => os.Status == OrderStatues.Completed))
+                .SumAsync(o => (decimal?)o.CommissionAmount);
+            return total ?? 0m;
         }
     }
 }
