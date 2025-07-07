@@ -50,10 +50,10 @@ namespace Dentizone.Application.Services
         private async Task ValidateAssetNotUsed(string assetId, string? postIdToExclude = null)
         {
             var isExist = await postAssetRepository.FindBy(p =>
-                                                               !p.IsDeleted &&
-                                                               p.AssetId == assetId &&
-                                                               (postIdToExclude == null || p.PostId != postIdToExclude)
-                                                          );
+                !p.IsDeleted &&
+                p.AssetId == assetId &&
+                (postIdToExclude == null || p.PostId != postIdToExclude)
+            );
 
             if (isExist != null)
                 throw new BadActionException("This photo is already used before");
@@ -78,7 +78,7 @@ namespace Dentizone.Application.Services
         }
 
         private async Task<PostAsset> AssociatePostWithAsset(string postId, string assetId,
-                                                             string? postIdToExclude = null)
+            string? postIdToExclude = null)
         {
             var asset = await assetService.GetAssetByIdAsync(assetId);
             if (asset == null)
@@ -155,10 +155,10 @@ namespace Dentizone.Application.Services
                 p => p.SubCategory
             ]);
             query = query.Include(p => p.PostAssets)
-                         .ThenInclude(pa => pa.Asset);
+                .ThenInclude(pa => pa.Asset);
 
             query = query.Include(p => p.Seller)
-                         .ThenInclude(s => s.University);
+                .ThenInclude(s => s.University);
             query = query.AsSplitQuery().AsNoTracking();
             var posts = await query.ToListAsync();
 
@@ -208,7 +208,7 @@ namespace Dentizone.Application.Services
         public async Task<PostViewDto> UpdatePostStatus(string postId, PostStatus status, string? reason)
         {
             var post = await repo.GetAllAsync(p => p.Id == postId && !p.IsDeleted, includes: [p => p.Seller])
-                                 .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync();
             if (post == null)
             {
                 throw new NotFoundException("Post not found");
@@ -245,21 +245,21 @@ namespace Dentizone.Application.Services
             }
 
             var availablePosts = repo.GetAllAsync(p => !p.IsDeleted && p.Status == PostStatus.Active,
-                                                  p => p.CreatedAt, includes:
-                                                  [
-                                                      p => p.Category,
-                                                      p => p.SubCategory,
-                                                  ]);
+                p => p.CreatedAt, includes:
+                [
+                    p => p.Category,
+                    p => p.SubCategory,
+                ]);
 
             var cities = availablePosts
-                         .Select(p => p.City)
-                         .Distinct()
-                         .OrderBy(c => c)
-                         .ToList();
+                .Select(p => p.City)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToList();
 
             var prices = availablePosts
-                         .Select(p => p.Price)
-                         .ToList();
+                .Select(p => p.Price)
+                .ToList();
 
             decimal minPrice = 0;
             decimal maxPrice = 0;
@@ -270,17 +270,17 @@ namespace Dentizone.Application.Services
             }
 
             var categories = availablePosts
-                             .GroupBy(p => p.Category.Name)
-                             .Select(g => new CategoryFilterDto
-                             {
-                                 Id = g.First().Category.Id,
-                                 CategoryName = g.Key,
-                                 Subcategories = g.Select(p => p.SubCategory.Name)
-                                                               .Distinct()
-                                                               .OrderBy(s => s).ToList()
-                             })
-                             .OrderBy(c => c.CategoryName)
-                             .ToList();
+                .GroupBy(p => p.Category.Name)
+                .Select(g => new CategoryFilterDto
+                {
+                    Id = g.First().Category.Id,
+                    CategoryName = g.Key,
+                    Subcategories = g.Select(p => p.SubCategory.Name)
+                        .Distinct()
+                        .OrderBy(s => s).ToList()
+                })
+                .OrderBy(c => c.CategoryName)
+                .ToList();
 
             var sidebarFilterResults = new SidebarFilterDto
             {
@@ -306,7 +306,7 @@ namespace Dentizone.Application.Services
         public async Task<PagedResultDto<PostViewDto>> Search(UserPreferenceDto userPreferenceDto)
         {
             var cacheKey = CacheHelper.GenerateCacheKeyHash("SearchPosts",
-                                                            userPreferenceDto);
+                userPreferenceDto);
             var cachedValue = await redisService.GetValue(cacheKey);
             if (!string.IsNullOrEmpty(cachedValue))
             {
@@ -318,14 +318,13 @@ namespace Dentizone.Application.Services
             }
 
             var posts = await repo.SearchAsync(
-                                                    userPreferenceDto.Keyword, userPreferenceDto.City,
-                                                    userPreferenceDto.Category, userPreferenceDto.SubCategory,
-                                                    userPreferenceDto.Condition, userPreferenceDto.MinPrice,
-                                                    userPreferenceDto.MaxPrice,
-                                                    userPreferenceDto.SortBy, userPreferenceDto.SortDirection,
-                                                    userPreferenceDto.PageNumber
-                                                   );
-
+                userPreferenceDto.Keyword, userPreferenceDto.City,
+                userPreferenceDto.Category, userPreferenceDto.SubCategory,
+                userPreferenceDto.Condition, userPreferenceDto.MinPrice,
+                userPreferenceDto.MaxPrice,
+                userPreferenceDto.SortBy, userPreferenceDto.SortDirection,
+                userPreferenceDto.PageNumber
+            );
 
 
             var mappedPosts = mapper.Map<PagedResultDto<PostViewDto>>(posts);
@@ -360,12 +359,24 @@ namespace Dentizone.Application.Services
 
                 case PostStatus.Rejected when !string.IsNullOrEmpty(reason):
                     await mailService.Send(email, "Post Rejected",
-                                           $"Your post '{postTitle}' has been rejected. Reason: {reason}");
+                        $"Your post '{postTitle}' has been rejected. Reason: {reason}");
                     break;
 
                 default:
                     break;
             }
+        }
+
+        public async Task<PostViewDto> GetPostBySlug(string slug)
+        {
+            var post = await repo.FindBy(p => p.Slug == slug && !p.IsDeleted && p.Status == PostStatus.Active);
+
+            if (post == null)
+            {
+                throw new NotFoundException("Post not found");
+            }
+
+            return mapper.Map<PostViewDto>(post);
         }
     }
 }
