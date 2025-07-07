@@ -23,7 +23,7 @@ namespace Dentizone.Presentaion.Controllers
             return Ok(user);
         }
 
-        [Authorize(Policy = "IsAdmin")]
+        [Authorize("IsAdmin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(string id)
         {
@@ -32,7 +32,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "IsAdmin")]
+        [Authorize("IsAdmin")]
         public async Task<IActionResult> GetAllUsers(int page = 1)
         {
             var users = await userService.GetAllAsync(page);
@@ -40,7 +40,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "IsAdmin")]
+        [Authorize("IsAdmin")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var deletedUser = await userService.DeleteAsync(id);
@@ -55,7 +55,7 @@ namespace Dentizone.Presentaion.Controllers
             return NoContent();
         }
 
-        [Authorize(Policy = "IsAdmin")]
+        [Authorize("IsAdmin")]
         [HttpPatch("{id}/state")]
         public async Task<IActionResult> SetUserState(string id, [FromBody] UserStateDto userStateDto)
         {
@@ -64,7 +64,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet("stats")]
-        [Authorize(Policy = "IsAdmin")]
+        [Authorize("IsAdmin")]
         public async Task<IActionResult> GetUserStats()
         {
             var userStats = await userService.GetUserStatsAsync();
