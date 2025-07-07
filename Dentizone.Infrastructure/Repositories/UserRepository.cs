@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
 using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -19,17 +20,18 @@ namespace Dentizone.Infrastructure.Repositories
             Expression<Func<AppUser, bool>>? filter = null)
         {
             var query = DbContext.AppUsers.AsQueryable();
+            var totalCount = await query.CountAsync();
 
             var pagedQuery = await BuildPagedQuery(page, filter, query);
             query = pagedQuery.Query;
-            var totalCount = pagedQuery.TotalCount;
 
             query = query.Include(u => u.University);
 
+            query = query.OrderByDescending(u => u.UpdatedAt);
 
             return new PagedResult<AppUser>
             {
-                Items = await query.AsNoTracking().ToListAsync(),
+                Items = await query.AsNoTracking().AsSplitQuery().ToListAsync(),
                 Page = page,
                 PageSize = DefaultPageSize,
                 TotalCount = totalCount
@@ -94,6 +96,14 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<int> GetCount30DaysAsync()
         {
             var count = await DbContext.AppUsers.Where(u => !u.IsDeleted && u.CreatedAt >= DateTime.UtcNow.AddDays(-30))
+                .CountAsync();
+            return count;
+        }
+
+        public async Task<int> GetPendingKycCount()
+        {
+            var count = await DbContext.AppUsers
+                .Where(u => !u.IsDeleted && u.KycStatus == KycStatus.Pending)
                 .CountAsync();
             return count;
         }

@@ -2,6 +2,7 @@
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Infrastructure.Repositories
 {
@@ -30,19 +31,30 @@ namespace Dentizone.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(condition);
         }
 
-        public async Task<IEnumerable<WithdrawalRequest>> GetAllAsync(
+        public async Task<PagedResult<WithdrawalRequest>> GetAllAsync(int page,
             Expression<Func<WithdrawalRequest, bool>>? condition)
         {
             IQueryable<WithdrawalRequest> query = dbContext.WithdrawalRequests;
-            if (condition != null)
+
+            if (page < 1)
             {
-                query = query.Where(condition);
+                page = 1;
             }
 
-            return await query
-                .OrderByDescending(u => u.CreatedAt)
-                .Take(DefaultPageSize)
-                .ToListAsync();
+            // Include related entities
+
+            query = query.Include(w => w.Wallet).ThenInclude(w => w.User);
+
+            var paged = await BuildPagedQuery(page, condition, query);
+
+            var entries = await paged.Query.ToListAsync();
+            return new PagedResult<WithdrawalRequest>
+            {
+                Items = entries,
+                Page = page,
+                PageSize = DefaultPageSize,
+                TotalCount = paged.TotalCount
+            };
         }
 
         public async Task<WithdrawalRequest?> DeleteAsync(string id)
@@ -63,6 +75,28 @@ namespace Dentizone.Infrastructure.Repositories
                 .Include(w => w.Wallet.User)
                 .FirstOrDefaultAsync();
             return request;
+        }
+
+        public async Task<IEnumerable<WithdrawalRequest>> GetAllAsync(
+            Expression<Func<WithdrawalRequest, bool>>? condition = null)
+        {
+            IQueryable<WithdrawalRequest> query = dbContext.WithdrawalRequests;
+            if (condition != null)
+            {
+                query = query.Where(condition);
+            }
+
+            return await query
+                .OrderByDescending(u => u.CreatedAt)
+                .Include(w => w.Wallet).ThenInclude(w => w.User)
+                .ToListAsync();
+        }
+
+        public async Task<Dictionary<string, int>> GetCountPerStatusAsync()
+        {
+            return await dbContext.WithdrawalRequests
+                .GroupBy(w => w.Status.ToString())
+                .ToDictionaryAsync(g => g.Key, g => g.Count());
         }
 
         public async Task<WithdrawalRequest> UpdateAsync(WithdrawalRequest entity)

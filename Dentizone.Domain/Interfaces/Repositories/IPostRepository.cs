@@ -8,8 +8,9 @@ namespace Dentizone.Domain.Interfaces.Repositories
     {
         Task<Post> UpdateAsync(Post entity);
         Task<Post?> DeleteAsync(string id);
-
+        IQueryable<Post> GetTotalPosts();
         Task<IEnumerable<Post>> GetAllAsync(int page);
+        Task<Post?> GetBySlugAsync(string slug);
 
         Task<IEnumerable<Post>> GetAllAsync(int page,
             Expression<Func<Post, bool>>? filter,
@@ -21,9 +22,10 @@ namespace Dentizone.Domain.Interfaces.Repositories
             Expression<Func<Post, object>>? orderBy = null,
             Expression<Func<Post, object>>[]? includes = null);
 
-        Task<IQueryable<Post>> SearchAsync(string? keyword, string? city, string? category, string? subcategory,
-            PostItemCondition? condition, decimal? minPrice, decimal? maxPrice,
-            string? sortBy, bool sortDirection, int page);
+        Task<PagedResult<Post>> SearchAsync(string? keyword, string? city, string? category,
+            string? subcategory, PostItemCondition? condition,
+            decimal? minPrice, decimal? maxPrice, string? sortBy,
+            bool sortDirection, int page);
 
         Task UpdatePostStatus(string postId, PostStatus status);
         IQueryable<Post> GetActivePosts();

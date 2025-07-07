@@ -9,7 +9,7 @@ namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize("IsVerified")]
+    [Authorize]
     public class WalletController(IWalletService walletService, IWithdrawalService withdrawalService) : ControllerBase
     {
         [HttpGet("balance")]
@@ -41,19 +41,35 @@ namespace Dentizone.Presentaion.Controllers
 
         [Authorize("IsAdmin")]
         [HttpPost("withdrawal/{id}/approve")]
-        public async Task<IActionResult> ApproveWithdrawal(string id, [FromBody] string note = "")
+        public async Task<IActionResult> ApproveWithdrawal(string id, [FromBody] UpdateWithdrawalDto dto)
         {
-            var approvedRequest = await withdrawalService.ApproveWithdrawalAsync(id, note);
+            var approvedRequest = await withdrawalService.ApproveWithdrawalAsync(id, dto.Note);
 
             return Ok(approvedRequest);
         }
 
         [Authorize("IsAdmin")]
         [HttpPost("withdrawal/{id}/reject")]
-        public async Task<IActionResult> RejectWithdrawal(string id, [FromBody] string note = "")
+        public async Task<IActionResult> RejectWithdrawal(string id, [FromBody] UpdateWithdrawalDto dto)
         {
-            var rejectedRequest = await withdrawalService.RejectWithdrawalAsync(id, note);
+            var rejectedRequest = await withdrawalService.RejectWithdrawalAsync(id, dto.Note);
             return Ok(rejectedRequest);
+        }
+
+        [Authorize("IsAdmin")]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllWithdrawals([FromQuery] WithdrawalRequestFilterDto dto)
+        {
+            var withdrawals = await withdrawalService.GetAllWithdrawalsAsync(dto);
+            return Ok(withdrawals);
+        }
+
+        [Authorize("IsAdmin")]
+        [HttpGet("stats")]
+        public async Task<IActionResult> GetWithdrawalStats()
+        {
+            var stats = await withdrawalService.GetWithdrawalStatsAsync();
+            return Ok(stats);
         }
     }
 }

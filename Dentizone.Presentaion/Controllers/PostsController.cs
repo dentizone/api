@@ -28,6 +28,14 @@ namespace Dentizone.Presentaion.Controllers
             return Ok(post);
         }
 
+        [HttpGet("by/{slug}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> BySlug(string slug)
+        {
+            var post = await postService.GetPostBySlug(slug);
+            return Ok(post);
+        }
+
         [HttpGet("users/{sellerId}/posts")]
         [Authorize(Policy = "IsAdmin")]
         public async Task<IActionResult> GetPostsBySellerId(string sellerId, int page = 1)

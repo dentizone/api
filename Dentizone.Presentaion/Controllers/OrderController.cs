@@ -3,6 +3,7 @@ using Dentizone.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Dentizone.Domain.Enums;
 
 
 namespace Dentizone.Presentaion.Controllers
@@ -59,6 +60,14 @@ namespace Dentizone.Presentaion.Controllers
         {
             var orders = await orderService.GetOrders(page, filters);
             return Ok(orders);
+        }
+
+        [HttpPut("{orderId}/status")]
+        [Authorize(Policy = "IsAdmin")]
+        public async Task<IActionResult> UpdateOrderStatus(string orderId, [FromBody] OrderStatues orderStatus)
+        {
+            await orderService.UpdateOrderStatus(orderId, orderStatus);
+            return Ok();
         }
     }
 }

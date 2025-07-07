@@ -34,6 +34,8 @@ namespace Dentizone.Infrastructure.Repositories
                 }
             }
 
+            query = query.Where(sc => !sc.IsDeleted);
+
             return await query.FirstOrDefaultAsync(condition);
         }
 
@@ -55,6 +57,7 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<ICollection<SubCategory>> GetAll()
         {
             return await DbContext.SubCategories
+                .Where(sc => !sc.IsDeleted)
                 .Include(sc => sc.Category)
                 .ToListAsync();
         }
