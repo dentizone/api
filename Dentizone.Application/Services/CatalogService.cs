@@ -40,11 +40,11 @@ namespace Dentizone.Application.Services
             return mapper.Map<CategoryDto>(category);
         }
 
-        public async Task<CategoryDto> UpdateCategory(string id, CategoryDto updatedCategoryDto)
+        public async Task<CategoryDto> UpdateCategory(string categoryId, CategoryDto updatedCategoryDto)
         {
-            var existingCategory = await categoryRepository.GetByIdAsync(id);
+            var existingCategory = await categoryRepository.GetByIdAsync(categoryId);
             if (existingCategory == null)
-                throw new NotFoundException($"Category with id {id} not found");
+                throw new NotFoundException($"Category with id {categoryId} not found");
 
 
             existingCategory.IconUrl = updatedCategoryDto.IconUrl;
