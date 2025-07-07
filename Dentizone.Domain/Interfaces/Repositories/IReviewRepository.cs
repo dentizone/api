@@ -1,5 +1,5 @@
-﻿using System.Linq.Expressions;
-using Dentizone.Domain.Entity;
+﻿using Dentizone.Domain.Entity;
+using System.Linq.Expressions;
 
 namespace Dentizone.Domain.Interfaces.Repositories;
 
@@ -7,5 +7,5 @@ public interface IReviewRepository : IBaseRepo<Review>
 {
     Task<Review> Update(Review entity);
     Task<Review?> DeleteAsync(string id);
-    IQueryable<Review> FindAllBy(Expression<Func<Review, bool>> condition);
+    Task<PagedResult<Review>> FindAllBy(int page, Expression<Func<Review, bool>>? filter);
 }

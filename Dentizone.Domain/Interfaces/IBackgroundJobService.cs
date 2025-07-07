@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Dentizone.Application.Interfaces
+namespace Dentizone.Domain.Interfaces
 {
     public interface IBackgroundJobService
     {

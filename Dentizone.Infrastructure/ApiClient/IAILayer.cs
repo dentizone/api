@@ -3,10 +3,16 @@ using System.Text.Json.Serialization;
 
 namespace Dentizone.Infrastructure.ApiClient
 {
-    public interface IAILayer
+    public interface IAiLayer
     {
         [Get("/all")]
         Task<ApiResponse<ScanAllResponse>> ScanAll([AliasAs("text")] string text);
+
+        [Get("/contact-toxic")]
+        Task<ApiResponse<ScanAllResponse>> ScanContactToxic([AliasAs("text")] string text);
+        [Get("/sentiment")]
+
+        Task<ApiResponse<Sentiment>> GetSetmenetAnalysis([AliasAs("text")] string text);
     }
 
     public class ScanAllResponse
@@ -36,5 +42,10 @@ namespace Dentizone.Infrastructure.ApiClient
         [JsonPropertyName("phone_numbers")] public List<PhoneNumberInfo> PhoneNumbers { get; set; } = new();
 
         [JsonPropertyName("addresses")] public List<string> Addresses { get; set; } = new();
+    }
+
+    public class Sentiment
+    {
+        [JsonPropertyName("sentiment")] public string SentimentValue { get; set; } = string.Empty;
     }
 }

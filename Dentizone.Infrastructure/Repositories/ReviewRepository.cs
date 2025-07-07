@@ -2,6 +2,7 @@
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Infrastructure.Repositories
 {
@@ -45,6 +46,7 @@ namespace Dentizone.Infrastructure.Repositories
             }
 
             DbContext.Reviews.Remove(toBeDeleted);
+            await DbContext.SaveChangesAsync();
             return toBeDeleted;
         }
 
@@ -55,10 +57,26 @@ namespace Dentizone.Infrastructure.Repositories
             return entity;
         }
 
-        public IQueryable<Review> FindAllBy(Expression<Func<Review, bool>> condition)
+        public async Task<PagedResult<Review>> FindAllBy(int page, Expression<Func<Review, bool>>? filter)
         {
-            return DbContext.Reviews
-                .Where(condition).AsQueryable();
+            var q = DbContext.Reviews
+                .Where(r => !r.IsDeleted)
+                .AsQueryable();
+            var paged = await BuildPagedQuery(page, filter, q);
+
+
+            var pagedQuery = paged.Query
+                .Include(r => r.User)
+                .Include(r => r.Order)
+                .OrderByDescending(r => r.CreatedAt);
+
+            return new PagedResult<Review>()
+            {
+                Page = page,
+                TotalCount = paged.TotalCount,
+                Items = await pagedQuery.ToListAsync(),
+                PageSize = DefaultPageSize
+            };
         }
     }
 }

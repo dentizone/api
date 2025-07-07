@@ -13,8 +13,8 @@ namespace Dentizone.Infrastructure.DependencyInjection
                     .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://verification.didit.me"); });
             services.AddRefitClient<ITruboSmtp>()
                     .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://api.turbo-smtp.com/api/v2"); });
-            services.AddRefitClient<IAILayer>()
-                    .ConfigureHttpClient(c => { c.BaseAddress = new Uri("http://localhost:8000"); });
+            services.AddRefitClient<IAiLayer>()
+                    .ConfigureHttpClient(c => { c.BaseAddress = new Uri("https://dai.gitnasr.com"); });
             return services;
         }
     }

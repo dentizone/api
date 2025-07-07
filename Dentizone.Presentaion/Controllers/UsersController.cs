@@ -18,18 +18,12 @@ namespace Dentizone.Presentaion.Controllers
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            try
-            {
-                var user = await userService.GetByIdAsync(userId!);
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+
+            var user = await userService.GetByIdAsync(userId!);
+            return Ok(user);
         }
 
-        [Authorize(Policy = "IsAdmin")]
+        [Authorize("IsAdmin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(string id)
         {
@@ -46,36 +40,22 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "IsAdmin")]
+        [Authorize("IsAdmin")]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            try
-            {
-                var deletedUser = await userService.DeleteAsync(id);
-                return Ok(deletedUser);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var deletedUser = await userService.DeleteAsync(id);
+            return Ok(deletedUser);
         }
 
 
         [HttpPatch("{id}/kyc")]
         public async Task<IActionResult> SetKycStatus(string id, [FromBody] KycStatus status)
         {
-            try
-            {
-                await userService.SetKycStatusAsync(id, status);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await userService.SetKycStatusAsync(id, status);
+            return NoContent();
         }
 
-        [Authorize(Policy = "IsAdmin")]
+        [Authorize("IsAdmin")]
         [HttpPatch("{id}/state")]
         public async Task<IActionResult> SetUserState(string id, [FromBody] UserStateDto userStateDto)
         {
@@ -84,7 +64,7 @@ namespace Dentizone.Presentaion.Controllers
         }
 
         [HttpGet("stats")]
-        [Authorize(Policy = "IsAdmin")]
+        [Authorize("IsAdmin")]
         public async Task<IActionResult> GetUserStats()
         {
             var userStats = await userService.GetUserStatsAsync();

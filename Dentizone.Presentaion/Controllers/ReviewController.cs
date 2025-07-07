@@ -1,17 +1,17 @@
-﻿using System.Security.Claims;
-using Dentizone.Application.DTOs.Review;
+﻿using Dentizone.Application.DTOs.Review;
 using Dentizone.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dentizone.Presentaion.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = "IsVerified")]
     public class ReviewController(IReviewService reviewService) : ControllerBase
     {
         [HttpPost]
+        [Authorize(Policy = "IsVerified")]
         public async Task<IActionResult> CreateOrderReview([FromBody] CreateReviewDto createReviewDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -49,6 +49,14 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> GetReceivedReviews()
         {
             var reviews = await reviewService.GetReceivedReviews(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return Ok(reviews);
+        }
+
+        [HttpGet("all")]
+        [Authorize("IsAdmin")]
+        public async Task<IActionResult> GetAllReviews([FromQuery] int page = 1)
+        {
+            var reviews = await reviewService.GetAllReviewsAsync(page);
             return Ok(reviews);
         }
     }

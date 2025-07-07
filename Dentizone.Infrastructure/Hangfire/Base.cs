@@ -1,6 +1,6 @@
 ﻿using Hangfire;
 using System.Linq.Expressions;
-using Dentizone.Application.Interfaces;
+using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Infrastructure.Hangfire
 {

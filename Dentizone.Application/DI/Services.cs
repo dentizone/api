@@ -1,4 +1,5 @@
 ﻿using Dentizone.Application.Interfaces;
+using Dentizone.Application.Jobs;
 using Dentizone.Application.Services;
 using Dentizone.Application.Services.Authentication;
 using Dentizone.Application.Services.Payment;
@@ -33,6 +34,9 @@ namespace Dentizone.Application.DI
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IWithdrawalService, WithdrawalService>();
             services.AddScoped<IQaService, QaService>();
+
+
+            services.AddScoped<IMonitorJob, MonitorJob>();
 
             services.AddScoped<IShippingService, ShippingService>();
 

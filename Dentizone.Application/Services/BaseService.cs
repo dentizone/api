@@ -7,38 +7,41 @@ using Microsoft.AspNetCore.Http;
 
 namespace Dentizone.Application.Services;
 
-public abstract class BaseService
+public abstract class BaseService(IHttpContextAccessor httpContextAccessor)
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    protected BaseService(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
-
     /// <summary>
     /// Checks if the current user has the ADMIN role.
     /// </summary>
     protected bool IsAdmin()
     {
-        var userRole = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Role);
+        var userRole = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Role);
         return Enum.TryParse<UserRoles>(userRole, out var role) && role == UserRoles.Admin;
     }
 
     /// <summary>
-    /// Ensures the current user is either an Admin or the owner of the specified resource.
+    /// Checks if the current execution context is a background job (e.g., Hangfire).
+    /// Returns true if there is no active HTTP context.
+    /// </summary>
+    protected bool IsBackgroundJobContext()
+    {
+        // If there is no HTTP context, this is likely a background job (Hangfire).
+        return httpContextAccessor.HttpContext == null;
+    }
+
+    /// <summary>
+    /// Ensures the current user is either an Admin, the owner of the specified resource, or the call is from a background job.
     /// Throws UnauthorizedAccessException if the check fails.
     /// </summary>
     /// <param name="resourceId">The unique identifier of the resource to check.</param>
     protected async Task AuthorizeAdminOrOwnerAsync(string resourceId)
     {
-        // Admins are always authorized.
-        if (IsAdmin())
+        // Admins or background jobs are always authorized.
+        if (IsAdmin() || IsBackgroundJobContext())
         {
             return;
         }
 
-        var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var currentUserId = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(currentUserId))
         {
             throw new UnauthorizedAccessException("Cannot verify user. No user is authenticated.");

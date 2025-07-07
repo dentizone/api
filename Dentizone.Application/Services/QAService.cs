@@ -5,12 +5,18 @@ using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
+using Hangfire;
 using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services
 {
-    public class QaService(IMapper mapper, IAnswerRepository answerRepository, IQuestionRepository questionRepository)
+    public class QaService(
+        IMapper mapper,
+        IAnswerRepository answerRepository,
+        IQuestionRepository questionRepository,
+        IBackgroundJobService _backgroundJob)
         : IQaService
     {
         public async Task<AnswerViewDto> AnswerQuestionAsync(string questionId, CreateAnswerDto dto, string responderId)
@@ -42,6 +48,9 @@ namespace Dentizone.Application.Services
             question.Status = QuestionStatus.Answered;
             await answerRepository.CreateAsync(answer);
             await questionRepository.UpdateAsync(question);
+
+            _backgroundJob.Enqueue<IMonitorJob>(job =>
+                                                    job.ReviewAnswerAsync(answer.Id, answer.Text));
             return mapper.Map<AnswerViewDto>(answer);
         }
 
@@ -51,6 +60,10 @@ namespace Dentizone.Application.Services
             question.AskerId = askerId;
             question.Status = QuestionStatus.Unanswered;
             await questionRepository.CreateAsync(question);
+
+            _backgroundJob.Enqueue<IMonitorJob>(job =>
+                                                    job.ReviewQuestionAsync(question.Id, question.Text));
+
             return mapper.Map<QuestionViewDto>(question);
         }
 

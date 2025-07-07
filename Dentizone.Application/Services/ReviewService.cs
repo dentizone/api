@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Review;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
 using Dentizone.Domain.Exceptions;
+using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Services
 {
@@ -13,7 +14,8 @@ namespace Dentizone.Application.Services
         IHttpContextAccessor accessor,
         IMapper mapper,
         IReviewRepository repo,
-        IOrderService orderService) : BaseService(accessor), IReviewService
+        IOrderService orderService,
+        IBackgroundJobService _backgroundJob) : BaseService(accessor), IReviewService
     {
         public async Task CreateOrderReviewAsync(string userId, CreateReviewDto createReviewDto)
         {
@@ -33,6 +35,7 @@ namespace Dentizone.Application.Services
 
             await repo.CreateAsync(review);
             await orderService.MarkOrderAsReviewed(order.Id);
+            _backgroundJob.Enqueue<IMonitorJob>(job => job.ReviewReviewAsync(review.Id, review.Text));
         }
 
         public async Task DeleteReviewAsync(string reviewId)
@@ -43,10 +46,7 @@ namespace Dentizone.Application.Services
 
         public async Task<IEnumerable<ReviewDto>> GetSubmittedReviews(string userId)
         {
-            var review = repo.FindAllBy(r => r.UserId == userId && !r.IsDeleted);
-
-
-            return await review.Select(r => mapper.Map<ReviewDto>(r)).ToListAsync();
+            return [];
         }
 
         public async Task<bool> UpdateReviewAsync(string reviewId, UpdateReviewDto updateReviewDto)
@@ -81,6 +81,13 @@ namespace Dentizone.Application.Services
             });
 
             return reviewDtos.ToList();
+        }
+
+        public async Task<PagedResultDto<ReviewView>> GetAllReviewsAsync(int page)
+        {
+            var reviews = await repo.FindAllBy(page, null);
+
+            return mapper.Map<PagedResultDto<ReviewView>>(reviews);
         }
 
         protected override async Task<string> GetOwnerIdAsync(string resourceId)
