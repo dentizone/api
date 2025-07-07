@@ -45,6 +45,7 @@ namespace Dentizone.Infrastructure.Repositories
             }
 
             DbContext.Reviews.Remove(toBeDeleted);
+            await DbContext.SaveChangesAsync();
             return toBeDeleted;
         }
 

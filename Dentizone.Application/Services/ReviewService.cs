@@ -27,15 +27,16 @@ namespace Dentizone.Application.Services
             }
 
             var review = new Review()
-                         {
-                             OrderId = createReviewDto.OrderId,
-                             Text = createReviewDto.Comment,
-                             UserId = userId
-                         };
+            {
+                OrderId = createReviewDto.OrderId,
+                Text = createReviewDto.Comment,
+                UserId = userId
+            };
 
             await repo.CreateAsync(review);
-            _backgroundJob.Enqueue<IMonitorJob>(job => job.ReviewReviewAsync(review.Id, review.Text));
             await orderService.MarkOrderAsReviewed(order.Id);
+            _backgroundJob.Enqueue<IMonitorJob>(job => job.ReviewReviewAsync(review.Id, review.Text));
+
         }
 
         public async Task DeleteReviewAsync(string reviewId)
@@ -78,10 +79,10 @@ namespace Dentizone.Application.Services
 
             // Get the reviews for the orders
             var reviewDtos = reviews.Select(r => new ReviewDto
-                                                 {
-                                                     Comment = r.Review.Text ?? "No Comment",
-                                                     Stars = r.Review.Stars,
-                                                 });
+            {
+                Comment = r.Review.Text ?? "No Comment",
+                Stars = r.Review.Stars,
+            });
 
             return reviewDtos.ToList();
         }

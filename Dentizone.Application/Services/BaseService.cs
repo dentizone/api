@@ -26,14 +26,24 @@ public abstract class BaseService
     }
 
     /// <summary>
-    /// Ensures the current user is either an Admin or the owner of the specified resource.
+    /// Checks if the current execution context is a background job (e.g., Hangfire).
+    /// Returns true if there is no active HTTP context.
+    /// </summary>
+    protected bool IsBackgroundJobContext()
+    {
+        // If there is no HTTP context, this is likely a background job (Hangfire).
+        return _httpContextAccessor.HttpContext == null;
+    }
+
+    /// <summary>
+    /// Ensures the current user is either an Admin, the owner of the specified resource, or the call is from a background job.
     /// Throws UnauthorizedAccessException if the check fails.
     /// </summary>
     /// <param name="resourceId">The unique identifier of the resource to check.</param>
     protected async Task AuthorizeAdminOrOwnerAsync(string resourceId)
     {
-        // Admins are always authorized.
-        if (IsAdmin())
+        // Admins or background jobs are always authorized.
+        if (IsAdmin() || IsBackgroundJobContext())
         {
             return;
         }
