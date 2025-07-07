@@ -7,21 +7,14 @@ using Microsoft.AspNetCore.Http;
 
 namespace Dentizone.Application.Services;
 
-public abstract class BaseService
+public abstract class BaseService(IHttpContextAccessor httpContextAccessor)
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    protected BaseService(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
-
     /// <summary>
     /// Checks if the current user has the ADMIN role.
     /// </summary>
     protected bool IsAdmin()
     {
-        var userRole = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Role);
+        var userRole = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Role);
         return Enum.TryParse<UserRoles>(userRole, out var role) && role == UserRoles.Admin;
     }
 
@@ -32,7 +25,7 @@ public abstract class BaseService
     protected bool IsBackgroundJobContext()
     {
         // If there is no HTTP context, this is likely a background job (Hangfire).
-        return _httpContextAccessor.HttpContext == null;
+        return httpContextAccessor.HttpContext == null;
     }
 
     /// <summary>
@@ -48,7 +41,7 @@ public abstract class BaseService
             return;
         }
 
-        var currentUserId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var currentUserId = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(currentUserId))
         {
             throw new UnauthorizedAccessException("Cannot verify user. No user is authenticated.");

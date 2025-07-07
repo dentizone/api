@@ -36,7 +36,6 @@ namespace Dentizone.Application.Services
             await repo.CreateAsync(review);
             await orderService.MarkOrderAsReviewed(order.Id);
             _backgroundJob.Enqueue<IMonitorJob>(job => job.ReviewReviewAsync(review.Id, review.Text));
-
         }
 
         public async Task DeleteReviewAsync(string reviewId)
@@ -87,15 +86,8 @@ namespace Dentizone.Application.Services
         public async Task<PagedResultDto<ReviewView>> GetAllReviewsAsync(int page)
         {
             var reviews = await repo.FindAllBy(page, null);
-            var r = reviews.Select(r => mapper.Map<ReviewView>(r));
 
-            return new PagedResultDto<ReviewView>
-            {
-                Items = r.ToList(),
-                TotalCount = reviews.Count(),
-                Page = page,
-                PageSize = 10
-            };
+            return mapper.Map<PagedResultDto<ReviewView>>(reviews);
         }
 
         protected override async Task<string> GetOwnerIdAsync(string resourceId)

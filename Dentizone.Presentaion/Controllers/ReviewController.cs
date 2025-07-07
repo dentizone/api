@@ -12,7 +12,6 @@ namespace Dentizone.Presentaion.Controllers
     {
         [HttpPost]
         [Authorize(Policy = "IsVerified")]
-
         public async Task<IActionResult> CreateOrderReview([FromBody] CreateReviewDto createReviewDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -52,9 +51,10 @@ namespace Dentizone.Presentaion.Controllers
             var reviews = await reviewService.GetReceivedReviews(User.FindFirstValue(ClaimTypes.NameIdentifier));
             return Ok(reviews);
         }
+
         [HttpGet("all")]
         [Authorize("IsAdmin")]
-        public async Task<IActionResult> GetAllReviews([FromQuery] int page)
+        public async Task<IActionResult> GetAllReviews([FromQuery] int page = 1)
         {
             var reviews = await reviewService.GetAllReviewsAsync(page);
             return Ok(reviews);

@@ -14,11 +14,11 @@ namespace Dentizone.Infrastructure.DependencyInjection
             services.AddApiClients();
             services.AddAppIdentity();
             services.AddSecretManager();
-            services.AddScoped<IRedisService, RedisService>();
             services.AddBackgroundService();
 
             // Register MongoDbService as a singleton
-            services.AddSingleton<MongoDbService>();
+            services.AddSingleton<IMongoDbService, MongoDbService>();
+            services.AddSingleton<IRedisService, RedisService>();
 
             return services;
         }

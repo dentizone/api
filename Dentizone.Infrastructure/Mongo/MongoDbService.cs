@@ -1,34 +1,45 @@
 using MongoDB.Driver;
 using MongoDB.Bson;
 using Dentizone.Domain.Interfaces.Secret;
+using Microsoft.Extensions.Logging;
 
 namespace Dentizone.Infrastructure.Mongo
 {
-    public class AiSystemResponse
-    {
-        public ObjectId Id { get; set; }
-        public string ResourceName { get; set; } = string.Empty;
-        public string ResourceId { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
-        public string FunctionName { get; set; } = string.Empty;
-        public BsonDocument AiResponse { get; set; } = new();
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    }
-
-    public class MongoDbService
+    public class MongoDbService : IMongoDbService
     {
         private readonly IMongoDatabase _database;
-        public IMongoDatabase Database => _database;
 
-        public MongoDbService(ISecretService secretService)
+        public MongoDbService(ISecretService secretService, ILogger<MongoDbService> logger)
         {
-            var connectionString = secretService.GetSecret("MongoDbConnectionString");
-            var databaseName = secretService.GetSecret("MongoDbDatabaseName");
-            var client = new MongoClient(connectionString);
-            _database = client.GetDatabase(databaseName);
+            try
+            {
+                var connectionString = secretService.GetSecret("MongoDbConnectionString");
+                var databaseName = secretService.GetSecret("MongoDbDatabaseName");
+
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    throw new ArgumentException("MongoDB connection string is not configured.");
+                }
+
+                if (string.IsNullOrEmpty(databaseName))
+                {
+                    throw new ArgumentException("MongoDB database name is not configured.");
+                }
+
+                var client = new MongoClient(connectionString);
+                _database = client.GetDatabase(databaseName);
+
+                logger.LogInformation("MongoDbService initialized successfully.");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to initialize MongoDbService.");
+                throw;
+            }
         }
 
-        public async Task RegisterAiSystemResponseAsync(string resourceName, string resourceId, string content, BsonDocument aiResponse, string functionName)
+        public async Task RegisterAiSystemResponseAsync(string resourceName, string resourceId, string content,
+            BsonDocument aiResponse, string functionName)
         {
             var collection = _database.GetCollection<AiSystemResponse>("ai_system_responses");
             var response = new AiSystemResponse

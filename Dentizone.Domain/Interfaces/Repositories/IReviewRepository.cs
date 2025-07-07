@@ -7,5 +7,5 @@ public interface IReviewRepository : IBaseRepo<Review>
 {
     Task<Review> Update(Review entity);
     Task<Review?> DeleteAsync(string id);
-    Task<IQueryable<Review>> FindAllBy(int page, Expression<Func<Review, bool>>? filter);
+    Task<PagedResult<Review>> FindAllBy(int page, Expression<Func<Review, bool>>? filter);
 }
