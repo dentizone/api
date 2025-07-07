@@ -2,13 +2,13 @@
 using Dentizone.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using AuthorizeAttribute = Microsoft.AspNetCore.Authorization.AuthorizeAttribute;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Dentizone.Presentaion.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "IsPartilyVerified")]
+    [Authorize]
     public class CartController(ICartService cartService) : ControllerBase
     {
         [HttpGet]
