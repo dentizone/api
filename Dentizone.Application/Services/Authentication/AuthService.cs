@@ -36,7 +36,7 @@ namespace Dentizone.Application.Services.Authentication
                 throw new NotFoundException("User does not have any roles assigned");
             }
 
-            return Enum.Parse<UserRoles>(currentRoles.FirstOrDefault() ?? UserRoles.Ghost.ToString());
+            return Enum.Parse<UserRoles>(currentRoles.First() ?? UserRoles.Ghost.ToString());
         }
 
         public async Task AlternateUserRoleAsync(UserRoles newRole, string userId)
