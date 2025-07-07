@@ -5,15 +5,9 @@ namespace Dentizone.Application.DTOs.Review
 {
     public class ReviewView : ReviewDto
     {
-
+        public required string Id { get; set; }
         public required UserView User { get; set; }
 
-        public required OrderViewDto OrderViewDto
-        {
-            get;
-            set;
-        }
-
-
+        public required OrderViewDto OrderViewDto { get; set; }
     }
 }

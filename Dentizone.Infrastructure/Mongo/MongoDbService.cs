@@ -2,6 +2,8 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using Dentizone.Domain.Interfaces.Secret;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using Dentizone.Domain.Entity;
 
 namespace Dentizone.Infrastructure.Mongo
 {
@@ -52,6 +54,15 @@ namespace Dentizone.Infrastructure.Mongo
                 FunctionName = functionName
             };
             await collection.InsertOneAsync(response);
+        }
+
+        public async Task<List<AiSystemResponse>> FetchReviewsAsync()
+        {
+            var collection = _database.GetCollection<AiSystemResponse>("ai_system_responses");
+            var filter = Builders<AiSystemResponse>.Filter.Eq(r => r.ResourceName, "Review");
+            var aiSystemResponses = await collection.Find(filter).ToListAsync();
+
+            return aiSystemResponses;
         }
     }
 }
