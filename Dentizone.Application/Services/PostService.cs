@@ -369,7 +369,7 @@ namespace Dentizone.Application.Services
 
         public async Task<PostViewDto> GetPostBySlug(string slug)
         {
-            var post = await repo.FindBy(p => p.Slug == slug && !p.IsDeleted && p.Status == PostStatus.Active);
+            var post = await repo.GetBySlugAsync(slug);
 
             if (post == null)
             {

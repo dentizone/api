@@ -10,6 +10,7 @@ namespace Dentizone.Domain.Interfaces.Repositories
         Task<Post?> DeleteAsync(string id);
         IQueryable<Post> GetTotalPosts();
         Task<IEnumerable<Post>> GetAllAsync(int page);
+        Task<Post?> GetBySlugAsync(string slug);
 
         Task<IEnumerable<Post>> GetAllAsync(int page,
             Expression<Func<Post, bool>>? filter,

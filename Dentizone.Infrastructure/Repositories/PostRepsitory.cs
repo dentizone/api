@@ -116,7 +116,19 @@ namespace Dentizone.Infrastructure.Repositories
                 .Include(p => p.PostAssets)
                 .ThenInclude(p => p.Asset)
                 .ThenInclude(p => p.User.University)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted && p.Status == PostStatus.Active);
+        }
+
+        public async Task<Post?> GetBySlugAsync(string slug)
+        {
+            return await DbContext.Posts
+                .Include(p => p.Seller)
+                .Include(p => p.Category)
+                .Include(p => p.SubCategory)
+                .Include(p => p.PostAssets)
+                .ThenInclude(p => p.Asset)
+                .ThenInclude(p => p.User.University)
+                .FirstOrDefaultAsync(p => p.Slug == slug && !p.IsDeleted && p.Status == PostStatus.Active);
         }
 
         public async Task<Post> UpdateAsync(Post entity)
