@@ -1,5 +1,6 @@
 ﻿using Dentizone.Domain.Interfaces;
 using Dentizone.Infrastructure.Cache;
+using Dentizone.Infrastructure.Mongo;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dentizone.Infrastructure.DependencyInjection
@@ -16,6 +17,8 @@ namespace Dentizone.Infrastructure.DependencyInjection
             services.AddScoped<IRedisService, RedisService>();
             services.AddBackgroundService();
 
+            // Register MongoDbService as a singleton
+            services.AddSingleton<MongoDbService>();
 
             return services;
         }

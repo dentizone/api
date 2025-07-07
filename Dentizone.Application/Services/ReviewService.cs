@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Review;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
@@ -6,7 +7,6 @@ using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace Dentizone.Application.Services
 {
@@ -47,10 +47,7 @@ namespace Dentizone.Application.Services
 
         public async Task<IEnumerable<ReviewDto>> GetSubmittedReviews(string userId)
         {
-            var review = repo.FindAllBy(r => r.UserId == userId && !r.IsDeleted);
-
-
-            return await review.Select(r => mapper.Map<ReviewDto>(r)).ToListAsync();
+            return [];
         }
 
         public async Task<bool> UpdateReviewAsync(string reviewId, UpdateReviewDto updateReviewDto)
@@ -85,6 +82,20 @@ namespace Dentizone.Application.Services
             });
 
             return reviewDtos.ToList();
+        }
+
+        public async Task<PagedResultDto<ReviewView>> GetAllReviewsAsync(int page)
+        {
+            var reviews = await repo.FindAllBy(page, null);
+            var r = reviews.Select(r => mapper.Map<ReviewView>(r));
+
+            return new PagedResultDto<ReviewView>
+            {
+                Items = r.ToList(),
+                TotalCount = reviews.Count(),
+                Page = page,
+                PageSize = 10
+            };
         }
 
         protected override async Task<string> GetOwnerIdAsync(string resourceId)

@@ -56,10 +56,26 @@ namespace Dentizone.Infrastructure.Repositories
             return entity;
         }
 
-        public IQueryable<Review> FindAllBy(Expression<Func<Review, bool>> condition)
+        public async Task<IQueryable<Review>> FindAllBy(int page, Expression<Func<Review, bool>>? filter)
         {
-            return DbContext.Reviews
-                .Where(condition).AsQueryable();
+            var q = DbContext.Reviews
+                 .Where(r => !r.IsDeleted)
+               .AsQueryable();
+            var paged = await BuildPagedQuery(page, filter, q);
+            if (paged == null)
+            {
+                return Enumerable.Empty<Review>().AsQueryable();
+            }
+
+            var pagedQuery = paged.Query
+                .Include(r => r.User)
+                .Include(r => r.Order)
+                .OrderByDescending(r => r.CreatedAt);
+
+            return pagedQuery;
+
+
+
         }
     }
 }

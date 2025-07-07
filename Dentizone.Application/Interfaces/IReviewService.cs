@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.DTOs.Review;
+﻿using Dentizone.Application.DTOs;
+using Dentizone.Application.DTOs.Review;
 
 namespace Dentizone.Application.Interfaces
 {
@@ -9,5 +10,6 @@ namespace Dentizone.Application.Interfaces
         Task DeleteReviewAsync(string reviewId);
         Task<IEnumerable<ReviewDto>> GetSubmittedReviews(string userId);
         Task<IEnumerable<ReviewDto>> GetReceivedReviews(string userId);
+        Task<PagedResultDto<ReviewView>> GetAllReviewsAsync(int page);
     }
 }
