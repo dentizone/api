@@ -3,12 +3,14 @@ using Dentizone.Infrastructure.ApiClient;
 using Dentizone.Infrastructure.Mongo;
 using MongoDB.Bson;
 using System.Text.Json;
+using Dentizone.Application.DTOs.Review;
 
 namespace Dentizone.Application.Jobs
 {
     public class MonitorJob(
         IAiLayer aiLayer,
         IQaService qaService,
+        IReviewService reviewService,
         IPostService postService,
         IMongoDbService mongoDbService)
         : IMonitorJob
@@ -49,6 +51,12 @@ namespace Dentizone.Application.Jobs
             var bsonResponse = BsonDocument.Parse(JsonSerializer.Serialize(aiResponse.Content));
             await mongoDbService.RegisterAiSystemResponseAsync("Review", reviewId, input, bsonResponse,
                 nameof(aiLayer.ScanContactToxic));
+
+            if (aiResponse.Content == null)
+                throw new InvalidOperationException("Sentiment value is null in AI response.");
+
+            await reviewService.UpdateReviewAsync(reviewId,
+                new UpdateReviewDto() { Sentiment = aiResponse.Content.SentimentValue });
         }
 
         private bool IsContentToxicAsync(dynamic aiResponse)

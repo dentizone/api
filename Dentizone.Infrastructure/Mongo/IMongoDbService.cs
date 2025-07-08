@@ -8,6 +8,4 @@ public interface IMongoDbService
 {
     Task RegisterAiSystemResponseAsync(string resourceName, string resourceId, string content,
         BsonDocument aiResponse, string functionName);
-
-    Task<List<AiSystemResponse>> FetchReviewsAsync();
 }
