@@ -52,9 +52,10 @@ namespace Dentizone.Presentaion.Controllers
                 Username = registerPayloadDto.Username,
                 Status = UserState.PendingVerification,
                 Id = loggedInUser.User.Id, // IdentityServer uses string IDs for users
-                Email = registerPayloadDto.Email
+                Email = registerPayloadDto.Email,
+                PhoneNumber = registerPayloadDto.PhoneNumber
             };
-            var userData = await userService.CreateAsync(userDataDto);
+            await userService.CreateAsync(userDataDto);
 
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, registerPayloadDto.Email,
                 loggedInUser.Role.ToString());

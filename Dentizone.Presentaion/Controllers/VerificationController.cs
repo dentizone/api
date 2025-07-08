@@ -23,11 +23,6 @@ namespace Dentizone.Presentaion.Controllers
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-
-
-            // Check if the user already verified
-
-
             var session = await verificationService.StartSessionAsync(userId);
 
 
@@ -103,7 +98,6 @@ namespace Dentizone.Presentaion.Controllers
                         await userService.SetKycStatusAsync(userId, KycStatus.UnderReview);
 
                         break;
-
 
 
                     default:
