@@ -3,6 +3,7 @@ using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Review;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
+using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
@@ -15,7 +16,8 @@ namespace Dentizone.Application.Services
         IMapper mapper,
         IReviewRepository repo,
         IOrderService orderService,
-        IBackgroundJobService backgroundJob) : BaseService(accessor), IReviewService
+        IBackgroundJobService backgroundJob,
+        IUserActivityService userActivityService) : BaseService(accessor), IReviewService
     {
         public async Task CreateOrderReviewAsync(string userId, CreateReviewDto createReviewDto)
         {
@@ -36,6 +38,7 @@ namespace Dentizone.Application.Services
             await repo.CreateAsync(review);
             await orderService.MarkOrderAsReviewed(order.Id);
             backgroundJob.Enqueue<IMonitorJob>(job => job.ReviewReviewAsync(review.Id, review.Text));
+            await userActivityService.CreateAsync(UserActivities.ReviewedOrder, DateTime.UtcNow, userId);
         }
 
         public async Task DeleteReviewAsync(string reviewId)
@@ -44,10 +47,6 @@ namespace Dentizone.Application.Services
             await repo.DeleteAsync(reviewId);
         }
 
-        public async Task<IEnumerable<ReviewDto>> GetSubmittedReviews(string userId)
-        {
-            return [];
-        }
 
         public async Task<bool> UpdateReviewAsync(string reviewId, UpdateReviewDto updateReviewDto)
         {

@@ -36,21 +36,6 @@ namespace Dentizone.Presentaion.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetSubmittedReviews()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var reviews = await reviewService.GetSubmittedReviews(userId);
-            return Ok(reviews);
-        }
-
-        [HttpGet("received-review")]
-        public async Task<IActionResult> GetReceivedReviews()
-        {
-            var reviews = await reviewService.GetReceivedReviews(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return Ok(reviews);
-        }
 
         [HttpGet("all")]
         [Authorize("IsAdmin")]

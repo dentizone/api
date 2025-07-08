@@ -20,7 +20,7 @@ namespace Dentizone.Application.Services
         {
             var userActivity = new UserActivity
             {
-                FingerprintToken = requestContextService.GetFingerprint(),
+                FingerprintToken = "NON",
                 IpAddress = requestContextService.GetIpAddress(),
                 UserAgent = requestContextService.GetUserAgent(),
                 Device = requestContextService.GetDeviceType(),
