@@ -27,7 +27,8 @@ namespace Dentizone.Domain.Interfaces.Repositories
             decimal? minPrice, decimal? maxPrice, string? sortBy,
             bool sortDirection, int page, PostStatus status);
 
-        Task UpdatePostStatus(string postId, PostStatus status);
+        Task<Post> UpdatePostStatus(string postId, PostStatus status);
+        Task<Post?> GetByIdAsync(string id, PostStatus status);
         IQueryable<Post> GetActivePosts();
         IQueryable<Post> GetPendingPosts();
         Task<decimal> AveragePostsPriceAsync();

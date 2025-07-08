@@ -218,26 +218,13 @@ namespace Dentizone.Application.Services
 
         public async Task<PostViewDto> UpdatePostStatus(string postId, PostStatus status, string? reason)
         {
-            var post = await repo.GetByIdAsync(postId);
-            if (post == null)
-            {
-                throw new NotFoundException("Post not found");
-            }
-
-
-            post.Status = status;
-            var updatedPost = await repo.UpdateAsync(post);
-
-            if (updatedPost == null)
-            {
-                throw new NotFoundException("Post not found");
-            }
+            var updated = await repo.UpdatePostStatus(postId, status);
 
             // Notify the seller about the status change
-            await NotifySellerAsync(post, status, reason);
+            await NotifySellerAsync(updated, status, reason);
 
 
-            return mapper.Map<PostViewDto>(updatedPost);
+            return mapper.Map<PostViewDto>(updated);
         }
 
         public async Task<SidebarFilterDto> GetSidebarFilterAsync()

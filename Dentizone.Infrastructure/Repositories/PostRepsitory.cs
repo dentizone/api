@@ -119,6 +119,18 @@ namespace Dentizone.Infrastructure.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted && p.Status == PostStatus.Active);
         }
 
+        public async Task<Post?> GetByIdAsync(string id, PostStatus status)
+        {
+            return await DbContext.Posts
+                .Include(p => p.Seller)
+                .Include(p => p.Category)
+                .Include(p => p.SubCategory)
+                .Include(p => p.PostAssets)
+                .ThenInclude(p => p.Asset)
+                .ThenInclude(p => p.User.University)
+                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
+        }
+
         public async Task<Post?> GetBySlugAsync(string slug)
         {
             return await DbContext.Posts
@@ -138,7 +150,7 @@ namespace Dentizone.Infrastructure.Repositories
             return entity;
         }
 
-        public async Task UpdatePostStatus(string postId, PostStatus status)
+        public async Task<Post> UpdatePostStatus(string postId, PostStatus status)
         {
             var post = await GetByIdAsync(postId);
             if (post == null)
@@ -149,6 +161,8 @@ namespace Dentizone.Infrastructure.Repositories
             post.Status = status;
             DbContext.Posts.Update(post);
             await DbContext.SaveChangesAsync();
+
+            return post;
         }
 
         public async Task<PagedResult<Post>> SearchAsync(string? keyword, string? city, string? category,
