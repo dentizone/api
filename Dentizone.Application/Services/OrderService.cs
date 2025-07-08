@@ -85,7 +85,7 @@ namespace Dentizone.Application.Services
 
 
             var dto = mapper.Map<OrderViewDto>(order);
-            await userActivityService.CreateAsync(UserActivities.OrderCancelled, new DateTime(), order.BuyerId);
+            await userActivityService.CreateAsync(UserActivities.OrderCancelled, DateTime.UtcNow, order.BuyerId);
             return dto;
         }
 
