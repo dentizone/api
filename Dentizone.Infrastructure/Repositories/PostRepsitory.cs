@@ -152,7 +152,7 @@ namespace Dentizone.Infrastructure.Repositories
 
         public async Task<Post> UpdatePostStatus(string postId, PostStatus status)
         {
-            var post = await GetByIdAsync(postId);
+            var post = await GetByIdAsync(postId, status);
             if (post == null)
             {
                 throw new KeyNotFoundException($"Post with ID {postId} not found.");
