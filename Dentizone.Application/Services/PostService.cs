@@ -304,15 +304,19 @@ namespace Dentizone.Application.Services
         {
             var cacheKey = CacheHelper.GenerateCacheKeyHash("SearchPosts",
                 userPreferenceDto);
-            var cachedValue = await redisService.GetValue(cacheKey);
-            if (!string.IsNullOrEmpty(cachedValue))
+            if (!userPreferenceDto.SkipCache)
             {
-                var deserializedValue = JsonConvert.DeserializeObject<PagedResultDto<PostViewDto>>(cachedValue);
-                if (deserializedValue != null)
+                var cachedValue = await redisService.GetValue(cacheKey);
+                if (!string.IsNullOrEmpty(cachedValue))
                 {
-                    return deserializedValue;
+                    var deserializedValue = JsonConvert.DeserializeObject<PagedResultDto<PostViewDto>>(cachedValue);
+                    if (deserializedValue != null)
+                    {
+                        return deserializedValue;
+                    }
                 }
             }
+
 
             var posts = await repo.SearchAsync(
                 userPreferenceDto.Keyword, userPreferenceDto.City,
@@ -328,7 +332,12 @@ namespace Dentizone.Application.Services
             var mappedPosts = mapper.Map<PagedResultDto<PostViewDto>>(posts);
 
 
-            await redisService.SetValue(cacheKey, JsonConvert.SerializeObject(mappedPosts), TimeSpan.FromMinutes(5));
+            if (!userPreferenceDto.SkipCache)
+            {
+                var valueAsJson = JsonConvert.SerializeObject(mappedPosts);
+                await redisService.SetValue(cacheKey, valueAsJson, TimeSpan.FromHours(6));
+            }
+
             return mappedPosts;
         }
 
