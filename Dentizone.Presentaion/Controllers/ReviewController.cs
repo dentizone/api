@@ -39,9 +39,9 @@ namespace Dentizone.Presentaion.Controllers
 
         [HttpGet("all")]
         [Authorize("IsAdmin")]
-        public async Task<IActionResult> GetAllReviews([FromQuery] int page = 1)
+        public async Task<IActionResult> GetAllReviews([FromQuery] ReviewFilterDto filter)
         {
-            var reviews = await reviewService.GetAllReviewsAsync(page);
+            var reviews = await reviewService.GetAllReviewsAsync(filter);
             return Ok(reviews);
         }
     }

@@ -9,5 +9,7 @@ namespace Dentizone.Application.DTOs.Review
         public required UserView User { get; set; }
 
         public required OrderViewDto OrderViewDto { get; set; }
+
+        public required DateTime CreatedAt { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
 using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Review;
 using Dentizone.Application.Interfaces;
@@ -95,9 +96,15 @@ namespace Dentizone.Application.Services
             return reviewDtos.ToList();
         }
 
-        public async Task<PagedResultDto<ReviewView>> GetAllReviewsAsync(int page)
+        public async Task<PagedResultDto<ReviewView>> GetAllReviewsAsync(ReviewFilterDto filter)
         {
-            var reviews = await repo.FindAllBy(page, null);
+            Expression<Func<Review, bool>> condition = r =>
+                (string.IsNullOrEmpty(filter.Sentiment) || r.Sentiment == filter.Sentiment) &&
+                (!filter.Stars.HasValue || r.Stars == filter.Stars) &&
+                (r.CreatedAt >= (filter.CreatedAfter ?? DateTime.MinValue)) &&
+                (r.CreatedAt <= (filter.CreatedBefore ?? DateTime.MaxValue)) &&
+                (string.IsNullOrEmpty(filter.SearchText) || r.Text.Contains(filter.SearchText));
+            var reviews = await repo.FindAllBy(filter.Page, condition);
 
             return mapper.Map<PagedResultDto<ReviewView>>(reviews);
         }
