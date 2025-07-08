@@ -109,6 +109,14 @@ namespace Dentizone.Application.Services
             return mapper.Map<PagedResultDto<ReviewView>>(reviews);
         }
 
+        public async Task<Dictionary<string, int>> GetReviewStats()
+        {
+            var review = await repo.GetReviewsStatsByAll();
+
+            return review;
+        }
+
+
         protected override async Task<string> GetOwnerIdAsync(string resourceId)
         {
             var review = await repo.GetByIdAsync(resourceId);

@@ -10,5 +10,6 @@ namespace Dentizone.Application.Interfaces
         Task DeleteReviewAsync(string reviewId);
 
         Task<PagedResultDto<ReviewView>> GetAllReviewsAsync(ReviewFilterDto filter);
+        Task<Dictionary<string, int>> GetReviewStats();
     }
 }

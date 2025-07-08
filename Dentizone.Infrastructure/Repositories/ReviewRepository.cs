@@ -78,5 +78,22 @@ namespace Dentizone.Infrastructure.Repositories
                 PageSize = DefaultPageSize
             };
         }
+
+        public async Task<Dictionary<string, int>> GetReviewsStatsByAll()
+        {
+            var groupedReviews = await DbContext.Reviews
+                .Where(r => !r.IsDeleted)
+                .GroupBy(r => r.Sentiment)
+                .Select(g => new
+                {
+                    Sentiment = g.Key,
+                    Count = g.Count()
+                })
+                .ToListAsync();
+
+            return groupedReviews.ToDictionary(
+                g => g.Sentiment ?? "Unknown",
+                g => g.Count);
+        }
     }
 }

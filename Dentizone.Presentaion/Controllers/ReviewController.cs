@@ -44,5 +44,13 @@ namespace Dentizone.Presentaion.Controllers
             var reviews = await reviewService.GetAllReviewsAsync(filter);
             return Ok(reviews);
         }
+
+        [HttpGet("stats")]
+        [Authorize("IsAdmin")]
+        public async Task<IActionResult> GetReviewStats()
+        {
+            var reviews = await reviewService.GetReviewStats();
+            return Ok(reviews);
+        }
     }
 }
