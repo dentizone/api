@@ -143,10 +143,9 @@ namespace Dentizone.Presentaion.Controllers
 
                 switch (Enum.Parse<UserState>(domainUser.Status))
                 {
-                    case UserState.Active:
                     case UserState.PendingVerification:
                     case UserState.EmailVerified:
-                    case UserState.KycVerified:
+                    case UserState.Active:
                         break;
                     case UserState.Blacklisted:
                         return Unauthorized(new { message = "User account is blacklisted" });

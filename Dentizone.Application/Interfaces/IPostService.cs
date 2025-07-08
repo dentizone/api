@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.DTOs.Post;
+﻿using Dentizone.Application.DTOs;
+using Dentizone.Application.DTOs.Post;
 using Dentizone.Application.DTOs.Post.PostFilterDto;
 using Dentizone.Domain.Enums;
 
@@ -13,9 +14,10 @@ namespace Dentizone.Application.Interfaces
         Task<SidebarFilterDto> GetSidebarFilterAsync();
         Task<PostViewDto> UpdatePost(string postId, UpdatePostDto updatePostDto);
         Task<PostViewDto> DeletePost(string postId);
-
-        Task<List<PostViewDto>> Search(UserPreferenceDto userPreferenceDto);
+        Task<PagedResultDto<PostViewDto>> Search(UserPreferenceDto userPreferenceDto);
         Task<List<Domain.Entity.Post>> ValidatePosts(List<string> postIds);
         Task<PostViewDto> UpdatePostStatus(string postId, PostStatus status, string? reason);
+
+        Task<PostViewDto> GetPostBySlug(string slug);
     }
 }

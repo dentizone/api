@@ -5,6 +5,7 @@
         public int TotalUsers { get; set; }
         public int NewUsersLast7Days { get; set; }
         public int NewUsersLast30Days { get; set; }
+        public int PendingKyc { get; set; }
 
         public Dictionary<string, int> UsersByUniversity { get; set; } = new();
     }

@@ -11,5 +11,6 @@ public interface IOrderRepository : IBaseRepo<Order>
     Task<PagedResult<Order>> GetAllAsync(int? page, Expression<Func<Order, bool>> filter);
 
     Task<int> CountTotalOrders();
+    Task<decimal> TotalRevenue();
     Task<decimal> AverageValueOfOrders();
 }

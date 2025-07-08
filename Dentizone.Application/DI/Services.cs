@@ -29,17 +29,17 @@ namespace Dentizone.Application.DI
             services.AddScoped<IAnalyticsService, AnalyticsService>();
             services.AddScoped<IFavoritesService, FavoriteService>();
             services.AddScoped<IVerificationService, VerificationService>();
-
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<IPaymentService, PaymentService>();
-
             services.AddScoped<IReviewService, ReviewService>();
-
             services.AddScoped<IWithdrawalService, WithdrawalService>();
             services.AddScoped<IQaService, QaService>();
 
 
             services.AddScoped<IMonitorJob, MonitorJob>();
+
+            services.AddScoped<IShippingService, ShippingService>();
+
 
             return services;
         }

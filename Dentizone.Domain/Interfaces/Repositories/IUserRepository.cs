@@ -13,6 +13,7 @@ public interface IUserRepository : IBaseRepo<AppUser>
     Task<int> GetCountOfUsersAsync();
     Task<int> GetCount7DaysAsync();
     Task<int> GetCount30DaysAsync();
+    Task<int> GetPendingKycCount();
     Task<Dictionary<string, int>> GetStudentCountPerUniversityAsync();
     Task<Dictionary<string, int>> GetUsersPerStateAsync();
 }

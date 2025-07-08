@@ -18,6 +18,8 @@ namespace Dentizone.Application.Services.Authentication
     )
         : IAuthService
     {
+        private const string UserNotFoundMessage = "User not found";
+
         private string GenerateToken(string userId, string email, string? role)
         {
             return tokenService.GenerateAccessToken(userId, email, role);
@@ -25,7 +27,7 @@ namespace Dentizone.Application.Services.Authentication
 
         public async Task<UserRoles> GetUserRoleAsync(string userId)
         {
-            var user = await userManager.FindByIdAsync(userId) ?? throw new NotFoundException("User not found");
+            var user = await userManager.FindByIdAsync(userId) ?? throw new NotFoundException(UserNotFoundMessage);
 
             var currentRoles = await userManager.GetRolesAsync(user);
 
@@ -34,12 +36,12 @@ namespace Dentizone.Application.Services.Authentication
                 throw new NotFoundException("User does not have any roles assigned");
             }
 
-            return Enum.Parse<UserRoles>(currentRoles.FirstOrDefault() ?? UserRoles.Ghost.ToString());
+            return Enum.Parse<UserRoles>(currentRoles.First() ?? UserRoles.Ghost.ToString());
         }
 
         public async Task AlternateUserRoleAsync(UserRoles newRole, string userId)
         {
-            var user = await userManager.FindByIdAsync(userId) ?? throw new NotFoundException("User not found");
+            var user = await userManager.FindByIdAsync(userId) ?? throw new NotFoundException(UserNotFoundMessage);
             await AlternateUserRoleAsync(newRole, user);
         }
 
@@ -156,7 +158,7 @@ namespace Dentizone.Application.Services.Authentication
             var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                throw new NotFoundException("User not found");
+                throw new NotFoundException(UserNotFoundMessage);
             }
 
             // check if already confirmed
@@ -221,7 +223,7 @@ namespace Dentizone.Application.Services.Authentication
 
         public async Task<ApplicationUser> GetById(string userId)
         {
-            return await userManager.FindByIdAsync(userId) ?? throw new NotFoundException("User not found");
+            return await userManager.FindByIdAsync(userId) ?? throw new NotFoundException(UserNotFoundMessage);
         }
 
         public async Task<string> ResetPassword(string email, string token, string newPassword)

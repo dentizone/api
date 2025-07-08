@@ -13,6 +13,7 @@ namespace Dentizone.Application.DTOs.Post
         public string Category { get; set; } = string.Empty;
         public string SubCatgory { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
+        public string Slug { get; set; } = string.Empty;
         public UserView Seller { get; set; } = new();
         public List<PostAssetView> Assets { get; set; }
         public DateTime CreatedAt { get; set; }

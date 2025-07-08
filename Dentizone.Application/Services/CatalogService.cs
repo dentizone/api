@@ -40,16 +40,18 @@ namespace Dentizone.Application.Services
             return mapper.Map<CategoryDto>(category);
         }
 
-        public async Task<CategoryDto> UpdateCategory(string id, CategoryDto updatedCategoryDto)
+        public async Task<CategoryDto> UpdateCategory(string categoryId, CategoryDto updatedCategoryDto)
         {
-            var existingCategory = await categoryRepository.GetByIdAsync(id);
+            var existingCategory = await categoryRepository.GetByIdAsync(categoryId);
             if (existingCategory == null)
-                throw new NotFoundException($"Category with id {id} not found");
+                throw new NotFoundException($"Category with id {categoryId} not found");
 
 
-            var category = mapper.Map<Category>(updatedCategoryDto);
-            category.Id = id;
-            var updatedCategory = await categoryRepository.Update(category);
+            existingCategory.IconUrl = updatedCategoryDto.IconUrl;
+            existingCategory.Name = updatedCategoryDto.Name;
+
+
+            var updatedCategory = await categoryRepository.Update(existingCategory);
             if (updatedCategory == null) throw new NotFoundException("Category not found");
             return mapper.Map<CategoryDto>(updatedCategory);
         }
@@ -68,7 +70,7 @@ namespace Dentizone.Application.Services
             if (category == null)
                 throw new NotFoundException("This category doesn't exist ");
 
-            var relatedSubCategories = category.SubCategories;
+            var relatedSubCategories = category.SubCategories.Where(s => !s.IsDeleted);
             return relatedSubCategories.Select(mapper.Map<SubCategoryView>);
         }
 
