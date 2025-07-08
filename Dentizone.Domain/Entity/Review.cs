@@ -14,5 +14,7 @@ namespace Dentizone.Domain.Entity
         public virtual AppUser User { get; set; }
         public virtual Order Order { get; set; }
         public bool IsDeleted { get; set; }
+
+        public string? Sentiment { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace Dentizone.Application.Services
         IMapper mapper,
         IReviewRepository repo,
         IOrderService orderService,
-        IBackgroundJobService _backgroundJob) : BaseService(accessor), IReviewService
+        IBackgroundJobService backgroundJob) : BaseService(accessor), IReviewService
     {
         public async Task CreateOrderReviewAsync(string userId, CreateReviewDto createReviewDto)
         {
@@ -35,7 +35,7 @@ namespace Dentizone.Application.Services
 
             await repo.CreateAsync(review);
             await orderService.MarkOrderAsReviewed(order.Id);
-            _backgroundJob.Enqueue<IMonitorJob>(job => job.ReviewReviewAsync(review.Id, review.Text));
+            backgroundJob.Enqueue<IMonitorJob>(job => job.ReviewReviewAsync(review.Id, review.Text));
         }
 
         public async Task DeleteReviewAsync(string reviewId)
@@ -55,8 +55,21 @@ namespace Dentizone.Application.Services
             var review = await repo.FindBy(r => r.Id == reviewId && !r.IsDeleted) ??
                          throw new NotFoundException("Review with Provided id is not found");
 
+            if (updateReviewDto.Comment != null)
+            {
+                review.Text = updateReviewDto.Comment;
+            }
 
-            review.Text = updateReviewDto.Comment;
+            if (updateReviewDto.Stars != null)
+            {
+                review.Stars = updateReviewDto.Stars.Value;
+            }
+
+            if (updateReviewDto.Sentiment != null)
+            {
+                review.Sentiment = updateReviewDto.Sentiment;
+            }
+
 
             var updated = await repo.Update(review);
 

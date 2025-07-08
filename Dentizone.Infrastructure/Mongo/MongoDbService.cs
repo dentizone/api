@@ -55,14 +55,5 @@ namespace Dentizone.Infrastructure.Mongo
             };
             await collection.InsertOneAsync(response);
         }
-
-        public async Task<List<AiSystemResponse>> FetchReviewsAsync()
-        {
-            var collection = _database.GetCollection<AiSystemResponse>("ai_system_responses");
-            var filter = Builders<AiSystemResponse>.Filter.Eq(r => r.ResourceName, "Review");
-            var aiSystemResponses = await collection.Find(filter).ToListAsync();
-
-            return aiSystemResponses;
-        }
     }
 }
