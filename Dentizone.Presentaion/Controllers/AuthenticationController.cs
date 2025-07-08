@@ -6,6 +6,7 @@ using Dentizone.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Dentizone.Domain.Exceptions;
 
 namespace Dentizone.Presentaion.Controllers
 {
@@ -83,7 +84,7 @@ namespace Dentizone.Presentaion.Controllers
             var email = User.Claims.First(c => c.Type == ClaimTypes.Email).Value;
 
             await authenticationService.SendVerificationEmail(email);
-            return Ok(new { Message = "Verification email sent successfully." });
+            return Ok();
         }
 
 
@@ -92,7 +93,7 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> SendForgetPasswordEmail([FromQuery] string email)
         {
             await authenticationService.SendForgetPasswordEmail(email);
-            return Ok(new { Message = "Forget password email sent successfully." });
+            return Ok();
         }
 
         [HttpPost("reset-password")]
@@ -110,113 +111,82 @@ namespace Dentizone.Presentaion.Controllers
         [AllowAnonymous] // Refresh doesn't require active authentication
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
-            try
+            // Validate the refresh token
+            var validationResult = await tokenService.ValidateRefreshTokenAsync(request.RefreshToken);
+
+            if (!validationResult.IsValid)
             {
-                if (string.IsNullOrEmpty(request.RefreshToken))
-                {
-                    return BadRequest(new { message = "Refresh token is required" });
-                }
-
-                // Validate the refresh token
-                var validationResult = await tokenService.ValidateRefreshTokenAsync(request.RefreshToken);
-
-                if (!validationResult.IsValid)
-                {
-                    return Unauthorized(new { message = "Invalid or expired refresh token" });
-                }
-
-                // Extract user information from the refresh token
-                var userId = validationResult.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (string.IsNullOrEmpty(userId))
-                {
-                    return Unauthorized(new { message = "Invalid token claims" });
-                }
-
-                // This ensures that if user roles/permissions changed, the new token reflects that
-                var user = await authenticationService.GetById(userId);
-                var domainUser = await userService.GetByIdAsync(userId);
-                if (user.Email == null)
-                {
-                    return Unauthorized(new { message = "User not found" });
-                }
-
-                switch (Enum.Parse<UserState>(domainUser.Status))
-                {
-                    case UserState.PendingVerification:
-                    case UserState.EmailVerified:
-                    case UserState.Active:
-                        break;
-                    case UserState.Blacklisted:
-                        return Unauthorized(new { message = "User account is blacklisted" });
-                    case UserState.Deleted:
-                        return NotFound(new { message = "User account not found" });
-                    default:
-                        return BadRequest(new { message = "Invalid user state" });
-                }
-
-                // Get Current User Role
-                var userRole = await authenticationService.GetUserRoleAsync(userId);
-
-                // Generate new tokens
-                var newAccessToken = tokenService.GenerateAccessToken(user.Id, user.Email, userRole.ToString());
-                var newRefreshToken = tokenService.GenerateRefreshToken(user.Id);
-
-                // Blacklist the old refresh token to prevent reuse
-                await tokenService.BlacklistRefreshTokenAsync(request.RefreshToken);
-
-
-                if (!string.IsNullOrEmpty(request.AccessToken))
-                {
-                    await tokenService.BlacklistAccessTokenAsync(request.AccessToken);
-                }
-
-
-                return Ok(new RefreshTokenResponse
-                {
-                    AccessToken = newAccessToken,
-                    RefreshToken = newRefreshToken,
-                });
+                throw new UnauthorizedAccessException("Invalid or expired refresh token");
             }
-            catch (Exception)
+
+            // Extract user information from the refresh token
+            var userId = validationResult.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+
+            // This ensures that if user roles/permissions changed, the new token reflects that
+            var user = await authenticationService.GetById(userId);
+            var domainUser = await userService.GetByIdAsync(userId);
+            if (user.Email == null)
             {
-                return StatusCode(500, new { message = "An error occurred during token refresh" });
+                throw new UnauthorizedAccessException("Invalid user ID or user not found");
             }
+
+            switch (Enum.Parse<UserState>(domainUser.Status))
+            {
+                case UserState.PendingVerification:
+                case UserState.EmailVerified:
+                case UserState.Active:
+                    break;
+                case UserState.Blacklisted:
+                    throw new UnauthorizedAccessException("You has been banned from our system");
+                case UserState.Deleted:
+                    throw new NotFoundException("User account not found");
+                default:
+                    throw new UnauthorizedAccessException("Invalid user state");
+            }
+
+            // Get Current User Role
+            var userRole = await authenticationService.GetUserRoleAsync(userId);
+
+            // Generate new tokens
+            var newAccessToken = tokenService.GenerateAccessToken(user.Id, user.Email, userRole.ToString());
+            var newRefreshToken = tokenService.GenerateRefreshToken(user.Id);
+
+            // Blacklist the old refresh token to prevent reuse
+            await tokenService.BlacklistRefreshTokenAsync(request.RefreshToken);
+
+
+            if (!string.IsNullOrEmpty(request.AccessToken))
+            {
+                await tokenService.BlacklistAccessTokenAsync(request.AccessToken);
+            }
+
+
+            return Ok(new RefreshTokenResponse
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken,
+            });
         }
 
         [HttpPost("logout")]
         [Authorize]
         public async Task<IActionResult> Logout([FromBody] LogoutRequest request)
         {
-            try
+            // Get Access Token from header
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (string.IsNullOrEmpty(authHeader) ||
+                !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
             {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (string.IsNullOrEmpty(userId))
-                {
-                    return BadRequest(new { message = "Invalid user context" });
-                }
-
-
-                // Get Access Token from header
-                var authHeader = Request.Headers["Authorization"].FirstOrDefault();
-                if (string.IsNullOrEmpty(authHeader) ||
-                    !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-                {
-                    return BadRequest(new { message = "Missing or invalid authorization header" });
-                }
-
-                var token = authHeader.Substring("Bearer ".Length).Trim();
-                await tokenService.BlacklistAccessTokenAsync(token);
-                await tokenService.BlacklistRefreshTokenAsync(request.RefreshToken);
-
-
-                return Ok(new { message = "Logged out successfully" });
+                return BadRequest(new { message = "Missing or invalid authorization header" });
             }
-            catch (Exception)
-            {
-                return StatusCode(500, new { message = "An error occurred during logout" });
-            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            await tokenService.BlacklistAccessTokenAsync(token);
+            await tokenService.BlacklistRefreshTokenAsync(request.RefreshToken);
+
+
+            return Ok();
         }
     }
 }
