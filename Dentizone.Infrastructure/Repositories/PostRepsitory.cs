@@ -277,5 +277,14 @@ namespace Dentizone.Infrastructure.Repositories
 
             return posts;
         }
+
+        public async Task<Dictionary<string, int>> GetPostsByStatus()
+        {
+            return await DbContext.Posts
+                .AsNoTracking()
+                .Where(p => !p.IsDeleted)
+                .GroupBy(p => p.Status.ToString())
+                .ToDictionaryAsync(g => g.Key, g => g.Count());
+        }
     }
 }

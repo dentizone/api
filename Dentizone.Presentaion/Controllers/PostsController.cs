@@ -92,5 +92,13 @@ namespace Dentizone.Presentaion.Controllers
             await postService.UpdatePostStatus(state.PostId, state.Status, state.Reason);
             return Ok();
         }
+
+        [HttpGet("stats")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPostStats()
+        {
+            var stats = await postService.GetPostStats();
+            return Ok(stats);
+        }
     }
 }

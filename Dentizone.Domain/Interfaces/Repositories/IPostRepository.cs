@@ -29,6 +29,7 @@ namespace Dentizone.Domain.Interfaces.Repositories
 
         Task<Post> UpdatePostStatus(string postId, PostStatus status);
         Task<Post?> GetByIdAsync(string id, PostStatus status);
+        Task<Dictionary<string, int>> GetPostsByStatus();
         IQueryable<Post> GetActivePosts();
         IQueryable<Post> GetPendingPosts();
         Task<decimal> AveragePostsPriceAsync();

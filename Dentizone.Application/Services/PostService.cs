@@ -385,5 +385,10 @@ namespace Dentizone.Application.Services
 
             return mapper.Map<PostViewDto>(post);
         }
+
+        public async Task<Dictionary<string, int>> GetPostStats()
+        {
+            return await repo.GetPostsByStatus();
+        }
     }
 }
