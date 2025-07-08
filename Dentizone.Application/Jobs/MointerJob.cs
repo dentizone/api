@@ -59,7 +59,7 @@ namespace Dentizone.Application.Jobs
                 new UpdateReviewDto() { Sentiment = aiResponse.Content.SentimentValue });
         }
 
-        private bool IsContentToxicAsync(dynamic aiResponse)
+        private static bool IsContentToxicAsync(dynamic aiResponse)
         {
             var content = aiResponse.Content;
             if (content == null)
@@ -72,7 +72,6 @@ namespace Dentizone.Application.Jobs
                     content.ContactInfo.PhoneNumbers.Count > 0 ||
                     content.ContactInfo.Addresses.Count > 0;
             }
-
 
             return hasContactInfo || content.IsInsult == true;
         }
