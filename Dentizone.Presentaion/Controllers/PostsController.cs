@@ -89,8 +89,8 @@ namespace Dentizone.Presentaion.Controllers
         [HttpPatch("{postId}/status")]
         public async Task<IActionResult> AdjustStatus([FromBody] UpdatePostStateDto state)
         {
-            var updatedPost = await postService.UpdatePostStatus(state.PostId, state.Status, state.Reason);
-            return Ok(updatedPost);
+            await postService.UpdatePostStatus(state.PostId, state.Status, state.Reason);
+            return Ok();
         }
     }
 }

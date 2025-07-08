@@ -218,8 +218,7 @@ namespace Dentizone.Application.Services
 
         public async Task<PostViewDto> UpdatePostStatus(string postId, PostStatus status, string? reason)
         {
-            var post = await repo.GetAllAsync(p => p.Id == postId && !p.IsDeleted, includes: [p => p.Seller])
-                .FirstOrDefaultAsync();
+            var post = await repo.GetByIdAsync(postId);
             if (post == null)
             {
                 throw new NotFoundException("Post not found");
