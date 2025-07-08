@@ -26,6 +26,7 @@ namespace Dentizone.Application.Services
         IPaymentService paymentService,
         ICartService cartService,
         IHttpContextAccessor accessor,
+        IUserActivityService userActivityService,
         AppDbContext dbContext)
         : BaseService(accessor), IOrderService
     {
@@ -84,6 +85,7 @@ namespace Dentizone.Application.Services
 
 
             var dto = mapper.Map<OrderViewDto>(order);
+            await userActivityService.CreateAsync(UserActivities.OrderCancelled, new DateTime(), order.BuyerId);
             return dto;
         }
 
@@ -188,6 +190,8 @@ namespace Dentizone.Application.Services
                 await cartService.ClearCartAsync(buyerId);
 
                 await transaction.CommitAsync();
+                await userActivityService.CreateAsync(UserActivities.OrderPlaced, new DateTime(), buyerId);
+
                 return result.Id;
             }
             catch (Exception)

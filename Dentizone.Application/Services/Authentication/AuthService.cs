@@ -36,7 +36,7 @@ namespace Dentizone.Application.Services.Authentication
                 throw new NotFoundException("User does not have any roles assigned");
             }
 
-            return Enum.Parse<UserRoles>(currentRoles.First() ?? UserRoles.Ghost.ToString());
+            return Enum.Parse<UserRoles>(currentRoles.First());
         }
 
         public async Task AlternateUserRoleAsync(UserRoles newRole, string userId)
@@ -71,10 +71,10 @@ namespace Dentizone.Application.Services.Authentication
 
             if (isLockedOut)
             {
-                await userActivityService.CreateAsync(UserActivities.Lockdout, DateTime.Now, user.Id);
+                await userActivityService.CreateAsync(UserActivities.Lockedout, DateTime.Now, user.Id);
                 throw new
                     UserLockedOutException(
-                                           "User is locked out due to too many failed login attempts. Please try again later.");
+                        "User is locked out due to too many failed login attempts. Please try again later.");
             }
 
 
@@ -111,7 +111,7 @@ namespace Dentizone.Application.Services.Authentication
             return new LoggedInUser()
             {
                 User = user,
-                Role = Enum.Parse<UserRoles>(roles.LastOrDefault())
+                Role = Enum.Parse<UserRoles>(roles.Last())
             };
         }
 
@@ -145,6 +145,7 @@ namespace Dentizone.Application.Services.Authentication
             // 4. Send Verification Email 
 
             await SendVerificationEmail(user.Email);
+            await userActivityService.CreateAsync(UserActivities.Registered, DateTime.Now, user.Id);
             return new LoggedInUser()
             {
                 User = user,
@@ -201,7 +202,8 @@ namespace Dentizone.Application.Services.Authentication
             var verificationLink = $"https://dentizone.vercel.app/auth/mail-verify?userId={user.Id}&token={token}";
             // 3. Send Verification Email
             await mailService.Send(email, "Dentizone: Verify your email",
-                                   $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
+                $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
+            await userActivityService.CreateAsync(UserActivities.EmailVerificationSent, DateTime.Now, user.Id);
         }
 
         public async Task SendForgetPasswordEmail(string email)
@@ -218,7 +220,8 @@ namespace Dentizone.Application.Services.Authentication
             var resetLink = $"https://dentizone.vercel.app/auth/forgot-password?email={user.Email}&token={token}";
             // 3. Send Reset Password Email
             await mailService.Send(email, "Dentizone: Reset your password",
-                                   $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
+                $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
+            await userActivityService.CreateAsync(UserActivities.PasswordResetRequested, DateTime.Now, user.Id);
         }
 
         public async Task<ApplicationUser> GetById(string userId)
@@ -250,7 +253,7 @@ namespace Dentizone.Application.Services.Authentication
                 throw new NotFoundException("User does not have any roles assigned");
             }
 
-            await userActivityService.CreateAsync(UserActivities.PasswordReset);
+            await userActivityService.CreateAsync(UserActivities.PasswordReset, DateTime.Now, user.Id);
             // 3. Generate token
             return GenerateToken(user.Id, user.Email, roles.FirstOrDefault());
         }

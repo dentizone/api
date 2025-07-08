@@ -17,6 +17,7 @@ namespace Dentizone.Application.Services
         IWalletService walletService,
         IWithdrawalRequestRepository withdrawalRepo,
         IMailService mailService,
+        IUserActivityService userActivityService,
         IMapper mapper) : IWithdrawalService
     {
         public async Task<WithdrawalRequestView> CreateWithdrawalRequestAsync(
@@ -45,6 +46,9 @@ namespace Dentizone.Application.Services
             }
 
             var withdrawalView = mapper.Map<WithdrawalRequestView>(createdRequest);
+
+            await userActivityService.CreateAsync(
+                UserActivities.WithdrawalRequestCreated, DateTime.UtcNow, userId);
 
             return withdrawalView;
         }

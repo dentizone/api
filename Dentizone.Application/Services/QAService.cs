@@ -16,7 +16,8 @@ namespace Dentizone.Application.Services
         IMapper mapper,
         IAnswerRepository answerRepository,
         IQuestionRepository questionRepository,
-        IBackgroundJobService _backgroundJob)
+        IBackgroundJobService _backgroundJob,
+        IUserActivityService userActivity)
         : IQaService
     {
         public async Task<AnswerViewDto> AnswerQuestionAsync(string questionId, CreateAnswerDto dto, string responderId)
@@ -50,7 +51,8 @@ namespace Dentizone.Application.Services
             await questionRepository.UpdateAsync(question);
 
             _backgroundJob.Enqueue<IMonitorJob>(job =>
-                                                    job.ReviewAnswerAsync(answer.Id, answer.Text));
+                job.ReviewAnswerAsync(answer.Id, answer.Text));
+            await userActivity.CreateAsync(UserActivities.AnsweredQuestion, DateTime.UtcNow, responderId);
             return mapper.Map<AnswerViewDto>(answer);
         }
 
@@ -62,7 +64,9 @@ namespace Dentizone.Application.Services
             await questionRepository.CreateAsync(question);
 
             _backgroundJob.Enqueue<IMonitorJob>(job =>
-                                                    job.ReviewQuestionAsync(question.Id, question.Text));
+                job.ReviewQuestionAsync(question.Id, question.Text));
+
+            await userActivity.CreateAsync(UserActivities.AskedQuestion, DateTime.UtcNow, askerId);
 
             return mapper.Map<QuestionViewDto>(question);
         }
@@ -107,13 +111,13 @@ namespace Dentizone.Application.Services
         public async Task<IEnumerable<QuestionViewDto>> GetQuestionsForPostAsync(string postId)
         {
             var includes = new Expression<Func<Question, object>>[]
-                           {
-                               q => q.Answer
-                           };
+            {
+                q => q.Answer
+            };
 
             var questions = await questionRepository.FindAllBy(
-                                                               q => q.PostId == postId && !q.IsDeleted,
-                                                               includes);
+                q => q.PostId == postId && !q.IsDeleted,
+                includes);
 
 
             return mapper.Map<IEnumerable<QuestionViewDto>>(questions);

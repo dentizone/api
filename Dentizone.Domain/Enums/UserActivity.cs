@@ -8,10 +8,15 @@
         PasswordReset,
         OrderPlaced,
         OrderCancelled,
-        OrderCompleted,
-        ProfileUpdated,
         AccountVerified,
-        Lockdout,
-        EmailConfirmed
+        Lockedout,
+        EmailConfirmed,
+        AnsweredQuestion,
+        AskedQuestion,
+        ReviewedOrder,
+        WithdrawalRequestCreated,
+        Registered,
+        EmailVerificationSent,
+        PasswordResetRequested
     }
 }
