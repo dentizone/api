@@ -67,7 +67,7 @@ namespace Dentizone.Application.Services
 
             if (updateReviewDto.Sentiment != null)
             {
-                updateReviewDto.Sentiment = updateReviewDto.Sentiment;
+                review.Sentiment = updateReviewDto.Sentiment;
             }
 
 
