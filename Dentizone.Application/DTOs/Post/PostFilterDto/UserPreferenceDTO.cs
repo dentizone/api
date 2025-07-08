@@ -15,6 +15,7 @@ namespace Dentizone.Application.DTOs.Post.PostFilterDto
         public string? SortBy { get; set; }
         public bool SortDirection { get; set; }
         public int PageNumber { get; set; }
+        public PostStatus PostStatus { get; set; } = PostStatus.Active;
     }
 
     public class UserPreferenceDtoValidator : AbstractValidator<UserPreferenceDto>
@@ -23,6 +24,14 @@ namespace Dentizone.Application.DTOs.Post.PostFilterDto
         {
             RuleFor(x => x.SortDirection).NotNull().WithMessage("SortDirection cannot be null.");
             RuleFor(x => x.PageNumber).GreaterThan(0).WithMessage("PageNumber must be greater than 0.");
+            RuleFor(x => x.MinPrice)
+                .GreaterThanOrEqualTo(0)
+                .When(x => x.MinPrice.HasValue)
+                .WithMessage("MinPrice must be greater than or equal to 0.");
+            RuleFor(x => x.MaxPrice)
+                .GreaterThanOrEqualTo(0)
+                .When(x => x.MaxPrice.HasValue)
+                .WithMessage("MaxPrice must be greater than or equal to 0.");
         }
     }
 }

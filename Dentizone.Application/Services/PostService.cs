@@ -89,10 +89,10 @@ namespace Dentizone.Application.Services
             await ValidateAssetNotUsed(assetId, postIdToExclude);
 
             var postAsset = new PostAsset
-                            {
-                                PostId = postId,
-                                AssetId = assetId
-                            };
+            {
+                PostId = postId,
+                AssetId = assetId
+            };
 
             await postAssetRepository.CreateAsync(postAsset);
             return postAsset;
@@ -129,10 +129,10 @@ namespace Dentizone.Application.Services
                 await redisService.InvalidateCache(cacheKey);
 
                 var fullContent = string.Join(" ", new[]
-                                                   {
-                                                       createPostDto.Title,
-                                                       createPostDto.Description
-                                                   }.Where(s => !string.IsNullOrWhiteSpace(s)));
+                {
+                    createPostDto.Title,
+                    createPostDto.Description
+                }.Where(s => !string.IsNullOrWhiteSpace(s)));
 
                 _backgroundJob.Enqueue<IMonitorJob>(job => job.ReviewPostAsync(post.Id, fullContent));
 
@@ -294,12 +294,12 @@ namespace Dentizone.Application.Services
                 .ToList();
 
             var sidebarFilterResults = new SidebarFilterDto
-                                       {
-                                           Cities = cities,
-                                           MinPrice = minPrice,
-                                           MaxPrice = maxPrice,
-                                           Categories = categories
-                                       };
+            {
+                Cities = cities,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
+                Categories = categories
+            };
 
 
             // if the sidebarFilterResults is null, we will not cache it
@@ -334,7 +334,8 @@ namespace Dentizone.Application.Services
                 userPreferenceDto.Condition, userPreferenceDto.MinPrice,
                 userPreferenceDto.MaxPrice,
                 userPreferenceDto.SortBy, userPreferenceDto.SortDirection,
-                userPreferenceDto.PageNumber
+                userPreferenceDto.PageNumber,
+                userPreferenceDto.PostStatus
             );
 
 

@@ -25,7 +25,7 @@ namespace Dentizone.Domain.Interfaces.Repositories
         Task<PagedResult<Post>> SearchAsync(string? keyword, string? city, string? category,
             string? subcategory, PostItemCondition? condition,
             decimal? minPrice, decimal? maxPrice, string? sortBy,
-            bool sortDirection, int page);
+            bool sortDirection, int page, PostStatus status);
 
         Task UpdatePostStatus(string postId, PostStatus status);
         IQueryable<Post> GetActivePosts();

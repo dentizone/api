@@ -154,10 +154,10 @@ namespace Dentizone.Infrastructure.Repositories
         public async Task<PagedResult<Post>> SearchAsync(string? keyword, string? city, string? category,
             string? subcategory, PostItemCondition? condition,
             decimal? minPrice, decimal? maxPrice, string? sortBy,
-            bool sortDirection, int page)
+            bool sortDirection, int page, PostStatus status)
         {
             var posts = DbContext.Posts
-                .Where(p => !p.IsDeleted && p.Status == PostStatus.Active);
+                .Where(p => !p.IsDeleted && p.Status == status);
 
 
             if (!string.IsNullOrWhiteSpace(keyword))
