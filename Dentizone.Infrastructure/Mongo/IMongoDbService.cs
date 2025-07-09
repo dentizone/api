@@ -1,6 +1,4 @@
 using MongoDB.Bson;
-using System.Collections.Generic;
-using Dentizone.Domain.Entity;
 
 namespace Dentizone.Infrastructure.Mongo;
 

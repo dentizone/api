@@ -13,7 +13,6 @@ using Dentizone.Infrastructure;
 using Dentizone.Infrastructure.Cache;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
 namespace Dentizone.Application.Services

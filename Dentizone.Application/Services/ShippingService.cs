@@ -1,11 +1,9 @@
 ﻿using Dentizone.Application.DTOs.Shipping;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Entity;
-using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Mail;
 using Dentizone.Domain.Interfaces.Repositories;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Dentizone.Application.Services
 {

@@ -5,6 +5,7 @@ using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces.Repositories;
 using System.Linq.Expressions;
+using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.UserActivity;
 
 namespace Dentizone.Application.Services
@@ -49,6 +50,27 @@ namespace Dentizone.Application.Services
                 throw new NotFoundException($"No activities found for user {userId} with activity type {activityType}");
             var mapped = mapper.Map<ICollection<UserActivityDto>>(filteredActivities);
             return mapped;
+        }
+
+        public async Task<PagedResultDto<ActivityView>> GetAll(ActivityFilterDto filters)
+        {
+            Expression<Func<UserActivity, bool>> filter = a =>
+                (!filters.ActivityType.HasValue || a.ActivityType == filters.ActivityType.Value) &&
+                (string.IsNullOrEmpty(filters.UserId) || a.UserId == filters.UserId) &&
+                (string.IsNullOrEmpty(filters.Device) || a.Device.Contains(filters.Device)) &&
+                (string.IsNullOrEmpty(filters.IpAddress) || a.IpAddress.Contains(filters.IpAddress)) &&
+                (!filters.DetectedAfter.HasValue || a.DetectedAt >= filters.DetectedAfter.Value) &&
+                (!filters.DetectedBefore.HasValue || a.DetectedAt <= filters.DetectedBefore.Value) &&
+                (string.IsNullOrEmpty(filters.SearchText) ||
+                 a.Device.ToLower().Contains(filters.SearchText.ToLower()) ||
+                 a.UserAgent.ToLower().Contains(filters.SearchText.ToLower()) ||
+                 a.IpAddress.ToLower().Contains(filters.SearchText.ToLower()));
+
+
+            var userActivities = await userActivityRepository.GetAllAsync(filters.PageNumber, filter);
+
+
+            return mapper.Map<PagedResultDto<ActivityView>>(userActivities);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Dentizone.Application.Interfaces;
+using DeviceDetectorNET;
 using DeviceDetectorNET.Parser;
 
 namespace Dentizone.Presentaion.Context;
@@ -6,8 +7,6 @@ namespace Dentizone.Presentaion.Context;
 public class RequestContextService(IHttpContextAccessor httpContextAccessor, IHostEnvironment environment)
     : IRequestContextService
 {
-    private readonly BotParser _botParser = new();
-
     public string? GetUserId()
     {
         var user = httpContextAccessor.HttpContext?.User;
@@ -28,11 +27,9 @@ public class RequestContextService(IHttpContextAccessor httpContextAccessor, IHo
 
     public string GetDeviceType()
     {
-        var userAgent = GetUserAgent();
-        if (string.IsNullOrEmpty(userAgent))
-            return "Unknown";
-        var device = _botParser.Parse();
-        return device?.ParserName ?? "Unknown";
+        var dd = new DeviceDetector(GetUserAgent());
+
+        return dd.GetDeviceName() ?? dd.GetBrandName() ?? "Can't Detect";
     }
 
     public string GetIpAddress()

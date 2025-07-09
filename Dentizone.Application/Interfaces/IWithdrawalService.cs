@@ -1,6 +1,5 @@
 ﻿using Dentizone.Application.DTOs;
 using Dentizone.Application.DTOs.Withdrawal;
-using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.Interfaces
 {

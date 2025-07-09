@@ -2,6 +2,7 @@
 using Dentizone.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces;
 
 namespace Dentizone.Infrastructure.Repositories
 {
@@ -49,6 +50,26 @@ namespace Dentizone.Infrastructure.Repositories
                 .Skip(CalculatePagination(page))
                 .Take(DefaultPageSize)
                 .ToListAsync();
+        }
+
+        public async Task<PagedResult<UserActivity>> GetAllAsync(int page,
+            Expression<Func<UserActivity, bool>>? filters)
+        {
+            var q = DbContext.UserActivities.AsQueryable();
+            var totalCount = await q.CountAsync();
+
+            var pagedQuery = await BuildPagedQuery(page, filters, q);
+
+            var included = pagedQuery.Query
+                .Include(u => u.User);
+            var items = await included.ToListAsync();
+            return new PagedResult<UserActivity>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageSize = DefaultPageSize,
+                Page = page
+            };
         }
     }
 }

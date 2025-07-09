@@ -8,6 +8,9 @@ namespace Dentizone.Application.AutoMapper
     {
         public UserActivityProfile()
         {
+            CreateMap<UserActivity, ActivityView>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FullName))
+                .ReverseMap();
             CreateMap<CreatedUserActivityDto, UserActivity>().ReverseMap();
             CreateMap<UserActivityDto, UserActivity>()
                 .ReverseMap()

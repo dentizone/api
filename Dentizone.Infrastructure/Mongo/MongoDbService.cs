@@ -2,8 +2,6 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using Dentizone.Domain.Interfaces.Secret;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using Dentizone.Domain.Entity;
 
 namespace Dentizone.Infrastructure.Mongo
 {

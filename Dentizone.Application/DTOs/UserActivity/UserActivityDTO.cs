@@ -31,4 +31,17 @@ namespace Dentizone.Application.DTOs.UserActivity
             RuleFor(x => x.ActivityType).IsInEnum().WithMessage("ActivityType must be a valid enum value.");
         }
     }
+
+    public class ActivityView
+    {
+        public required string Id { get; set; }
+        public required string UserName { get; set; }
+        public required string UserId { get; set; }
+        public required string FingerprintToken { get; set; }
+        public required string Device { get; set; }
+        public required string UserAgent { get; set; }
+        public DateTime DetectedAt { get; set; }
+        public required string IpAddress { get; set; }
+        public string ActivityType { get; set; }
+    }
 }

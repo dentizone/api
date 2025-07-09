@@ -7,7 +7,6 @@ using Dentizone.Domain.Enums;
 using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
-using Hangfire;
 using System.Linq.Expressions;
 
 namespace Dentizone.Application.Services

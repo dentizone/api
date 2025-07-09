@@ -1,4 +1,5 @@
-﻿using Dentizone.Application.DTOs.UserActivity;
+﻿using Dentizone.Application.DTOs;
+using Dentizone.Application.DTOs.UserActivity;
 using Dentizone.Domain.Enums;
 
 namespace Dentizone.Application.Interfaces;
@@ -12,4 +13,6 @@ public interface IUserActivityService
 
     Task<ICollection<UserActivityDto>> GetAllByActivityTypeAndUserIdAsync(
         int page, string userId, UserActivities activityType);
+
+    Task<PagedResultDto<ActivityView>> GetAll(ActivityFilterDto filters);
 }

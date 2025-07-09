@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace Dentizone.Application.DTOs.Review
+﻿namespace Dentizone.Application.DTOs.Review
 {
     public class UpdateReviewDto
     {
