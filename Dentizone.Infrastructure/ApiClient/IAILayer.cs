@@ -7,11 +7,9 @@ namespace Dentizone.Infrastructure.ApiClient
     {
         [Get("/all")]
         Task<ApiResponse<ScanAllResponse>> ScanAll([AliasAs("text")] string text);
-
         [Get("/contact-toxic")]
         Task<ApiResponse<ScanAllResponse>> ScanContactToxic([AliasAs("text")] string text);
         [Get("/sentiment")]
-
         Task<ApiResponse<Sentiment>> GetSetmenetAnalysis([AliasAs("text")] string text);
     }
 

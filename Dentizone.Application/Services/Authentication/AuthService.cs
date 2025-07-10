@@ -14,7 +14,8 @@ namespace Dentizone.Application.Services.Authentication
         ITokenService tokenService,
         UserManager<ApplicationUser> userManager,
         IMailService mailService,
-        IUserActivityService userActivityService
+
+
     )
         : IAuthService
     {
@@ -71,7 +72,6 @@ namespace Dentizone.Application.Services.Authentication
 
             if (isLockedOut)
             {
-                await userActivityService.CreateAsync(UserActivities.Lockedout, DateTime.Now, user.Id);
                 throw new
                     UserLockedOutException(
                         "User is locked out due to too many failed login attempts. Please try again later.");
@@ -107,7 +107,6 @@ namespace Dentizone.Application.Services.Authentication
             // 5. Generate token
 
             await userManager.ResetAccessFailedCountAsync(user);
-            await userActivityService.CreateAsync(UserActivities.Login, DateTime.Now, user.Id);
             return new LoggedInUser()
             {
                 User = user,
@@ -145,7 +144,6 @@ namespace Dentizone.Application.Services.Authentication
             // 4. Send Verification Email 
 
             await SendVerificationEmail(user.Email);
-            await userActivityService.CreateAsync(UserActivities.Registered, DateTime.Now, user.Id);
             return new LoggedInUser()
             {
                 User = user,
@@ -178,7 +176,6 @@ namespace Dentizone.Application.Services.Authentication
 
             // 4. Assign verified role
             await AlternateUserRoleAsync(UserRoles.PartilyVerified, user);
-            await userActivityService.CreateAsync(UserActivities.EmailConfirmed, DateTime.Now, user.Id);
             // 4. Generate token
             return GenerateToken(user.Id, user.Email, UserRoles.PartilyVerified.ToString());
         }
@@ -212,7 +209,6 @@ namespace Dentizone.Application.Services.Authentication
     <p>If you did not request this, please ignore this email.</p>
     """
             );
-            await userActivityService.CreateAsync(UserActivities.EmailVerificationSent, DateTime.Now, user.Id);
         }
 
         public async Task SendForgetPasswordEmail(string email)
@@ -230,7 +226,6 @@ namespace Dentizone.Application.Services.Authentication
             // 3. Send Reset Password Email
             await mailService.Send(email, "Dentizone: Reset your password",
                 $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
-            await userActivityService.CreateAsync(UserActivities.PasswordResetRequested, DateTime.Now, user.Id);
         }
 
         public async Task<ApplicationUser> GetById(string userId)
@@ -262,7 +257,6 @@ namespace Dentizone.Application.Services.Authentication
                 throw new NotFoundException("User does not have any roles assigned");
             }
 
-            await userActivityService.CreateAsync(UserActivities.PasswordReset, DateTime.Now, user.Id);
             // 3. Generate token
             return GenerateToken(user.Id, user.Email, roles.FirstOrDefault());
         }
