@@ -64,7 +64,8 @@ namespace Dentizone.Application.Services
                 (string.IsNullOrEmpty(filters.SearchText) ||
                  a.Device.ToLower().Contains(filters.SearchText.ToLower()) ||
                  a.UserAgent.ToLower().Contains(filters.SearchText.ToLower()) ||
-                 a.IpAddress.ToLower().Contains(filters.SearchText.ToLower()));
+                 a.IpAddress.ToLower().Contains(filters.SearchText.ToLower())) ||
+                a.User.FullName.ToLower().Contains(filters.SearchText.ToLower());
 
 
             var userActivities = await userActivityRepository.GetAllAsync(filters.PageNumber, filter);
