@@ -17,7 +17,7 @@ namespace Dentizone.Application.DTOs.Post.PostFilterDto
         public int PageNumber { get; set; }
         public PostStatus PostStatus { get; set; } = PostStatus.Active;
 
-        public bool SkipCache { get; set; } = false;
+        public bool SkipCache { get; set; }
     }
 
     public class UserPreferenceDtoValidator : AbstractValidator<UserPreferenceDto>

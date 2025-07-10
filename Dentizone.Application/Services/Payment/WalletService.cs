@@ -112,7 +112,7 @@ namespace Dentizone.Application.Services.Payment
                 wr.WalletId == wallet.Id && wr.Status == WithdrawalRequestStatus.Pending);
 
             var successWithdraw = await withdrawalRequestRepository.GetAllAsync(wr =>
-                wr.WalletId == wallet.Id && wr.Status == WithdrawalRequestStatus.Completed);
+                wr.WalletId == wallet.Id && wr.Status == WithdrawalRequestStatus.Approved);
 
             var pendingAmount = pendingWithdrawalRequests.Sum(wr => wr.Amount);
             var successAmount = successWithdraw.Sum(wr => wr.Amount);
