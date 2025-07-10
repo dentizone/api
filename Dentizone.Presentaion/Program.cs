@@ -65,7 +65,7 @@ namespace Dentizone.Presentaion
 
             if (Environment.GetEnvironmentVariable("ENV") != "prod")
             {
-                // SEEDING: Run full data seeder if DB is empty
+                //SEEDING: Run full data seeder if DB is empty
                 using (var scope = app.Services.CreateScope())
                 {
                     var db = scope.ServiceProvider.GetRequiredService<Infrastructure.AppDbContext>();

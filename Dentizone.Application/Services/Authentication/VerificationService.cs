@@ -45,7 +45,7 @@ namespace Dentizone.Application.Services.Authentication
             {
                 WorkflowId = secretService.GetSecret("DiditWorkflowId"),
                 VendorData = userId,
-                Callback = "https://dentizone.vercel.app/auth/kyc/status",
+                Callback = "https://dentizone.store/auth/kyc/status",
                 Metadata = JsonConvert.SerializeObject(new Metadata()
                 {
                     Email = user.Email,
@@ -63,11 +63,12 @@ namespace Dentizone.Application.Services.Authentication
 
             var session = await diditApi.CreateSessionAsync(request, secretService.GetSecret("DiditApi"));
             await userService.SetKycStatusAsync(userId, KycStatus.NotSubmitted);
-            await mailService.Send(user.Email!, "Dentizone: Verification Started",
-                "Thank you for starting the email verification process." +
-                " You can use this url to verify your identity" +
-                $" <a href=\"{session.Url}\">Verify Now</a>"
-            );
+            await mailService.Send(user.Email!, "Dentizone: KYC Verification Started",
+   $"""
+    <p>Thank you for starting the kyc verification process.</p>
+    <p>You can use the following link to verify your identity:</p>
+    <p><a href="{session.Url}">Verify Now</a></p>
+    """);
 
 
             return session;

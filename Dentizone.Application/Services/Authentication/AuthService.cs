@@ -199,10 +199,19 @@ namespace Dentizone.Application.Services.Authentication
 
             // 2. Generate token
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-            var verificationLink = $"https://dentizone.vercel.app/auth/mail-verify?userId={user.Id}&token={token}";
+            var verificationLink = $"https://dentizone.store/auth/mail-verify?userId={user.Id}&token={token}";
             // 3. Send Verification Email
-            await mailService.Send(email, "Dentizone: Verify your email",
-                $"Please click the following link to verify your email: <a href=\"{verificationLink}\">Verify Email</a>");
+            await mailService.Send(
+                email,
+                "Dentizone: Verify your email",
+                $"""
+    <p>Hello,</p>
+    <p>Thank you for signing up to Dentizone!</p>
+    <p>Please click the link below to verify your email address:</p>
+    <p><a href="{verificationLink}">Verify Email</a></p>
+    <p>If you did not request this, please ignore this email.</p>
+    """
+            );
             await userActivityService.CreateAsync(UserActivities.EmailVerificationSent, DateTime.Now, user.Id);
         }
 
@@ -217,7 +226,7 @@ namespace Dentizone.Application.Services.Authentication
 
             // 2. Generate token
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = $"https://dentizone.vercel.app/auth/forgot-password?email={user.Email}&token={token}";
+            var resetLink = $"https://dentizone.store/auth/forgot-password?email={user.Email}&token={token}";
             // 3. Send Reset Password Email
             await mailService.Send(email, "Dentizone: Reset your password",
                 $"Please click the following link to reset your password: <a href=\"{resetLink}\">Reset Password</a>");
