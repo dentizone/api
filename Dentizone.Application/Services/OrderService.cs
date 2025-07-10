@@ -258,7 +258,7 @@ namespace Dentizone.Application.Services
             }
 
             var emailContent = $"Your order with ID {order.Id} has been completed. Please review the products. " +
-                               $"through this link https://dentizone.vercel.app/review?orderId={orderId}";
+                               $"through this link https://dentizone.store/review?orderId={orderId}";
 
             await mailService.Send(buyer.Email, "Order Completed Waiting for review", emailContent);
         }

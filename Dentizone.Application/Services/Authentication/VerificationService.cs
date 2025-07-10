@@ -45,7 +45,7 @@ namespace Dentizone.Application.Services.Authentication
             {
                 WorkflowId = secretService.GetSecret("DiditWorkflowId"),
                 VendorData = userId,
-                Callback = "https://dentizone.vercel.app/auth/kyc/status",
+                Callback = "https://dentizone.store/auth/kyc/status",
                 Metadata = JsonConvert.SerializeObject(new Metadata()
                 {
                     Email = user.Email,
