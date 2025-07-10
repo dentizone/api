@@ -2,11 +2,11 @@
 using Dentizone.Application.DTOs.User;
 using Dentizone.Application.Interfaces;
 using Dentizone.Domain.Enums;
+using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Dentizone.Domain.Exceptions;
 
 namespace Dentizone.Presentaion.Controllers
 {
@@ -15,7 +15,7 @@ namespace Dentizone.Presentaion.Controllers
     public class AuthenticationController(
         IAuthService authenticationService,
         IUserService userService,
-        ITokenService tokenService) : ControllerBase
+        ITokenService tokenService, IUserActivityService userActivityService) : ControllerBase
     {
         [HttpPost("login")]
         [AllowAnonymous]
@@ -31,6 +31,8 @@ namespace Dentizone.Presentaion.Controllers
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, loggedInUser.User.Email,
                 loggedInUser.Role.ToString());
             var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);
+            await userActivityService.CreateAsync(UserActivities.Login, DateTime.UtcNow,
+                loggedInUser.User.Id);
             return Ok(new RefreshTokenResponse()
             {
                 AccessToken = token,
@@ -60,6 +62,8 @@ namespace Dentizone.Presentaion.Controllers
             var token = tokenService.GenerateAccessToken(loggedInUser.User.Id, registerPayloadDto.Email,
                 loggedInUser.Role.ToString());
             var refreshToken = tokenService.GenerateRefreshToken(loggedInUser.User.Id);
+            await userActivityService.CreateAsync(UserActivities.Register, DateTime.UtcNow,
+                loggedInUser.User.Id);
             return Ok(new RefreshTokenResponse()
             {
                 AccessToken = token,
@@ -75,6 +79,10 @@ namespace Dentizone.Presentaion.Controllers
 
 
             var result = await authenticationService.ConfirmEmail(token, userId);
+
+            await userActivityService.CreateAsync(UserActivities.EmailConfirmed, DateTime.UtcNow, userId);
+
+
             return Ok(new { Token = result });
         }
 
@@ -83,8 +91,11 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> SendVerificationEmail()
         {
             var email = User.Claims.First(c => c.Type == ClaimTypes.Email).Value;
+            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
             await authenticationService.SendVerificationEmail(email);
+            await userActivityService.CreateAsync(UserActivities.EmailVerificationSent, DateTime.UtcNow, userId);
+
             return Ok();
         }
 
@@ -94,6 +105,8 @@ namespace Dentizone.Presentaion.Controllers
         public async Task<IActionResult> SendForgetPasswordEmail([FromQuery] string email)
         {
             await authenticationService.SendForgetPasswordEmail(email);
+
+
             return Ok();
         }
 
@@ -103,6 +116,8 @@ namespace Dentizone.Presentaion.Controllers
         {
             var result = await authenticationService.ResetPassword(resetPasswordDto.Email, resetPasswordDto.Token,
                 resetPasswordDto.NewPassword);
+
+
 
 
             return Ok(new { Message = result });
@@ -185,6 +200,10 @@ namespace Dentizone.Presentaion.Controllers
             var token = authHeader.Substring("Bearer ".Length).Trim();
             await tokenService.BlacklistAccessTokenAsync(token);
             await tokenService.BlacklistRefreshTokenAsync(request.RefreshToken);
+
+            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+
+            await userActivityService.CreateAsync(UserActivities.Logout, DateTime.UtcNow, userId);
 
 
             return Ok();
