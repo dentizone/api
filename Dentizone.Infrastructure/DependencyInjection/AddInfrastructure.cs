@@ -1,6 +1,8 @@
 ﻿using Dentizone.Domain.Interfaces;
 using Dentizone.Infrastructure.Cache;
+using Dentizone.Infrastructure.Identity;
 using Dentizone.Infrastructure.Mongo;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dentizone.Infrastructure.DependencyInjection
@@ -19,6 +21,18 @@ namespace Dentizone.Infrastructure.DependencyInjection
             // Register MongoDbService as a singleton
             services.AddSingleton<IMongoDbService, MongoDbService>();
             services.AddSingleton<IRedisService, RedisService>();
+            services.AddScoped<IResetTokenStore, RedisResetTokenStore>();
+
+            services.AddTransient<UuidPasswordResetTokenProvider<ApplicationUser>>(sp =>
+            {
+                var store = sp.GetRequiredService<IResetTokenStore>();
+                return new UuidPasswordResetTokenProvider<ApplicationUser>(store);
+            });
+
+            services.PostConfigure<IdentityOptions>(options =>
+            {
+                options.Tokens.ProviderMap["uuid"] = new TokenProviderDescriptor(typeof(UuidPasswordResetTokenProvider<ApplicationUser>));
+            });
 
             return services;
         }

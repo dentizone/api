@@ -66,26 +66,26 @@ namespace Dentizone.Presentaion
             if (Environment.GetEnvironmentVariable("ENV") != "prod")
             {
                 //SEEDING: Run full data seeder if DB is empty
-                using (var scope = app.Services.CreateScope())
-                {
-                    var db = scope.ServiceProvider.GetRequiredService<Infrastructure.AppDbContext>();
-                    var userManager = scope.ServiceProvider
-                        .GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<
-                            Infrastructure.Identity.ApplicationUser>>();
-                    try
-                    {
-                        Console.WriteLine("[Seeding] Starting full data seeding...");
-                        Infrastructure.Persistence.Seeder.FullDataSeeder.SeedingConfig
-                            config = new(); // Use default or customize
-                        Infrastructure.Persistence.Seeder.FullDataSeeder.SeedAsync(db, userManager, config)
-                            .GetAwaiter().GetResult();
-                        Console.WriteLine("[Seeding] Full data seeding completed.");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"[Seeding] Error: {ex.Message}");
-                    }
-                }
+                //using (var scope = app.Services.CreateScope())
+                //{
+                //    var db = scope.ServiceProvider.GetRequiredService<Infrastructure.AppDbContext>();
+                //    var userManager = scope.ServiceProvider
+                //        .GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<
+                //            Infrastructure.Identity.ApplicationUser>>();
+                //    try
+                //    {
+                //        Console.WriteLine("[Seeding] Starting full data seeding...");
+                //        Infrastructure.Persistence.Seeder.FullDataSeeder.SeedingConfig
+                //            config = new(); // Use default or customize
+                //        Infrastructure.Persistence.Seeder.FullDataSeeder.SeedAsync(db, userManager, config)
+                //            .GetAwaiter().GetResult();
+                //        Console.WriteLine("[Seeding] Full data seeding completed.");
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        Console.WriteLine($"[Seeding] Error: {ex.Message}");
+                //    }
+                //}
             }
 
             app.UseHangfireDashboard("/background");

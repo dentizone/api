@@ -10,6 +10,7 @@ namespace Dentizone.Application.DTOs.Review
 
         public required OrderViewDto OrderViewDto { get; set; }
 
+        public required string Sentiment { get; set; }
         public required DateTime CreatedAt { get; set; }
     }
 }

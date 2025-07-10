@@ -13,7 +13,8 @@ namespace Dentizone.Application.Services.Authentication
     public class AuthService(
         ITokenService tokenService,
         UserManager<ApplicationUser> userManager,
-        IMailService mailService
+        IMailService mailService,
+        IResetTokenStore resetTokenStore
 
 
     )
@@ -221,7 +222,7 @@ namespace Dentizone.Application.Services.Authentication
             }
 
             // 2. Generate token
-            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var token = await userManager.GenerateUserTokenAsync(user, "uuid", "ResetPassword");
             var resetLink = $"https://dentizone.store/auth/forgot-password?email={user.Email}&token={token}";
             // 3. Send Reset Password Email
             await mailService.Send(email, "Dentizone: Reset your password",
@@ -243,14 +244,17 @@ namespace Dentizone.Application.Services.Authentication
             }
 
             // 2. Reset password
-            var result = await userManager.ResetPasswordAsync(user, token, newPassword);
-            if (!result.Succeeded)
-            {
-                throw new BadActionException("Password reset failed: " +
-                                             string.Join(", ", result.Errors.Select(e => e.Description)));
-            }
+            var isValid = await userManager.VerifyUserTokenAsync(user, "uuid", "ResetPassword", token);
+            if (!isValid)
+                throw new BadActionException("Invalid or expired reset token");
 
-            // Get user current role    
+            // Proceed to reset password
+            await userManager.RemovePasswordAsync(user);
+            await userManager.AddPasswordAsync(user, newPassword);
+            await resetTokenStore.RemoveAsync(user.Id);
+
+            // Get User Roles
+
             var roles = await userManager.GetRolesAsync(user);
             if (roles == null || !roles.Any())
             {

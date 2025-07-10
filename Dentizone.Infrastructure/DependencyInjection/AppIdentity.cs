@@ -15,7 +15,7 @@ namespace Dentizone.Infrastructure.DependencyInjection
                 {
                     options.User.RequireUniqueEmail = true;
                     options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
-                    options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
+                    options.Tokens.PasswordResetTokenProvider = "uuid";
                     options.Password = IdentityConfiguration.PasswordRestrictions;
                     options.SignIn = IdentityConfiguration.SignInOptions;
                     options.Lockout = IdentityConfiguration.LockoutOptions;
@@ -35,6 +35,14 @@ namespace Dentizone.Infrastructure.DependencyInjection
                 using var scope = services.BuildServiceProvider().CreateScope();
                 var secretService = scope.ServiceProvider.GetRequiredService<ISecretService>();
                 options.TokenValidationParameters = IdentityConfiguration.GetTokenValidationParameters(secretService);
+
+
+            });
+
+
+            services.PostConfigure<IdentityOptions>(opt =>
+            {
+                opt.Tokens.ProviderMap["uuid"] = new TokenProviderDescriptor(typeof(UuidPasswordResetTokenProvider<ApplicationUser>));
             });
             services.AddAuthorization(options =>
             {
