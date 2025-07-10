@@ -13,7 +13,7 @@ namespace Dentizone.Application.Services.Authentication
     public class AuthService(
         ITokenService tokenService,
         UserManager<ApplicationUser> userManager,
-        IMailService mailService,
+        IMailService mailService
 
 
     )
