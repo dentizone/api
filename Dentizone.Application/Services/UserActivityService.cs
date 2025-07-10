@@ -62,10 +62,11 @@ namespace Dentizone.Application.Services
                 (!filters.DetectedAfter.HasValue || a.DetectedAt >= filters.DetectedAfter.Value) &&
                 (!filters.DetectedBefore.HasValue || a.DetectedAt <= filters.DetectedBefore.Value) &&
                 (string.IsNullOrEmpty(filters.SearchText) ||
-                 a.Device.ToLower().Contains(filters.SearchText.ToLower()) ||
-                 a.UserAgent.ToLower().Contains(filters.SearchText.ToLower()) ||
-                 a.IpAddress.ToLower().Contains(filters.SearchText.ToLower())) ||
-                a.User.FullName.ToLower().Contains(filters.SearchText.ToLower());
+                 (a.Device.ToLower().Contains(filters.SearchText.ToLower()) ||
+                  a.UserAgent.ToLower().Contains(filters.SearchText.ToLower()) ||
+                  a.IpAddress.ToLower().Contains(filters.SearchText.ToLower()) ||
+                  (a.User != null && a.User.FullName != null &&
+                   a.User.FullName.ToLower().Contains(filters.SearchText.ToLower()))));
 
 
             var userActivities = await userActivityRepository.GetAllAsync(filters.PageNumber, filter);
