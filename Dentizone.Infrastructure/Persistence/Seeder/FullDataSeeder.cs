@@ -208,5 +208,4 @@ namespace Dentizone.Infrastructure.Persistence.Seeder
             Console.WriteLine($"[Seeding] Regular users seeded in {sw.Elapsed.TotalSeconds:F2}s");
         }
     }
-
 }

@@ -112,8 +112,8 @@ namespace Dentizone.Application.Services
                 var order = new Order
                 {
                     BuyerId = buyerId,
-                    CommissionAmount = posts.Sum(p => p.Price) * 0.20m,
-                    TotalAmount = posts.Sum(p => p.Price) * 1.2m,
+                    CommissionAmount = posts.Sum(p => p.Price) * 0.10m,
+                    TotalAmount = posts.Sum(p => p.Price) * 1.1m,
                 };
 
                 var result = await orderRepository.CreateAsync(order);
