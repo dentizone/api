@@ -33,7 +33,8 @@ namespace Dentizone.Application.Services
             {
                 OrderId = createReviewDto.OrderId,
                 Text = createReviewDto.Comment,
-                UserId = userId
+                UserId = userId,
+                Stars = createReviewDto.Stars,
             };
 
             await repo.CreateAsync(review);
