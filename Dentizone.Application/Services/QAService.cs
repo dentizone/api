@@ -46,6 +46,7 @@ namespace Dentizone.Application.Services
 
             var answer = mapper.Map<Answer>(dto);
             question.Status = QuestionStatus.Answered;
+            answer.QuestionId = questionId;
             await answerRepository.CreateAsync(answer);
             await questionRepository.UpdateAsync(question);
 
