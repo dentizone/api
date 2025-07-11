@@ -23,7 +23,9 @@ namespace Dentizone.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(r => r.Text)
-                .HasColumnType("text");
+                .IsRequired(false)
+                .HasColumnType("nvarchar(500)");
+
 
             builder.Property(r => r.IsDeleted)
                 .HasDefaultValue(false);
