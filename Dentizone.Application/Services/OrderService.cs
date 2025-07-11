@@ -112,7 +112,7 @@ namespace Dentizone.Application.Services
                 var order = new Order
                 {
                     BuyerId = buyerId,
-                    CommissionAmount = 0.2m,
+                    CommissionAmount = posts.Sum(p => p.Price) * 0.20m,
                     TotalAmount = posts.Sum(p => p.Price) * 1.2m,
                 };
 
@@ -190,7 +190,7 @@ namespace Dentizone.Application.Services
                 await cartService.ClearCartAsync(buyerId);
 
                 await transaction.CommitAsync();
-                await userActivityService.CreateAsync(UserActivities.OrderPlaced, new DateTime(), buyerId);
+                await userActivityService.CreateAsync(UserActivities.OrderPlaced, DateTime.Now, buyerId);
 
                 return result.Id;
             }
@@ -222,45 +222,61 @@ namespace Dentizone.Application.Services
 
         public async Task CompleteOrder(string orderId)
         {
-            await paymentService.ConfirmPaymentAsync(orderId);
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
 
-            // Mark Order as Completed
-            var order = await orderRepository.FindBy(o => o.Id == orderId, [o => o.OrderStatuses]);
-            if (order == null)
+            try
             {
-                throw new NotFoundException("Order not found.");
+                await paymentService.ConfirmPaymentAsync(orderId);
+
+                // Mark Order as Completed
+                var order = await orderRepository.FindBy(o => o.Id == orderId, [o => o.OrderStatuses]);
+                if (order == null)
+                {
+                    throw new NotFoundException("Order not found.");
+                }
+
+                if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Arrived))
+                {
+                    throw new BadActionException("Order is already completed.");
+                }
+
+                if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Cancelled))
+                {
+                    throw new BadActionException("Order is cancelled, cannot complete.");
+                }
+
+                var orderStatus = new OrderStatus
+                {
+                    OrderId = order.Id,
+                    Status = OrderStatues.Completed,
+                };
+
+                await orderStatusRepository.CreateAsync(orderStatus);
+
+                // Send review request email to buyer
+                var buyer = await authService.GetById(order.BuyerId);
+
+                if (buyer == null)
+                {
+                    throw new NotFoundException("Buyer not found.");
+                }
+
+                var emailContent = $"Your order with ID {order.Id} has been completed. Please review the products. " +
+                                   $"through this link https://dentizone.store/review?orderId={orderId}";
+
+                await mailService.Send(buyer.Email, "Order Completed Waiting for review", emailContent);
+
+                order.CompletedAt = DateTime.UtcNow;
+                await orderRepository.UpdateAsync(order);
+
+                await transaction.CommitAsync();
             }
-
-            if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Arrived))
+            catch (Exception e)
             {
-                throw new BadActionException("Order is already completed.");
+                await transaction.RollbackAsync();
+
+                throw;
             }
-
-            if (order.OrderStatuses.Any(os => os.Status == OrderStatues.Cancelled))
-            {
-                throw new BadActionException("Order is cancelled, cannot complete.");
-            }
-
-            var orderStatus = new OrderStatus
-            {
-                OrderId = order.Id,
-                Status = OrderStatues.Completed,
-            };
-
-            await orderStatusRepository.CreateAsync(orderStatus);
-
-            // Send review request email to buyer
-            var buyer = await authService.GetById(order.BuyerId);
-
-            if (buyer == null)
-            {
-                throw new NotFoundException("Buyer not found.");
-            }
-
-            var emailContent = $"Your order with ID {order.Id} has been completed. Please review the products. " +
-                               $"through this link https://dentizone.store/review?orderId={orderId}";
-
-            await mailService.Send(buyer.Email, "Order Completed Waiting for review", emailContent);
         }
 
         public async Task<PagedResultDto<OrderViewAll>> GetOrders(int page, FilterOrderDto filters)
