@@ -294,7 +294,7 @@ namespace Dentizone.Application.Services
             }
 
             var valueAsJson = JsonConvert.SerializeObject(sidebarFilterResults);
-            await redisService.SetValue(cacheKey, valueAsJson, TimeSpan.FromHours(6));
+            await redisService.SetValue(cacheKey, valueAsJson, TimeSpan.FromMinutes(1));
 
             return sidebarFilterResults;
         }
@@ -334,7 +334,7 @@ namespace Dentizone.Application.Services
             if (!userPreferenceDto.SkipCache)
             {
                 var valueAsJson = JsonConvert.SerializeObject(mappedPosts);
-                await redisService.SetValue(cacheKey, valueAsJson, TimeSpan.FromHours(6));
+                await redisService.SetValue(cacheKey, valueAsJson, TimeSpan.FromMinutes(1));
             }
 
             return mappedPosts;
