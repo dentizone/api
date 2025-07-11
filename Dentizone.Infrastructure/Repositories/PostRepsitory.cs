@@ -116,7 +116,7 @@ namespace Dentizone.Infrastructure.Repositories
                 .Include(p => p.PostAssets)
                 .ThenInclude(p => p.Asset)
                 .ThenInclude(p => p.User.University)
-                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted && p.Status == PostStatus.Active);
+                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
         }
 
         public async Task<Post?> GetByIdAsync(string id, PostStatus status)
