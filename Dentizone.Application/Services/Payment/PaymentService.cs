@@ -68,59 +68,47 @@ namespace Dentizone.Application.Services.Payment
 
         public async Task<PaymentView> ConfirmPaymentAsync(string orderId)
         {
-            await using var databaseTransaction = await db.Database.BeginTransactionAsync();
-
-            try
+            // 1. Find The Payment // 2. Get Sales Transaction by PaymentId
+            var payment =
+                await
+                    repo.FindBy(p => p.OrderId == orderId && p.Status == PaymentStatus.Pending,
+                        includes: [p => p.SalesTransactions]);
+            // 3. Update Payment Status to Confirmed
+            if (payment == null)
             {
-                // 1. Find The Payment // 2. Get Sales Transaction by PaymentId
-                var payment =
-                    await
-                        repo.FindBy(p => p.OrderId == orderId && p.Status == PaymentStatus.Pending,
-                            includes: [p => p.SalesTransactions]);
-                // 3. Update Payment Status to Confirmed
-                if (payment == null)
-                {
-                    throw new NotFoundException("Payment not found.");
-                }
-
-                payment.Status = PaymentStatus.Success;
-                // 4. Update Sales Transaction Status to Completed
-                foreach (var transaction in payment.SalesTransactions)
-                {
-                    if (transaction.Status != SaleStatus.Pending)
-                    {
-                        throw new
-                            InvalidOperationException(
-                                $"Sale transaction of id {transaction.Id} is not in pending status.");
-                    }
-
-                    transaction.Status = SaleStatus.Completed;
-
-                    await salesRepo.UpdateAsync(transaction);
-
-                    // 5. Transfer Amount to Wallet of the seller
-                    var amount = transaction.Amount;
-                    await walletService.AddToBalance(amount, transaction.WalletId);
-                }
-
-                var updatedPayment = await repo.UpdateAsync(payment);
-                if (updatedPayment == null)
-                {
-                    throw new InvalidOperationException("Failed to confirm payment.");
-                }
-
-                // Commit the transaction
-                await databaseTransaction.CommitAsync();
-
-                return mapper.Map<PaymentView>(updatedPayment);
+                throw new NotFoundException("Payment not found.");
             }
-            catch (Exception)
+
+            payment.Status = PaymentStatus.Success;
+            // 4. Update Sales Transaction Status to Completed
+            foreach (var transaction in payment.SalesTransactions)
             {
-                // Rollback the transaction in case of an error
-                await databaseTransaction.RollbackAsync();
+                if (transaction.Status != SaleStatus.Pending)
+                {
+                    throw new
+                        InvalidOperationException(
+                            $"Sale transaction of id {transaction.Id} is not in pending status.");
+                }
 
-                throw;
+                transaction.Status = SaleStatus.Completed;
+
+                await salesRepo.UpdateAsync(transaction);
+
+                // 5. Transfer Amount to Wallet of the seller
+                var amount = transaction.Amount;
+                await walletService.AddToBalance(amount, transaction.WalletId);
             }
+
+            var updatedPayment = await repo.UpdateAsync(payment);
+            if (updatedPayment == null)
+            {
+                throw new InvalidOperationException("Failed to confirm payment.");
+            }
+
+            // Commit the transaction
+
+
+            return mapper.Map<PaymentView>(updatedPayment);
         }
 
         public async Task CancelPaymentByOrderId(string orderId)
