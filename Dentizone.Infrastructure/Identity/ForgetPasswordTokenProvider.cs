@@ -3,7 +3,7 @@
 namespace Dentizone.Infrastructure.Identity
 {
     public class UuidPasswordResetTokenProvider<TUser> : IUserTwoFactorTokenProvider<TUser>
-       where TUser : class
+        where TUser : class
     {
         private readonly IResetTokenStore _store;
 
@@ -29,6 +29,4 @@ namespace Dentizone.Infrastructure.Identity
         public Task<bool> CanGenerateTwoFactorTokenAsync(UserManager<TUser> manager, TUser user)
             => Task.FromResult(true);
     }
-
-
 }
