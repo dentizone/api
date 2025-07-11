@@ -8,6 +8,7 @@ using Dentizone.Domain.Exceptions;
 using Dentizone.Domain.Interfaces;
 using Dentizone.Domain.Interfaces.Repositories;
 using System.Linq.Expressions;
+using Dentizone.Domain.Interfaces.Mail;
 
 namespace Dentizone.Application.Services
 {
@@ -16,6 +17,7 @@ namespace Dentizone.Application.Services
         IAnswerRepository answerRepository,
         IQuestionRepository questionRepository,
         IBackgroundJobService _backgroundJob,
+        IMailService mailService,
         IUserActivityService userActivity)
         : IQaService
     {
@@ -53,6 +55,8 @@ namespace Dentizone.Application.Services
             _backgroundJob.Enqueue<IMonitorJob>(job =>
                 job.ReviewAnswerAsync(answer.Id, answer.Text));
             await userActivity.CreateAsync(UserActivities.AnsweredQuestion, DateTime.UtcNow, responderId);
+            await mailService.Send(post.Seller.Email, "Your Question has been answered from the seller",
+                $"Your Question : {question.Text} has been answered by the seller");
             return mapper.Map<AnswerViewDto>(answer);
         }
 
@@ -63,10 +67,18 @@ namespace Dentizone.Application.Services
             question.Status = QuestionStatus.Unanswered;
             await questionRepository.CreateAsync(question);
 
+
             _backgroundJob.Enqueue<IMonitorJob>(job =>
                 job.ReviewQuestionAsync(question.Id, question.Text));
 
             await userActivity.CreateAsync(UserActivities.AskedQuestion, DateTime.UtcNow, askerId);
+
+            // Post id
+
+            var q = await questionRepository.GetByIdAsync(question.Id);
+
+            await mailService.Send(q.Post.Seller.Email, "New Question on your post",
+                $"A new question has been asked on your post");
 
             return mapper.Map<QuestionViewDto>(question);
         }
