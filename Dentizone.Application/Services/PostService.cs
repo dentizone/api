@@ -240,7 +240,7 @@ namespace Dentizone.Application.Services
                 }
             }
 
-            var availablePosts = repo.GetAllAsync(p => !p.IsDeleted && p.Status == PostStatus.Active,
+            var availablePosts = repo.GetAllAsync(p => !p.IsDeleted,
                 p => p.CreatedAt, includes:
                 [
                     p => p.Category,
